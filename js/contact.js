@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
         showMessage('There was an error sending your message. Please try again or email us directly.', 'error');
     }
     
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
         // Show loading state
         submitButton.disabled = true;
         submitButton.textContent = 'Sending...';
@@ -22,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = document.getElementById('message').value.trim();
         
         if (!name || !email || !subject || !message) {
-            e.preventDefault();
             showMessage('Please fill in all fields.', 'error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
@@ -30,11 +31,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (!isValidEmail(email)) {
-            e.preventDefault();
             showMessage('Please enter a valid email address.', 'error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
+        }
+        
+        try {
+            const response = await fetch('https://formspree.io/f/mzzbglgv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    subject,
+                    message,
+                    _subject: `EduConnect Contact: ${subject}`,
+                    _cc: 'team@educonnectchina.com'
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                showMessage('Message sent successfully! We will get back to you within 24 hours.', 'success');
+                contactForm.reset();
+            } else {
+                const result = await response.json();
+                showMessage(result.error || 'Failed to send message. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Contact form error:', error);
+            showMessage('Network error. Please check your connection and try again.', 'error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send Message';
         }
     });
     

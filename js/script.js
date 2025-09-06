@@ -16,18 +16,34 @@ if (window.location.pathname.includes('signup')) {
             
             try {
                 const formData = new FormData(form);
-                const response = await fetch('/api/submit-application', {
+                // Convert FormData to JSON for serverless functions
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                
+                // For GitHub Pages, use Formspree for form handling
+                const response = await fetch('https://formspree.io/f/xrbgwodg', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        _subject: 'New EduConnect Teacher Application',
+                        _cc: 'team@educonnectchina.com'
+                    })
                 });
                 
                 const result = await response.json();
                 
-                if (result.success) {
-                    alert('Application submitted successfully! We will contact you soon.');
+                if (response.ok) {
+                    alert('Application submitted successfully! We will contact you within 24-48 hours.');
                     form.reset();
                 } else {
-                    alert('Error: ' + result.message);
+                    const result = await response.json();
+                    alert('Error: ' + (result.error || 'Failed to submit application'));
                 }
             } catch (error) {
                 alert('Network error. Please try again.');
@@ -49,24 +65,17 @@ if (window.location.pathname.includes('login')) {
             const username = document.querySelector('#username').value;
             const password = document.querySelector('#password').value;
             
-            try {
-                const response = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    window.location.href = '/admin';
-                } else {
-                    alert('Invalid credentials');
-                }
-            } catch (error) {
-                alert('Network error. Please try again.');
+            // Simple client-side authentication for demo purposes
+            // In production, use proper server-side authentication
+            const ADMIN_USERNAME = 'admin';
+            const ADMIN_PASSWORD = 'educonnect2024';
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                // Store token and redirect to admin
+                localStorage.setItem('adminToken', 'admin-' + Date.now());
+                window.location.href = '/admin.html';
+            } else {
+                alert('Invalid credentials');
             }
         });
     }

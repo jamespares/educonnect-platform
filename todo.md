@@ -1,2 +1,5 @@
 - set-up email
 - fix admin log-in and admin view
+- add newsletter + blog
+- do SEO and GEO
+- ensure all CVs are uploaded as PDFs
