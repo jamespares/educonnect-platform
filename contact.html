@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - EduConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="index.html#about" class="nav-link">About</a>
+                    <a href="index.html#opportunities" class="nav-link">Opportunities</a>
+                    <a href="signup.html" class="nav-link cta-button">Join Now</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="contact-page">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-header">
+                    <h1 class="contact-title">Get in Touch</h1>
+                    <p class="contact-subtitle">Have questions about teaching in China? We're here to help.</p>
+                </div>
+                
+                <div class="contact-form-container">
+                    <form id="contactForm" class="contact-form" action="/send-message" method="POST">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select id="subject" name="subject" class="form-input" required>
+                                <option value="">Please select a topic</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="teaching">Teaching Opportunities</option>
+                                <option value="visa">Visa & Documentation</option>
+                                <option value="support">Support Services</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" name="message" rows="6" class="form-input" placeholder="Tell us how we can help you..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="contact-submit-btn">Send Message</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-info-item">
+                        <h3>Quick Response</h3>
+                        <p>We typically respond to all inquiries within 24 hours during business days.</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <h3>Direct Support</h3>
+                        <p>For urgent matters, you can reach us directly at <a href="mailto:jamesedpares@gmail.com">team@educonnectasia.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 class="footer-title">EduConnect</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="#mission">Our Mission</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Teachers</h4>
+                    <ul class="footer-links">
+                        <li><a href="signup.html">Apply Now</a></li>
+                        <li><a href="#requirements">Requirements</a></li>
+                        <li><a href="#process">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Schools</h4>
+                    <ul class="footer-links">
+                        <li><a href="#partner">Work With Us</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#visa">Visa Guidance</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#cookies">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EduConnect Asia Ltd. All rights reserved.</p>
+            <div class="footer-address"></div>
+                <p>71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ<br><br>   
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/contact.js"></script>
+</body>
+</html>

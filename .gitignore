@@ -1,0 +1,20 @@
+# Environment variables
+.env
+
+# Database
+teachers.db
+
+# Uploaded files
+uploads/
+
+# Dependencies
+node_modules/
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
