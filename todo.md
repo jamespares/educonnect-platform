@@ -1,0 +1,2 @@
+- set-up email
+- fix admin log-in and admin view
