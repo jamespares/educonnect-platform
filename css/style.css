@@ -363,14 +363,20 @@ body {
 }
 
 .partner-logo {
-    height: 80px;
-    width: auto;
+    height: 60px;
+    width: 140px;
     object-fit: contain;
+    object-position: center;
+    filter: grayscale(100%);
+    opacity: 0.7;
     transition: all 0.3s ease;
+    background: transparent;
 }
 
 .partner-logo:hover {
     transform: scale(1.05);
+    filter: grayscale(0%);
+    opacity: 1;
 }
 
 /* Testimonials Section */
