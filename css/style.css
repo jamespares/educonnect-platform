@@ -347,6 +347,32 @@ body {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
+/* Partners Section */
+.partners {
+    padding: 6rem 0;
+    background: white;
+}
+
+.partners-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+}
+
+.partner-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.partner-logo:hover {
+    transform: scale(1.05);
+}
+
 /* Testimonials Section */
 .testimonials {
     padding: 6rem 0;
