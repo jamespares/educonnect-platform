@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Language Course for Teachers - EduConnect</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/browser_icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/browser_icon.png">
+    <link rel="shortcut icon" href="images/browser_icon.png">
+    <link rel="apple-touch-icon" href="images/browser_icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .course-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .course-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .course-nav {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+        }
+        
+        .course-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .course-nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .course-nav a:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .section {
+            background: white;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .phrase-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .phrase-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .phrase-row:last-child {
+            border-bottom: none;
+        }
+        
+        .hanzi {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .pinyin {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .english {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .audio-placeholder {
+            background: #e3f2fd;
+            border: 1px solid #2196F3;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: #1976D2;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .audio-placeholder:hover {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .app-guide {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            border: 1px solid #4CAF50;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .app-guide h4 {
+            color: #2e7d32;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        
+        .scenario-box {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .scenario-box h4 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        
+        .pronunciation-tip {
+            background: #f3e5f5;
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .pronunciation-tip h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        
+        .placeholder {
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .course-links {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+        }
+        
+        .course-links a {
+            display: inline-block;
+            background: white;
+            color: #333;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .course-links a:hover {
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .course-container {
+                padding: 10px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .course-nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .phrase-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">
+                        <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
+                    </a>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="integration-guide.html" class="nav-link">Integration Guide</a>
+                    <a href="language-course.html" class="nav-link">Language Course</a>
+                    <a href="contact.html" class="nav-link">Support</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="course-container">
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1>Chinese Language Course for Teachers</h1>
+            <p style="font-size: 1.2em; margin-top: 20px;">Master essential Chinese phrases and apps for your teaching journey</p>
+        </div>
+
+        <!-- Course Navigation -->
+        <div class="course-nav">
+            <ul>
+                <li><a href="#classroom-basics">Classroom Basics</a></li>
+                <li><a href="#parent-communication">Parent Communication</a></li>
+                <li><a href="#daily-life">Daily Life</a></li>
+                <li><a href="#emergencies">Emergencies</a></li>
+                <li><a href="#app-usage">Using Apps</a></li>
+                <li><a href="#food-ordering">Food Ordering</a></li>
+                <li><a href="#shopping">Shopping</a></li>
+                <li><a href="#pronunciation">Pronunciation Guide</a></li>
+            </ul>
+        </div>
+
+        <!-- Classroom Basics Section -->
+        <section id="classroom-basics" class="section">
+            <h2>🏫 Classroom Basics</h2>
+            
+            <h3>Essential Teacher Phrases</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">大家好</div>
+                    <div class="pinyin">dàjiā hǎo</div>
+                    <div class="english">Hello everyone</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">请坐</div>
+                    <div class="pinyin">qǐng zuò</div>
+                    <div class="english">Please sit down</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">请举手</div>
+                    <div class="pinyin">qǐng jǔshǒu</div>
+                    <div class="english">Please raise your hand</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">很好</div>
+                    <div class="pinyin">hěn hǎo</div>
+                    <div class="english">Very good</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">下课了</div>
+                    <div class="pinyin">xià kè le</div>
+                    <div class="english">Class is over</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Additional classroom management phrases, giving instructions, praise and encouragement, handling disruptions, and explaining activities - all with Hanzi, Pinyin, English, and audio file placeholders]
+            </div>
+
+            <div class="scenario-box">
+                <h4>📚 Classroom Scenario</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Interactive classroom scenario with dialogue examples and role-play exercises]
+                </div>
+            </div>
+        </section>
+
+        <!-- Parent Communication Section -->
+        <section id="parent-communication" class="section">
+            <h2>👨‍👩‍👧‍👦 Parent Communication</h2>
+            
+            <h3>Meeting Parents</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">您好</div>
+                    <div class="pinyin">nín hǎo</div>
+                    <div class="english">Hello (formal)</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我是英语老师</div>
+                    <div class="pinyin">wǒ shì yīngyǔ lǎoshī</div>
+                    <div class="english">I am the English teacher</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">孩子很棒</div>
+                    <div class="pinyin">háizi hěn bàng</div>
+                    <div class="english">The child is excellent</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">需要练习</div>
+                    <div class="pinyin">xūyào liànxí</div>
+                    <div class="english">Needs practice</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Parent-teacher conference phrases, discussing student progress, addressing concerns, homework discussions, and polite communication strategies]
+            </div>
+
+            <div class="app-guide">
+                <h4>📱 WeChat Communication with Parents</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Guide to professional WeChat communication, setting boundaries, using translation features, sending voice messages, and maintaining appropriate teacher-parent relationships]
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Life Section -->
+        <section id="daily-life" class="section">
+            <h2>🏠 Daily Life Essentials</h2>
+            
+            <h3>Basic Interactions</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">谢谢</div>
+                    <div class="pinyin">xiècmie</div>
+                    <div class="english">Thank you</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">不客气</div>
+                    <div class="pinyin">bù kèqì</div>
+                    <div class="english">You're welcome</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">对不起</div>
+                    <div class="pinyin">duìbùqǐ</div>
+                    <div class="english">Sorry</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">不好意思</div>
+                    <div class="pinyin">bùhǎoyìsi</div>
+                    <div class="english">Excuse me</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">多少钱？</div>
+                    <div class="pinyin">duōshao qián?</div>
+                    <div class="english">How much?</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Comprehensive daily life vocabulary including directions, time expressions, numbers, weather, transportation, and common social interactions]
+            </div>
+        </section>
+
+        <!-- Emergency Section -->
+        <section id="emergencies" class="section">
+            <h2>🚨 Emergency Phrases</h2>
+            
+            <h3>Critical Situations</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">救命!</div>
+                    <div class="pinyin">jiùmìng!</div>
+                    <div class="english">Help!</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我需要帮助</div>
+                    <div class="pinyin">wǒ xūyào bangzhù</div>
+                    <div class="english">I need help</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">请叫救护车</div>
+                    <div class="pinyin">qǐng jiào jiùhùchē</div>
+                    <div class="english">Please call an ambulance</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我不舒服</div>
+                    <div class="pinyin">wǒ bù shūfu</div>
+                    <div class="english">I don't feel well</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我迷路了</div>
+                    <div class="pinyin">wǒ mílù le</div>
+                    <div class="english">I'm lost</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Extended emergency vocabulary, medical terms, police interactions, and important phone numbers with pronunciation guides]
+            </div>
+        </section>
+
+        <!-- App Usage Section -->
+        <section id="app-usage" class="section">
+            <h2>📱 Mastering Chinese Apps</h2>
+            
+            <h3>Navigation Phrases for Apps</h3>
+            <div class="app-guide">
+                <h4>🚗 Didi (滴滴) - Ride Sharing</h4>
+                <div class="phrase-card">
+                    <div class="phrase-row">
+                        <div class="hanzi">我在这里</div>
+                        <div class="pinyin">wǒ zài zhèlǐ</div>
+                        <div class="english">I'm here</div>
+                        <div class="audio-placeholder">🔊 Play Audio</div>
+                    </div>
+                    <div class="phrase-row">
+                        <div class="hanzi">到了</div>
+                        <div class="pinyin">dào le</div>
+                        <div class="english">Arrived</div>
+                        <div class="audio-placeholder">🔊 Play Audio</div>
+                    </div>
+                </div>
+                <div class="placeholder">
+                    [PLACEHOLDER: Complete Didi usage guide with screenshots, booking process, payment, and communication with drivers]
+                </div>
+            </div>
+
+            <div class="app-guide">
+                <h4>🍜 Meituan (美团) - Food Delivery</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Meituan navigation guide, ordering food, delivery instructions, and dealing with delivery issues]
+                </div>
+            </div>
+
+            <div class="app-guide">
+                <h4>🛒 Taobao (淘宝) - Shopping</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Taobao shopping guide, product search, reading reviews, making purchases, and handling returns]
+                </div>
+            </div>
+
+            <div class="app-guide">
+                <h4>📍 Amap (高德地图) - Navigation</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Amap usage for navigation, public transport, finding locations, and offline features]
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Ordering Section -->
+        <section id="food-ordering" class="section">
+            <h2>🍽️ Food Ordering Mastery</h2>
+            
+            <h3>Restaurant Essentials</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">菜单</div>
+                    <div class="pinyin">càidān</div>
+                    <div class="english">Menu</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我想要这个</div>
+                    <div class="pinyin">wǒ xiǎng yào zhège</div>
+                    <div class="english">I want this</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">不要辣</div>
+                    <div class="pinyin">bù yào là</div>
+                    <div class="english">No spicy</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">买单</div>
+                    <div class="pinyin">mǎidān</div>
+                    <div class="english">Check please</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">可以刷卡吗？</div>
+                    <div class="pinyin">kěyǐ shuākǎ ma?</div>
+                    <div class="english">Can I pay by card?</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Comprehensive food ordering guide including dietary restrictions, cooking preferences, popular dishes, street food vocabulary, and restaurant etiquette]
+            </div>
+
+            <div class="scenario-box">
+                <h4>🥢 Restaurant Scenario Practice</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Interactive restaurant dialogue with waiter, ordering multiple dishes, asking about ingredients, and handling payment]
+                </div>
+            </div>
+        </section>
+
+        <!-- Shopping Section -->
+        <section id="shopping" class="section">
+            <h2>🛍️ Shopping Like a Local</h2>
+            
+            <h3>Market and Store Phrases</h3>
+            <div class="phrase-card">
+                <div class="phrase-row">
+                    <div class="hanzi">这个多少钱？</div>
+                    <div class="pinyin">zhège duōshao qián?</div>
+                    <div class="english">How much is this?</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">太贵了</div>
+                    <div class="pinyin">tài guì le</div>
+                    <div class="english">Too expensive</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">便宜一点</div>
+                    <div class="pinyin">piányí yīdiǎn</div>
+                    <div class="english">A little cheaper</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+                <div class="phrase-row">
+                    <div class="hanzi">我可以试试吗？</div>
+                    <div class="pinyin">wǒ kěyǐ shìshì ma?</div>
+                    <div class="english">Can I try it?</div>
+                    <div class="audio-placeholder">🔊 Play Audio</div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Complete shopping vocabulary including clothing sizes, colors, bargaining techniques, return policies, and online shopping terminology]
+            </div>
+        </section>
+
+        <!-- Pronunciation Guide Section -->
+        <section id="pronunciation" class="section">
+            <h2>🗣️ Pronunciation Guide</h2>
+            
+            <h3>Tone System Mastery</h3>
+            <div class="pronunciation-tip">
+                <h4>🎵 The Four Tones</h4>
+                <div class="placeholder">
+                    [PLACEHOLDER: Comprehensive tone guide with audio examples, practice exercises, and common tone mistakes for English speakers]
+                </div>
+            </div>
+
+            <h3>Difficult Sounds for English Speakers</h3>
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Specific pronunciation challenges, mouth position guides, comparison with English sounds, and practice drills]
+            </div>
+
+            <h3>Common Pronunciation Mistakes</h3>
+            <div class="placeholder">
+                [CONTENT PLACEHOLDER: Most common pronunciation errors made by English teachers, how to avoid them, and corrective exercises]
+            </div>
+        </section>
+
+        <!-- Course Links -->
+        <div class="course-links">
+            <h2 style="color: white; margin-bottom: 20px;">Complete Your China Preparation</h2>
+            <a href="integration-guide.html">← Integration Guide</a>
+            <a href="contact.html">Get Support</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 EduConnect. Your gateway to teaching in China.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.course-nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Audio placeholder functionality (to be replaced with real audio)
+        document.querySelectorAll('.audio-placeholder').forEach(button => {
+            button.addEventListener('click', function() {
+                // Placeholder for audio playback
+                this.style.background = '#4CAF50';
+                this.style.color = 'white';
+                this.innerHTML = '🔊 Playing...';
+                
+                setTimeout(() => {
+                    this.style.background = '#e3f2fd';
+                    this.style.color = '#1976D2';
+                    this.innerHTML = '🔊 Play Audio';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
