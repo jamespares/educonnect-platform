@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - EduConnect</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         .login-container {
             min-height: 100vh;
@@ -136,7 +136,10 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <img src="images/educonnect-logo.png" alt="EduConnect" class="login-logo">
+                <div class="logo" style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif;">
+                    <span class="logo-text" style="font-size: 1.5rem; font-weight: 700; color: #1f2937;">EduConnect</span>
+                    <span class="logo-accent" style="color: rgb(230, 74, 74); font-size: 1.75rem; font-weight: 700; margin-left: 0.5rem;">中国</span>
+                </div>
                 <h1 class="login-title">Admin Login</h1>
                 <p class="login-subtitle">Enter your credentials to access the dashboard</p>
             </div>
@@ -179,26 +182,20 @@
             button.disabled = true;
             
             try {
-                const formData = new FormData(this);
-                const response = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: formData.get('username'),
-                        password: formData.get('password')
-                    })
-                });
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
                 
-                const result = await response.json();
+                // Simple client-side authentication (same as script.js)
+                const ADMIN_USERNAME = 'admin';
+                const ADMIN_PASSWORD = 'educonnect2024';
                 
-                if (result.success) {
-                    // Redirect to admin dashboard
-                    window.location.href = '/admin';
+                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    // Store token and redirect to admin
+                    localStorage.setItem('adminToken', 'admin-' + Date.now());
+                    window.location.href = '/admin.html';
                 } else {
                     // Show error message
-                    errorDiv.textContent = result.message || 'Invalid credentials';
+                    errorDiv.textContent = 'Invalid credentials';
                     errorDiv.style.display = 'block';
                 }
             } catch (error) {
