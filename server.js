@@ -137,6 +137,53 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
         };
 
         const result = await db.addTeacher(teacherData);
+        
+        // Send email notification for new application
+        try {
+            const transporter = nodemailer.createTransporter({
+                host: 'smtp.zoho.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_USER || 'team@educonnectchina.com',
+                    pass: process.env.EMAIL_PASS || 'your-zoho-password'
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER || 'team@educonnectchina.com',
+                to: process.env.EMAIL_TO || 'team@educonnectchina.com',
+                subject: `New Teacher Application: ${teacherData.firstName} ${teacherData.lastName}`,
+                html: `
+                    <h2>New Teacher Application Received</h2>
+                    <p><strong>Name:</strong> ${teacherData.firstName} ${teacherData.lastName}</p>
+                    <p><strong>Email:</strong> ${teacherData.email}</p>
+                    <p><strong>Phone:</strong> ${teacherData.phone}</p>
+                    <p><strong>Nationality:</strong> ${teacherData.nationality}</p>
+                    <p><strong>Experience:</strong> ${teacherData.yearsExperience}</p>
+                    <p><strong>Subject:</strong> ${teacherData.subjectSpecialty}</p>
+                    <p><strong>Preferred Location:</strong> ${teacherData.preferredLocation || 'No preference'}</p>
+                    
+                    <h3>Education Background:</h3>
+                    <p>${teacherData.education}</p>
+                    
+                    <h3>Teaching Experience:</h3>
+                    <p>${teacherData.teachingExperience}</p>
+                    
+                    ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${teacherData.additionalInfo}</p>` : ''}
+                    
+                    <p><strong>Video:</strong> ${teacherData.introVideoPath ? 'Uploaded' : 'Not provided'}</p>
+                    
+                    <p><em>View full details in the admin dashboard.</em></p>
+                `
+            };
+
+            await transporter.sendMail(mailOptions);
+        } catch (emailError) {
+            console.error('Error sending application notification email:', emailError);
+            // Don't fail the application if email fails
+        }
+        
         res.json({
             success: true,
             message: 'Application submitted successfully!',
@@ -219,19 +266,21 @@ app.post('/send-message', async (req, res) => {
             });
         }
         
-        // Create transporter (using Gmail as example)
+        // Create transporter (using Zoho Mail)
         const transporter = nodemailer.createTransporter({
-            service: 'gmail',
+            host: 'smtp.zoho.com',
+            port: 587,
+            secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.EMAIL_USER || 'your-email@gmail.com',
-                pass: process.env.EMAIL_PASS || 'your-app-password'
+                user: process.env.EMAIL_USER || 'team@educonnectchina.com',
+                pass: process.env.EMAIL_PASS || 'your-zoho-password'
             }
         });
         
         // Email options
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'noreply@educonnect.com',
-            to: 'jamesedpares@gmail.com',
+            from: process.env.EMAIL_USER || 'team@educonnectchina.com',
+            to: process.env.EMAIL_TO || 'team@educonnectchina.com',
             subject: `EduConnect Contact: ${subject}`,
             html: `
                 <h2>New Contact Form Message</h2>
