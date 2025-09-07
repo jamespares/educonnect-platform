@@ -94,8 +94,62 @@ if (emailForm) {
     });
 }
 
-// Smooth scrolling for anchor links
+// Hero image carousel
+let currentSlideIndex = 0;
+let autoSlideInterval;
+
+function showSlide(index) {
+    const heroImages = document.querySelectorAll('.hero-img');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (heroImages.length === 0) return;
+    
+    // Remove active class from all images and dots
+    heroImages.forEach(img => img.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Ensure index is within bounds
+    if (index >= heroImages.length) currentSlideIndex = 0;
+    if (index < 0) currentSlideIndex = heroImages.length - 1;
+    
+    // Show current image and dot
+    heroImages[currentSlideIndex].classList.add('active');
+    if (dots[currentSlideIndex]) {
+        dots[currentSlideIndex].classList.add('active');
+    }
+}
+
+function changeSlide(direction) {
+    currentSlideIndex += direction;
+    showSlide(currentSlideIndex);
+    resetAutoSlide();
+}
+
+function currentSlide(index) {
+    currentSlideIndex = index - 1;
+    showSlide(currentSlideIndex);
+    resetAutoSlide();
+}
+
+function nextSlide() {
+    currentSlideIndex++;
+    showSlide(currentSlideIndex);
+}
+
+function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(nextSlide, 4000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    const heroImages = document.querySelectorAll('.hero-img');
+    
+    if (heroImages.length > 0) {
+        // Start the auto carousel
+        autoSlideInterval = setInterval(nextSlide, 4000);
+    }
+    
+    // Smooth scrolling for anchor links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', (e) => {

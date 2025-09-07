@@ -17,8 +17,8 @@
                 </div>
                 <div class="nav-links">
                     <a href="#home" class="nav-link">Home</a>
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#opportunities" class="nav-link">Opportunities</a>
+                    <a href="#opportunities" class="nav-link">About</a>
+                    <a href="requirements.html" class="nav-link">Requirements</a>
                     <a href="signup.html" class="nav-link cta-button">Join Now</a>
                 </div>
             </div>
@@ -51,7 +51,28 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="images/china_classroom.jpg" alt="Real Teaching Environment in China" class="hero-img">
+                <div class="hero-carousel">
+                    <img src="images/china_classroom.jpg" alt="Real Teaching Environment in China" class="hero-img active">
+                    <img src="images/classroom_science_lab.png" alt="Modern Science Laboratory" class="hero-img">
+                    <img src="images/elementary_classroom.png" alt="Elementary School Classroom" class="hero-img">
+                    <img src="images/shanghai_french_concession.png" alt="Shanghai French Concession" class="hero-img">
+                    <img src="images/shanghai.jpg" alt="Shanghai" class="hero-img">
+                    <img src="images/expat_badminton.png" alt="Expat Badminton Community" class="hero-img">
+                    <img src="images/shanghai_skyline.png" alt="Shanghai Skyline" class="hero-img">
+                    
+                    <button class="carousel-btn carousel-prev" onclick="changeSlide(-1)">‹</button>
+                    <button class="carousel-btn carousel-next" onclick="changeSlide(1)">›</button>
+                    
+                    <div class="carousel-dots">
+                        <span class="dot active" onclick="currentSlide(1)"></span>
+                        <span class="dot" onclick="currentSlide(2)"></span>
+                        <span class="dot" onclick="currentSlide(3)"></span>
+                        <span class="dot" onclick="currentSlide(4)"></span>
+                        <span class="dot" onclick="currentSlide(5)"></span>
+                        <span class="dot" onclick="currentSlide(6)"></span>
+                        <span class="dot" onclick="currentSlide(7)"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -76,15 +97,14 @@
                         <img src="images/complete_support.jpeg" alt="Cultural Support Services" class="icon">
                     </div>
                     <h3 class="card-title">Complete support.</h3>
-                    <p class="card-description">Free self-paced Mandarin course, expat community support, and ongoing guidance to help you thrive in China.</p>
+                    <p class="card-description">We offer a free, tailored Mandarin course, expat community support, and ongoing guidance to help you thrive in China.</p>
                 </div>
                 <div class="opportunity-card">
                     <div class="card-icon">
-                        <img src="images/shanghai_skyline.png" alt="Competitive Salary Package" class="icon">
+                        <img src="images/savings.png" alt="Competitive Salary Package" class="icon">
                     </div>
-                    <h3 class="card-title">Competitive packages.</h3>
-                    <p class="card-description">25K-40K RMB monthly, paid holidays, medical insurance, and housing assistance for all positions.</p>
-                </div>
+                    <h3 class="card-title">Saving potential.</h3>
+                    <p class="card-description">All our packages are 25K-40K RMB monthly, with paid holidays, medical insurance, and housing assistance.</p>
             </div>
         </div>
     </section>
@@ -122,7 +142,7 @@
     <section class="partners">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Some of Our Partner Schools</h2>
+                <h2 class="section-title">Some Our Partner Schools</h2>
             </div>
             <div class="partners-logos">
                 <img src="images/Schools/dulwich.png" alt="Dulwich College" class="partner-logo">
