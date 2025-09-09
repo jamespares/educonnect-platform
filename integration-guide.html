@@ -11,185 +11,420 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        .course-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #2d2d2d;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
         }
-        
-        .course-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 60px 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
         }
-        
-        .course-nav {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            position: sticky;
-            top: 80px;
+
+        /* Main Layout */
+        .guide-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        /* Sidebar Navigation */
+        .guide-sidebar {
+            width: 280px;
+            background: #fafbfc;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            padding: 32px 0;
             z-index: 100;
         }
-        
-        .course-nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
+
+        .sidebar-nav {
+            padding: 0 24px;
         }
-        
-        .course-nav a {
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding: 0 12px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 12px;
+            color: #4b5563;
             text-decoration: none;
-            color: #333;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: white;
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
             font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            transition: all 0.2s ease;
         }
-        
-        .course-nav a:hover {
-            background: #667eea;
+
+        .nav-link:hover, .nav-link.active {
+            background: #1f2937;
             color: white;
-            border-color: #667eea;
         }
-        
+
+        .nav-sublink {
+            display: block;
+            padding: 6px 12px 6px 28px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            border-radius: 6px;
+            margin-bottom: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-sublink:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* Main Content */
+        .guide-content {
+            flex: 1;
+            margin-left: 280px;
+            max-width: 800px;
+            padding: 48px 48px 80px;
+        }
+
+        /* Typography */
+        .guide-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+            letter-spacing: -0.025em;
+        }
+
+        .guide-subtitle {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 48px;
+            font-weight: 400;
+        }
+
         .section {
-            background: white;
-            padding: 40px;
-            margin-bottom: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 64px;
         }
-        
-        .section h2 {
-            color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 48px 0 24px;
+            border-bottom: 3px solid rgb(230, 74, 74);
+            padding-bottom: 8px;
+            display: inline-block;
         }
-        
-        .section h3 {
-            color: #333;
-            font-size: 1.5em;
-            margin: 25px 0 15px 0;
-            padding-left: 15px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .checklist {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 15px 0;
-        }
-        
-        .checklist h4 {
+
+        .section:first-child .section-title {
             margin-top: 0;
-            color: #667eea;
         }
-        
-        .checklist ul {
-            margin: 0;
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 32px 0 16px;
+        }
+
+        .subsubsection-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 24px 0 12px;
+        }
+
+        .content p {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .content ul, .content ol {
+            margin: 16px 0;
             padding-left: 20px;
         }
-        
-        .checklist li {
-            margin: 8px 0;
-            position: relative;
+
+        .content li {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
-        
-        .checklist li::before {
-            content: "☐";
-            position: absolute;
-            left: -20px;
-            color: #667eea;
-            font-weight: bold;
-        }
-        
-        .tip-box {
-            background: #e8f5e8;
-            border: 1px solid #4CAF50;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .tip-box h4 {
-            color: #4CAF50;
-            margin-top: 0;
-        }
-        
-        .warning-box {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .warning-box h4 {
-            color: #856404;
-            margin-top: 0;
-        }
-        
-        .placeholder {
-            background: #f0f0f0;
-            border: 2px dashed #ccc;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .course-links {
-            text-align: center;
-            margin: 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 15px;
-        }
-        
-        .course-links a {
-            display: inline-block;
-            background: white;
-            color: #333;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 25px;
-            text-decoration: none;
+
+        .content strong {
             font-weight: 600;
-            transition: transform 0.3s ease;
+            color: #1f2937;
         }
-        
-        .course-links a:hover {
-            transform: translateY(-2px);
+
+        /* Callout Boxes */
+        .callout {
+            margin: 24px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
         }
-        
+
+        .callout-info {
+            background: #f0f9ff;
+            border-color: #0ea5e9;
+            color: #0c4a6e;
+        }
+
+        .callout-warning {
+            background: #fef2f2;
+            border-color: rgb(230, 74, 74);
+            color: #991b1b;
+        }
+
+        .callout-success {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .callout-title::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+
+        .callout-warning .callout-title::before {
+            content: "⚠️";
+        }
+
+        .callout-success .callout-title::before {
+            content: "✅";
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            margin: 24px 0;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: #f9fafb;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #1f2937;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-excellent {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .status-good {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .status-poor {
+            color: rgb(230, 74, 74);
+            font-weight: 600;
+        }
+
+        /* Quick Start Cards */
+        .quick-start-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .quick-start-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .quick-start-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: #1f2937;
+        }
+
+        .quick-start-card h4 {
+            color: #1f2937;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .quick-start-card p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* App Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .app-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .app-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: #1f2937;
+        }
+
+        .app-card h4 {
+            color: #1f2937;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .app-card p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .app-card ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .app-card li {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        /* Progress Indicator */
+        .reading-progress {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #f3f4f6;
+            z-index: 1000;
+        }
+
+        .reading-progress-bar {
+            height: 100%;
+            background: rgb(230, 74, 74);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .guide-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .guide-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .guide-content {
+                margin-left: 0;
+                padding: 32px 24px 80px;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #1f2937;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .mobile-menu-toggle {
+                display: none;
+            }
+        }
+
         @media (max-width: 768px) {
-            .course-container {
-                padding: 10px;
+            .guide-title {
+                font-size: 2rem;
             }
-            
-            .section {
-                padding: 20px;
+
+            .section-title {
+                font-size: 1.5rem;
             }
-            
-            .course-nav ul {
-                flex-direction: column;
-                align-items: center;
+
+            .guide-content {
+                padding: 24px 16px 80px;
+            }
+
+            .quick-start-grid, .app-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -204,323 +439,1324 @@
                         <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
                     </a>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="integration-guide.html" class="nav-link">Integration Guide</a>
-                    <a href="language-course.html" class="nav-link">Language Course</a>
-                    <a href="contact.html" class="nav-link">Support</a>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
+                    <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
+                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="course-container">
-        <!-- Course Header -->
-        <div class="course-header">
-            <h1>China Integration Guide</h1>
-            <p style="font-size: 1.2em; margin-top: 20px;">Your complete guide to settling into life in China</p>
-        </div>
+    <!-- Reading Progress -->
+    <div class="reading-progress">
+        <div class="reading-progress-bar" id="progressBar"></div>
+    </div>
 
-        <!-- Course Navigation -->
-        <div class="course-nav">
-            <ul>
-                <li><a href="#housing">Housing</a></li>
-                <li><a href="#vpn">VPN Setup</a></li>
-                <li><a href="#wechat-alipay">WeChat & Alipay</a></li>
-                <li><a href="#banking">Banking</a></li>
-                <li><a href="#medical">Medical Insurance</a></li>
-                <li><a href="#food">Food & Dining</a></li>
-                <li><a href="#fitness">Gym & Fitness</a></li>
-                <li><a href="#expat-community">Expat Community</a></li>
-            </ul>
-        </div>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
 
-        <!-- Housing Section -->
-        <section id="housing" class="section">
-            <h2>🏠 Housing & Apartment Hunting</h2>
-            
-            <h3>Finding Your Perfect Home</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Comprehensive guide to apartment hunting in China, including popular apps, neighborhoods for expats, what to look for, red flags to avoid, typical lease terms, and negotiation tips]
+    <!-- Main Layout -->
+    <div class="guide-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="guide-sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-title">Getting Started</div>
+                    <a href="#first-steps" class="nav-link">Your First Week</a>
+                    <a href="#vpn" class="nav-sublink">VPN & Internet Setup</a>
+                    <a href="#essential-apps" class="nav-sublink">Essential Apps</a>
+                    <a href="#police-registration" class="nav-sublink">Police Registration</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Banking & Money</div>
+                    <a href="#banking" class="nav-link">Bank Accounts</a>
+                    <a href="#mobile-payments" class="nav-sublink">WeChat & Alipay</a>
+                    <a href="#money-transfers" class="nav-sublink">International Transfers</a>
+                    <a href="#fapiaos" class="nav-sublink">Fapiaos & Receipts</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Housing & Living</div>
+                    <a href="#housing" class="nav-link">Finding Housing</a>
+                    <a href="#rental-process" class="nav-sublink">Rental Process</a>
+                    <a href="#neighborhoods" class="nav-sublink">Best Areas</a>
+                    <a href="#utilities" class="nav-sublink">Utilities & Internet</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Daily Life</div>
+                    <a href="#shopping" class="nav-link">Shopping & Delivery</a>
+                    <a href="#food" class="nav-link">Food & Dining</a>
+                    <a href="#transportation" class="nav-sublink">Getting Around</a>
+                    <a href="#language" class="nav-sublink">Learning Mandarin</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Health & Wellness</div>
+                    <a href="#healthcare" class="nav-link">Medical Insurance</a>
+                    <a href="#fitness" class="nav-sublink">Gyms & Exercise</a>
+                    <a href="#mental-health" class="nav-sublink">Mental Health</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Social & Community</div>
+                    <a href="#expat-community" class="nav-link">Finding Friends</a>
+                    <a href="#wechat-groups" class="nav-sublink">WeChat Communities</a>
+                    <a href="#cultural-tips" class="nav-sublink">Cultural Etiquette</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Legal & Visa</div>
+                    <a href="#work-visa" class="nav-link">Work Permits</a>
+                    <a href="#legal-requirements" class="nav-sublink">Legal Compliance</a>
+                    <a href="#sensitive-topics" class="nav-sublink">What to Avoid</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">City Guides</div>
+                    <a href="#shanghai" class="nav-link">Shanghai</a>
+                    <a href="#beijing" class="nav-link">Beijing</a>
+                    <a href="#shenzhen" class="nav-link">Shenzhen</a>
+                    <a href="#chengdu" class="nav-link">Chengdu</a>
+                    <a href="#other-cities" class="nav-link">Other Cities</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="guide-content">
+            <div class="content">
+                <!-- Title Section -->
+                <h1 class="guide-title">Your Complete Guide to Living in China</h1>
+                <p class="guide-subtitle">Everything you need to know to thrive as a teacher in China - from your first week to long-term success</p>
+
+                <!-- Quick Start Overview -->
+                <div class="callout callout-info">
+                    <div class="callout-title">Quick Start - Your First Week Priorities</div>
+                    <div class="quick-start-grid">
+                        <div class="quick-start-card">
+                            <h4>Day 1-2: Immediate Essentials</h4>
+                            <p>VPN setup, WeChat, Alipay, police registration, phone SIM</p>
+                        </div>
+                        <div class="quick-start-card">
+                            <h4>Day 3-5: Financial Setup</h4>
+                            <p>Bank account, mobile payments, address registration</p>
+                        </div>
+                        <div class="quick-start-card">
+                            <h4>Week 1: Settling In</h4>
+                            <p>Housing, shopping apps, local community connections</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Getting Started Section -->
+                <section id="first-steps" class="section">
+                    <h2 class="section-title">Getting Started - Your First Week</h2>
+
+                    <h3 id="vpn" class="subsection-title">VPN & Internet Setup (Critical!)</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Set Up Before You Arrive</div>
+                        <p>Install and test your VPN while you're still outside China. Many VPN websites are blocked once you arrive, making it difficult to set up later.</p>
+                    </div>
+
+                    <p>China blocks many Western websites and services including Google, Facebook, Instagram, YouTube, WhatsApp, and Reddit. A reliable VPN is essential for accessing these services and staying connected with home.</p>
+
+                    <h4 class="subsubsection-title">Best VPN Services for China</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>VPN Service</th>
+                                <th>Reliability</th>
+                                <th>Speed</th>
+                                <th>Price/Month</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LeapVPN</strong></td>
+                                <td><span class="status-excellent">Excellent</span></td>
+                                <td><span class="status-excellent">Fast</span></td>
+                                <td>$9-15</td>
+                                <td>China-focused, streaming</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Veee (V2ray)</strong></td>
+                                <td><span class="status-excellent">Excellent</span></td>
+                                <td><span class="status-excellent">Very Fast</span></td>
+                                <td>$8-12</td>
+                                <td>Advanced protocol, stable</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ExpressVPN</strong></td>
+                                <td><span class="status-good">Good</span></td>
+                                <td><span class="status-good">Fast</span></td>
+                                <td>$12-15</td>
+                                <td>Well-known brand</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Surfshark</strong></td>
+                                <td><span class="status-good">Good</span></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>$5-8</td>
+                                <td>Budget-friendly</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NordVPN</strong></td>
+                                <td><span class="status-poor">Variable</span></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>$6-11</td>
+                                <td>Often blocked in China</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Pro Tips for VPN Success</div>
+                        <ul>
+                            <li><strong>Multiple backups:</strong> Have 2-3 different VPN services as backups</li>
+                            <li><strong>Server selection:</strong> Hong Kong, Taiwan, and Japan servers typically work best</li>
+                            <li><strong>Keep updated:</strong> VPNs regularly update to stay ahead of blocks</li>
+                            <li><strong>Split tunneling:</strong> Use Chinese apps without VPN for better speed</li>
+                            <li><strong>Community help:</strong> Join expat VPN groups on WeChat for real-time updates</li>
+                        </ul>
+                    </div>
+
+                    <h3 id="essential-apps" class="subsection-title">Essential Apps to Download First</h3>
+
+                    <p>China's digital ecosystem is built around mobile apps. These essential apps will become your lifeline for everything from payments to transportation to communication.</p>
+
+                    <div class="app-grid">
+                        <div class="app-card">
+                            <h4>WeChat (微信)</h4>
+                            <p>Your absolute lifeline in China - messaging, payments, mini-programs, and social networking all in one.</p>
+                            <ul>
+                                <li>Essential for daily communication with locals</li>
+                                <li>Mobile payments everywhere via WeChat Pay</li>
+                                <li>Thousands of mini-programs for services</li>
+                                <li>Built-in translation camera feature</li>
+                                <li>Join expat and local community groups</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Alipay (支付宝)</h4>
+                            <p>The other major payment system with comprehensive lifestyle services.</p>
+                            <ul>
+                                <li>Mobile payments and QR code scanning</li>
+                                <li>Utility bill payments and government services</li>
+                                <li>Travel bookings (trains, flights, hotels)</li>
+                                <li>Works with foreign cards initially</li>
+                                <li>Tour Pass feature for tourists</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Meituan (美团)</h4>
+                            <p>Your one-stop platform for food delivery, local services, and daily needs.</p>
+                            <ul>
+                                <li>Food delivery with photo menus</li>
+                                <li>Grocery and pharmacy delivery</li>
+                                <li>Movie tickets and entertainment bookings</li>
+                                <li>Local services and repair bookings</li>
+                                <li>Hotel and travel bookings</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Taobao (淘宝)</h4>
+                            <p>China's largest online shopping platform - you can find absolutely anything here.</p>
+                            <ul>
+                                <li>Millions of products at competitive prices</li>
+                                <li>Image search - take a photo to find products</li>
+                                <li>Easy returns process</li>
+                                <li>English customer support available</li>
+                                <li>Integration with Alipay for payments</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>DiDi (滴滴)</h4>
+                            <p>China's ride-hailing app - essential for getting around cities.</p>
+                            <ul>
+                                <li>Reliable transportation in all major cities</li>
+                                <li>English interface available</li>
+                                <li>Multiple vehicle types (economy to luxury)</li>
+                                <li>Cashless payments through app</li>
+                                <li>Real-time tracking and safety features</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Amap/Gaode (高德地图)</h4>
+                            <p>The most accurate navigation app in China - better than Google Maps locally.</p>
+                            <ul>
+                                <li>Precise navigation and real-time traffic</li>
+                                <li>Public transportation integration</li>
+                                <li>Walking and cycling directions</li>
+                                <li>Nearby services and business listings</li>
+                                <li>Works without VPN</li>
+                            </ul>
+                        </div>
+
+                        <div class="app-card">
+                            <h4>Pleco</h4>
+                            <p>The best Chinese dictionary and learning app for foreigners.</p>
+                            <ul>
+                                <li>Camera translation for signs and menus</li>
+                                <li>Offline dictionary with pronunciation</li>
+                                <li>Handwriting recognition</li>
+                                <li>Flashcards and spaced repetition</li>
+                                <li>Essential for daily communication help</li>
+                            </ul>
+                        </div>
+
+                        <div class="app-card">
+                            <h4>Hema (盒马)</h4>
+                            <p>Alibaba's premium grocery delivery service with 30-minute delivery.</p>
+                            <ul>
+                                <li>Fresh produce, meat, and seafood</li>
+                                <li>International and imported products</li>
+                                <li>30-minute delivery guarantee</li>
+                                <li>Quality assured products</li>
+                                <li>Integration with Alipay</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 id="police-registration" class="subsection-title">Police Registration (Mandatory)</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">24-Hour Rule</div>
+                        <p>You must register with local police within 24 hours of arriving at any address in China. This applies to hotels, apartments, and even when returning from international travel.</p>
+                    </div>
+
+                    <p>Police registration is a legal requirement that many newcomers overlook. Hotels handle this automatically, but if you move into an apartment or change addresses, you must register personally.</p>
+
+                    <h4 class="subsubsection-title">Required Documents</h4>
+                    <ul>
+                        <li><strong>Valid passport</strong> with current visa/residence permit</li>
+                        <li><strong>Rental contract</strong> (lease agreement) with landlord details</li>
+                        <li><strong>Landlord's property certificate</strong> (房产证) - landlord should provide</li>
+                        <li><strong>Landlord's ID copy</strong> (if registering alone)</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Registration Process</h4>
+                    <ol>
+                        <li><strong>Find your local PSB:</strong> Locate the nearest Public Security Bureau office</li>
+                        <li><strong>Fill out forms:</strong> Complete registration form (English versions available in major cities)</li>
+                        <li><strong>Get receipt:</strong> Receive registration form - keep this safe with your passport</li>
+                        <li><strong>Time needed:</strong> Usually 15-30 minutes if all documents are correct</li>
+                    </ol>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Important Notes</div>
+                        <ul>
+                            <li>Re-register every time you change addresses</li>
+                            <li>Re-register when returning from international travel</li>
+                            <li>Keep the registration form safe - you'll need it for visa renewals</li>
+                            <li>Some landlords can help with the registration process</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Banking & Money Section -->
+                <section id="banking" class="section">
+                    <h2 class="section-title">Banking & Money Management</h2>
+
+                    <p>Setting up banking in China will dramatically improve your quality of life and unlock the full potential of China's cashless society. Most employers will require a local bank account for salary payments.</p>
+
+                    <h3 class="subsection-title">Opening Your First Bank Account</h3>
+
+                    <h4 class="subsubsection-title">Best Banks for Expats</h4>
+                    <ul>
+                        <li><strong>ICBC (工商银行)</strong> - Largest bank network, most ATMs, English service in major cities</li>
+                        <li><strong>Bank of China (中国银行)</strong> - Best for international transfers, dedicated English support</li>
+                        <li><strong>China Construction Bank (建设银行)</strong> - Good mobile app interface, wide network coverage</li>
+                        <li><strong>China Merchants Bank (招商银行)</strong> - Excellent customer service, very expat-friendly</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Pro Tip</div>
+                        <p>Go with the bank your employer recommends - they often have established relationships and can help with the process. The account opening procedure is similar across all major banks.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Required Documents</h4>
+                    <ul>
+                        <li><strong>Valid passport</strong> with current visa</li>
+                        <li><strong>Proof of address</strong> - rental contract OR hotel booking</li>
+                        <li><strong>Employment letter</strong> from your school/company</li>
+                        <li><strong>Chinese phone number</strong> - active SIM card required</li>
+                        <li><strong>Initial deposit</strong> - usually ¥100-500 minimum</li>
+                        <li><strong>Patience</strong> - the process can take 1-2 hours!</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Account Opening Process</h4>
+                    <ol>
+                        <li><strong>Visit the bank:</strong> Bring a Chinese-speaking friend if your Mandarin is limited</li>
+                        <li><strong>Fill out forms:</strong> Your name will be written in pinyin (romanized Chinese)</li>
+                        <li><strong>Set up PIN:</strong> Choose a 6-digit PIN and memorize it well</li>
+                        <li><strong>Receive cards:</strong> You'll get a UnionPay debit card immediately</li>
+                        <li><strong>Mobile banking:</strong> Download the bank's app and register</li>
+                    </ol>
+
+                    <h3 id="mobile-payments" class="subsection-title">WeChat Pay & Alipay Setup</h3>
+
+                    <p>Once you have a Chinese bank account, immediately link it to WeChat Pay and Alipay. This unlocks the full power of China's cashless society and makes daily life incredibly convenient.</p>
+
+                    <h4 class="subsubsection-title">Setting Up WeChat Pay</h4>
+                    <ol>
+                        <li><strong>Open WeChat:</strong> Go to "Me" → "Pay" → "Wallet"</li>
+                        <li><strong>Add bank card:</strong> Scan your bank card or enter details manually</li>
+                        <li><strong>Verify identity:</strong> Provide passport and phone verification</li>
+                        <li><strong>Set payment password:</strong> 6-digit password for transactions</li>
+                        <li><strong>Test the system:</strong> Make a small purchase to ensure it works</li>
+                    </ol>
+
+                    <h4 class="subsubsection-title">Setting Up Alipay</h4>
+                    <ol>
+                        <li><strong>Download Alipay:</strong> Register with your Chinese phone number</li>
+                        <li><strong>Identity verification:</strong> Upload passport photos and personal details</li>
+                        <li><strong>Link bank account:</strong> Add your Chinese bank card</li>
+                        <li><strong>Security setup:</strong> Enable fingerprint/face recognition</li>
+                        <li><strong>Explore services:</strong> Familiarize yourself with the various mini-programs</li>
+                    </ol>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Why Mobile Payments Are Essential</div>
+                        <p>China is essentially a cashless society. Mobile payments are accepted everywhere - from street vendors to high-end restaurants. Many establishments only accept mobile payments, especially vending machines and bike rentals.</p>
+                    </div>
+
+                    <h3 id="money-transfers" class="subsection-title">International Money Transfers</h3>
+
+                    <p>If you plan to save money and send it home, there are several options with different costs and speeds. Avoid traditional bank wire transfers due to high fees and poor exchange rates.</p>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Transfer Fee</th>
+                                <th>Exchange Rate</th>
+                                <th>Speed</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Panda Remit</strong></td>
+                                <td><span class="status-excellent">Very Low (¥15-30)</span></td>
+                                <td><span class="status-excellent">Excellent</span></td>
+                                <td>1-3 days</td>
+                                <td>Regular expat transfers</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SkyRemit</strong></td>
+                                <td><span class="status-excellent">Low (¥20-50)</span></td>
+                                <td><span class="status-excellent">Very Good</span></td>
+                                <td>Same day - 2 days</td>
+                                <td>Fast transfers, multiple countries</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wise (via VPN)</strong></td>
+                                <td><span class="status-good">0.5-2% of amount</span></td>
+                                <td><span class="status-excellent">Excellent</span></td>
+                                <td>1-2 days</td>
+                                <td>Multi-currency accounts</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bank Wire Transfer</strong></td>
+                                <td><span class="status-poor">High (¥150-300)</span></td>
+                                <td><span class="status-poor">Poor</span></td>
+                                <td>3-5 days</td>
+                                <td>Large one-time transfers only</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Currency Conversion Limits</div>
+                        <p>There's an annual limit of $50,000 USD equivalent for currency conversion. For foreigners, you can typically transfer your after-tax income with proper documentation (tax receipts, employment contracts).</p>
+                    </div>
+
+                    <h3 id="fapiaos" class="subsection-title">Understanding Fapiaos (发票)</h3>
+
+                    <p>Fapiaos are official receipts required for tax purposes and reimbursements. Understanding how to get and use them is important for managing your finances in China.</p>
+
+                    <h4 class="subsubsection-title">What Are Fapiaos?</h4>
+                    <ul>
+                        <li><strong>Official receipts</strong> required for tax purposes and reimbursements</li>
+                        <li><strong>Two main types:</strong> Regular fapiaos (普通发票) and VAT fapiaos (增值税发票)</li>
+                        <li><strong>When you need them:</strong> Rent payments, business expenses, medical bills, large purchases</li>
+                        <li><strong>Digital vs paper:</strong> Many are now electronic and stored in apps</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">How to Get Fapiaos</h4>
+                    <ul>
+                        <li><strong>Rent:</strong> Ask your landlord for fapiaos (may increase rent by 5-10%)</li>
+                        <li><strong>Restaurants:</strong> Ask "可以开发票吗?" (Can you issue a fapiao?)</li>
+                        <li><strong>Shopping:</strong> Most stores can issue digital fapiaos via WeChat/Alipay</li>
+                        <li><strong>Taxis/DiDi:</strong> Request through the app after your ride</li>
+                        <li><strong>Hotels:</strong> Always request at check-out</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Digital Fapiaos</div>
+                        <p>Most fapiaos are now digital and automatically stored in your WeChat or Alipay account. You can access them anytime through the "Invoice" sections of these apps.</p>
+                    </div>
+                </section>
+
+                <!-- Housing Section -->
+                <section id="housing" class="section">
+                    <h2 class="section-title">Finding Housing & Neighborhoods</h2>
+
+                    <p>Finding the right housing is crucial for your happiness and success in China. The rental market operates differently from Western countries, so understanding the process will save you time and money.</p>
+
+                    <h3 id="rental-process" class="subsection-title">Understanding the Rental Process</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">3+1 Payment Structure</div>
+                        <p>Standard rental payment in China requires <strong>3 months rent upfront + 1 month security deposit + agent fees</strong>. Budget for 4.5-5 months of rent initially.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Typical Costs Breakdown</h4>
+                    <ul>
+                        <li><strong>3 months rent in advance</strong> - Standard payment period</li>
+                        <li><strong>1 month security deposit</strong> - Refundable if no damage</li>
+                        <li><strong>Agent commission</strong> - Usually 0.5-1 month rent (sometimes split with landlord)</li>
+                        <li><strong>Total upfront cost:</strong> 4.5-5 months of rent</li>
+                        <li><strong>Monthly payment option:</strong> Available through some platforms at higher rates</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Required Documents for Renting</h4>
+                    <ul>
+                        <li><strong>Valid passport</strong> with current visa</li>
+                        <li><strong>Chinese phone number</strong> and bank account</li>
+                        <li><strong>Employment letter</strong> or proof of income</li>
+                        <li><strong>Emergency contact information</strong></li>
+                    </ul>
+
+                    <h3 class="subsection-title">Best Housing Platforms</h3>
+
+                    <div class="app-grid">
+                        <div class="app-card">
+                            <h4>Ziroom (自如)</h4>
+                            <p>Premium furnished apartments with professional management and monthly payment options.</p>
+                            <ul>
+                                <li>High-quality, professionally managed apartments</li>
+                                <li>English customer support available</li>
+                                <li>Monthly payment plans allowed</li>
+                                <li>All utilities and maintenance included</li>
+                                <li>Higher prices but worth it for convenience</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Wellcee (好租)</h4>
+                            <p>Great platform for rooms and shared apartments, popular with young expats and students.</p>
+                            <ul>
+                                <li>Room rentals and shared apartments</li>
+                                <li>Lower cost options than full apartments</li>
+                                <li>Good for short-term stays</li>
+                                <li>Active expat community</li>
+                                <li>English interface available</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>KE.com (Beike/贝壳)</h4>
+                            <p>Large selection of apartments with professional real estate agent network.</p>
+                            <ul>
+                                <li>Extensive listings across all price ranges</li>
+                                <li>Professional real estate agents</li>
+                                <li>VR apartment tours available</li>
+                                <li>Verified listings and landlords</li>
+                                <li>Chinese language only</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Lianjia (链家)</h4>
+                            <p>Established real estate platform with physical office presence and agent support.</p>
+                            <ul>
+                                <li>Verified listings with quality control</li>
+                                <li>Physical offices for in-person support</li>
+                                <li>Comprehensive area coverage</li>
+                                <li>Professional agent assistance</li>
+                                <li>Chinese language interface</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 id="neighborhoods" class="subsection-title">Popular Expat Neighborhoods by City</h3>
+
+                    <h4 class="subsubsection-title">Shanghai</h4>
+                    <ul>
+                        <li><strong>Jing'an District:</strong> Central location, excellent transport, high-end shopping</li>
+                        <li><strong>French Concession:</strong> Historic charm, tree-lined streets, vibrant nightlife</li>
+                        <li><strong>Xujiahui:</strong> Shopping and business district, good transport connections</li>
+                        <li><strong>Lujiazui (Pudong):</strong> Modern financial district, newer apartments</li>
+                        <li><strong>Hongkou:</strong> More affordable, up-and-coming area with character</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Beijing</h4>
+                    <ul>
+                        <li><strong>Chaoyang:</strong> International district, embassies, expat-friendly</li>
+                        <li><strong>Haidian:</strong> University area, tech companies, younger crowd</li>
+                        <li><strong>Dongcheng:</strong> Historic center, near Forbidden City</li>
+                        <li><strong>Sanlitun:</strong> Nightlife and dining hub, expensive but central</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Shenzhen</h4>
+                    <ul>
+                        <li><strong>Nanshan (Shekou):</strong> Large expat community, international schools</li>
+                        <li><strong>Futian:</strong> Business center, modern amenities</li>
+                        <li><strong>Luohu:</strong> Traditional area, near Hong Kong border</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Location vs Cost Trade-off</div>
+                        <p>Central locations cost significantly more but save enormous time on commuting and provide better social opportunities. Many expats recommend paying extra for location rather than enduring 1.5+ hour commutes.</p>
+                    </div>
+
+                    <h3 id="utilities" class="subsection-title">Utilities & Internet Setup</h3>
+
+                    <p>Rent typically doesn't include utilities in China. You'll need to set up and pay for electricity, water, gas, and internet separately.</p>
+
+                    <h4 class="subsubsection-title">Utility Costs (Monthly)</h4>
+                    <ul>
+                        <li><strong>Electricity:</strong> ¥100-300 depending on usage and season</li>
+                        <li><strong>Water:</strong> ¥50-100</li>
+                        <li><strong>Gas:</strong> ¥50-150</li>
+                        <li><strong>Internet:</strong> ¥100-200 for high-speed broadband</li>
+                        <li><strong>Total estimated:</strong> ¥300-750 per month</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">How to Pay Utilities</h4>
+                    <ul>
+                        <li><strong>Mobile apps:</strong> Most utilities can be paid through Alipay or WeChat mini-programs</li>
+                        <li><strong>Convenience stores:</strong> Many accept utility bill payments</li>
+                        <li><strong>Bank auto-debit:</strong> Set up automatic payments through your bank</li>
+                        <li><strong>Landlord assistance:</strong> Ask your landlord to show you the process</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Heating in Southern China</div>
+                        <p>Cities south of the Yangtze River (including Shanghai, Hangzhou, Chengdu) don't have central heating. You'll rely on AC units for heating in winter, which can significantly increase electricity costs.</p>
+                    </div>
+                </section>
+
+                <!-- Daily Life Section -->
+                <section id="shopping" class="section">
+                    <h2 class="section-title">Shopping & Daily Life</h2>
+
+                    <p>China's e-commerce and delivery ecosystem is incredibly advanced. You can get almost anything delivered to your door within hours, making daily life very convenient once you know how to use the systems.</p>
+
+                    <h3 class="subsection-title">Essential Shopping Platforms</h3>
+
+                    <div class="app-grid">
+                        <div class="app-card">
+                            <h4>Meituan (美团)</h4>
+                            <p>The super-app for food delivery, local services, and daily needs with incredibly fast delivery.</p>
+                            <ul>
+                                <li>Food delivery from thousands of restaurants</li>
+                                <li>Grocery and pharmacy delivery (often 30-60 minutes)</li>
+                                <li>Movie tickets and entertainment bookings</li>
+                                <li>Local services (cleaning, repairs, massage)</li>
+                                <li>Hotel bookings and travel services</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Taobao (淘宝)</h4>
+                            <p>China's largest online marketplace - if it exists, you can find it on Taobao.</p>
+                            <ul>
+                                <li>Millions of products at competitive prices</li>
+                                <li>Image search - photograph items to find them</li>
+                                <li>Easy returns and refunds process</li>
+                                <li>Live streaming shopping shows</li>
+                                <li>Translation tools for foreigners</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>JD.com (京东)</h4>
+                            <p>Premium e-commerce platform known for authentic products and fast delivery.</p>
+                            <ul>
+                                <li>Guaranteed authentic products</li>
+                                <li>Same-day or next-day delivery</li>
+                                <li>Excellent customer service</li>
+                                <li>Fresh food and groceries</li>
+                                <li>Electronics and appliances specialty</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Hema (盒马)</h4>
+                            <p>Alibaba's premium grocery store with ultra-fast delivery and high-quality products.</p>
+                            <ul>
+                                <li>Fresh seafood, meat, and produce</li>
+                                <li>International and imported products</li>
+                                <li>30-minute delivery guarantee</li>
+                                <li>In-store dining at physical locations</li>
+                                <li>Premium quality assurance</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="subsection-title">Mastering Taobao - Complete Guide</h3>
+
+                    <p>Taobao can seem overwhelming at first, but it's incredibly powerful once you understand how to use it. Here's everything you need to know:</p>
+
+                    <h4 class="subsubsection-title">Setting Up Your Taobao Account</h4>
+                    <ol>
+                        <li><strong>Download the app:</strong> Use the Chinese version for full functionality</li>
+                        <li><strong>Register with Alipay:</strong> Link your account for seamless payments</li>
+                        <li><strong>Add addresses:</strong> Use format: Province + City + District + Detailed Address</li>
+                        <li><strong>Include Chinese details:</strong> Chinese name and phone number</li>
+                        <li><strong>Save multiple addresses:</strong> Home, work, friend's place for packages</li>
+                    </ol>
+
+                    <h4 class="subsubsection-title">Shopping Tips & Tricks</h4>
+                    <ul>
+                        <li><strong>Use image search:</strong> Take a photo of anything to find similar products</li>
+                        <li><strong>Check seller ratings:</strong> Look for high ratings and lots of reviews</li>
+                        <li><strong>Read reviews:</strong> Use translation apps to understand Chinese reviews</li>
+                        <li><strong>Compare prices:</strong> Same products often sold by multiple sellers</li>
+                        <li><strong>Join group buys:</strong>团购 (tuánGòu) for bulk discounts</li>
+                        <li><strong>Use Tmall for brands:</strong> Official brand stores with guarantees</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Easy Returns Process</h4>
+                    <ol>
+                        <li><strong>Open Taobao app</strong> → "My Taobao" → "My Orders"</li>
+                        <li><strong>Find the order</strong> → Click "申请退款" (Apply for Refund)</li>
+                        <li><strong>Select reason</strong> → Upload photos if needed</li>
+                        <li><strong>For returns:</strong> Select "退货退款" → Print return label</li>
+                        <li><strong>Drop off package</strong> at any Cainiao station (菜鸟驿站)</li>
+                    </ol>
+
+                    <h3 class="subsection-title">Food Delivery & Dining</h3>
+
+                    <p>Food delivery in China is incredibly efficient and affordable. You can get restaurant meals, groceries, medicine, and even Starbucks delivered in 30 minutes or less.</p>
+
+                    <h4 class="subsubsection-title">Setting Up Meituan for Food Delivery</h4>
+                    <ol>
+                        <li><strong>Download and register:</strong> Use your Chinese phone number</li>
+                        <li><strong>Add precise address:</strong> Include building name, floor, and room number in Chinese</li>
+                        <li><strong>Link payment method:</strong> WeChat Pay or Alipay</li>
+                        <li><strong>Learn delivery instructions:</strong>
+                            <ul>
+                                <li>门口 (ménkǒu) - "at the door"</li>
+                                <li>楼下 (lóuxià) - "downstairs/lobby"</li>
+                                <li>帮我送上楼 (bāng wǒ sòng shàng lóu) - "please deliver upstairs"</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h4 class="subsubsection-title">Alternative Food Delivery Apps</h4>
+                    <ul>
+                        <li><strong>Ele.me (饿了么):</strong> Second-largest platform, often different restaurants</li>
+                        <li><strong>Different promotions:</strong> Compare prices between apps</li>
+                        <li><strong>24/7 availability:</strong> In major cities</li>
+                        <li><strong>Alipay integration:</strong> Direct payment and better deals</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Delivery Pro Tips</div>
+                        <ul>
+                            <li><strong>Save your address in Chinese:</strong> Copy/paste for easy ordering</li>
+                            <li><strong>Avoid peak times:</strong> 11:30-13:30 and 18:00-20:00 for faster delivery</li>
+                            <li><strong>Learn basic phone phrases:</strong> Drivers may call for directions</li>
+                            <li><strong>Use photo menus:</strong> Easier than translating text descriptions</li>
+                            <li><strong>Group orders:</strong> Meet minimum delivery requirements with friends</li>
+                        </ul>
+                    </div>
+
+                    <h3 id="food" class="subsection-title">Grocery Shopping & Markets</h3>
+
+                    <h4 class="subsubsection-title">Types of Shopping Venues</h4>
+                    <ul>
+                        <li><strong>Wet markets (菜市场):</strong> Fresh produce, meat, seafood - best prices, cash preferred</li>
+                        <li><strong>Supermarkets:</strong> Carrefour, Sam's Club, RT-Mart - international brands</li>
+                        <li><strong>Online grocery:</strong> Hema, JD Fresh, Meituan Maicai for delivery</li>
+                        <li><strong>International stores:</strong> City Shop, Jenny Wang's, Olé for imported goods</li>
+                        <li><strong>Convenience stores:</strong> 7-Eleven, FamilyMart for quick essentials</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Specialized Items for Expats</h4>
+                    <ul>
+                        <li><strong>International foods:</strong> Import stores in expat areas</li>
+                        <li><strong>Large clothing sizes:</strong> Uniqlo, H&M, or Taobao for sizes XL+</li>
+                        <li><strong>Large shoe sizes:</strong> Sizes 45+ EUR difficult to find locally</li>
+                        <li><strong>Western toiletries:</strong> Import stores or bring from home initially</li>
+                        <li><strong>Tampons:</strong> Less common in China, pads are the norm</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Money-Saving Tips</div>
+                        <ul>
+                            <li><strong>Shop like locals:</strong> Use wet markets and local brands</li>
+                            <li><strong>Learn to bargain:</strong> Expected in markets and small shops</li>
+                            <li><strong>Join group buys:</strong> WeChat groups for bulk purchasing</li>
+                            <li><strong>Use seasonal sales:</strong> 11.11 (Singles Day), 6.18 for huge discounts</li>
+                            <li><strong>Compare platforms:</strong> Prices vary between Taobao, JD, and others</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Continue with more sections... -->
+                
+                <section id="expat-community" class="section">
+                    <h2 class="section-title">Building Your Social Network</h2>
+
+                    <p>Building a strong social network is crucial for your happiness and success in China. The expat community is welcoming, and locals are often excited to meet foreigners and practice English.</p>
+
+                    <h3 class="subsection-title">Essential Platforms for Meeting People</h3>
+
+                    <div class="app-grid">
+                        <div class="app-card">
+                            <h4>SmartShanghai (and City Variants)</h4>
+                            <p>The go-to platform for expat events, dining recommendations, and community connections.</p>
+                            <ul>
+                                <li>Weekly event listings and meetups</li>
+                                <li>Restaurant and bar reviews and recommendations</li>
+                                <li>Classifieds for housing, jobs, and items for sale</li>
+                                <li>City guides and insider tips</li>
+                                <li>Active community forums</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Reddit Communities</h4>
+                            <p>City-specific subreddits provide real-time advice and anonymous community discussions.</p>
+                            <ul>
+                                <li><strong>r/shanghai, r/beijing, r/shenzhen</strong> - City-specific advice</li>
+                                <li>Daily Q&A threads for newcomer questions</li>
+                                <li>Local recommendations and insider tips</li>
+                                <li>Anonymous venting and honest discussions</li>
+                                <li>Meetup organizing and event sharing</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="app-card">
+                            <h4>Meetup.com & Eventbrite</h4>
+                            <p>Professional networking and hobby-based groups for structured social activities.</p>
+                            <ul>
+                                <li>Professional networking events</li>
+                                <li>Hobby and interest-based groups</li>
+                                <li>Language exchange meetups</li>
+                                <li>Sports leagues and fitness groups</li>
+                                <li>Cultural events and workshops</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 id="wechat-groups" class="subsection-title">WeChat Communities - Your Social Lifeline</h3>
+
+                    <p>WeChat groups are the beating heart of expat social life in China. Getting into the right groups will connect you with everything from apartment hunting to weekend hiking trips.</p>
+
+                    <h4 class="subsubsection-title">Essential WeChat Groups to Join</h4>
+                    <ul>
+                        <li><strong>City Expat Groups:</strong> Search "[Your City] Expats" or "[Your City] Foreigners"</li>
+                        <li><strong>Teacher Networks:</strong> "China Teachers" or "[City] English Teachers"</li>
+                        <li><strong>Buy/Sell/Trade Groups:</strong> "[City] Buy Sell Trade" for second-hand items</li>
+                        <li><strong>Housing Groups:</strong> "[City] Housing" or "Rent [City]"</li>
+                        <li><strong>Activity Groups:</strong> "Shanghai Hiking," "Beijing Runners," "Guangzhou Football"</li>
+                        <li><strong>Professional Groups:</strong> Industry-specific networking groups</li>
+                        <li><strong>Social Groups:</strong> "Shanghai Social," "Beijing Nightlife"</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">How to Get Into WeChat Groups</div>
+                        <p>Most groups are invitation-only. Ask other expats you meet to add you to relevant groups. Attend one event, meet people, and you'll quickly get connected to the broader network.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">WeChat Group Etiquette</h4>
+                    <ul>
+                        <li><strong>Read the group description:</strong> Understand the group's purpose</li>
+                        <li><strong>Don't spam:</strong> Avoid excessive self-promotion or irrelevant posts</li>
+                        <li><strong>Be helpful:</strong> Answer newcomer questions when you can</li>
+                        <li><strong>Use search function:</strong> Check if your question was asked recently</li>
+                        <li><strong>Share useful info:</strong> Good restaurant finds, event recommendations</li>
+                        <li><strong>Keep it positive:</strong> Avoid excessive complaining or negativity</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Types of Social Activities & Events</h3>
+
+                    <h4 class="subsubsection-title">Regular Weekly Activities</h4>
+                    <ul>
+                        <li><strong>Language Exchanges:</strong> English-Chinese conversation groups in cafes</li>
+                        <li><strong>Trivia Nights:</strong> English-language pub quiz nights</li>
+                        <li><strong>Sports Leagues:</strong> Football, basketball, ultimate frisbee, rugby</li>
+                        <li><strong>Running Groups:</strong> Hash House Harriers, Parkrun (free 5K runs)</li>
+                        <li><strong>Professional Meetups:</strong> Industry networking events</li>
+                        <li><strong>Book Clubs:</strong> English-language reading groups</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Seasonal & Special Events</h4>
+                    <ul>
+                        <li><strong>Halloween:</strong> Major expat party season with elaborate events</li>
+                        <li><strong>Christmas:</strong> Holiday parties and charity fundraising events</li>
+                        <li><strong>Chinese New Year:</strong> Cultural celebration events</li>
+                        <li><strong>International Women's Day:</strong> Professional networking events</li>
+                        <li><strong>Summer Festivals:</strong> Music, food, and cultural celebrations</li>
+                        <li><strong>National Holidays:</strong> Travel groups for domestic tourism</li>
+                    </ul>
+
+                    <h3 id="cultural-tips" class="subsection-title">Cultural Integration & Local Friendships</h3>
+
+                    <p>While expat friends provide familiarity and support, building relationships with locals will enrich your experience and improve your Chinese language skills significantly.</p>
+
+                    <h4 class="subsubsection-title">Making Local Friends</h4>
+                    <ul>
+                        <li><strong>Language exchange partners:</strong> Find Chinese people learning English</li>
+                        <li><strong>Workplace relationships:</strong> Spend time with Chinese colleagues outside work</li>
+                        <li><strong>Hobby groups:</strong> Join local clubs for photography, hiking, or sports</li>
+                        <li><strong>Volunteer activities:</strong> Charity work and community service</li>
+                        <li><strong>University events:</strong> Many universities welcome foreigners to activities</li>
+                        <li><strong>Neighborhood connections:</strong> Chat with shopkeepers and neighbors</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Cultural Etiquette for Friendships</h4>
+                    <ul>
+                        <li><strong>"Face" (面子) is important:</strong> Avoid causing embarrassment or loss of respect</li>
+                        <li><strong>Gift giving:</strong> Use both hands when giving or receiving gifts</li>
+                        <li><strong>Business cards:</strong> Receive with both hands and read carefully</li>
+                        <li><strong>Paying bills:</strong> It's polite to "fight" over who pays (the host usually wins)</li>
+                        <li><strong>Hierarchy matters:</strong> Show extra respect to elders and superiors</li>
+                        <li><strong>Indirect communication:</strong> Learn to read between the lines</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Building Authentic Relationships</div>
+                        <ul>
+                            <li><strong>Learn basic Mandarin:</strong> Even simple phrases show respect</li>
+                            <li><strong>Show genuine interest:</strong> Ask about Chinese culture and customs</li>
+                            <li><strong>Share your culture:</strong> Teach about your home country</li>
+                            <li><strong>Be patient:</strong> Friendships develop differently across cultures</li>
+                            <li><strong>Participate in traditions:</strong> Join Chinese holiday celebrations</li>
+                            <li><strong>Avoid sensitive topics:</strong> Politics, Tibet, Taiwan, etc.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Work & Legal Section -->
+                <section id="work-visa" class="section">
+                    <h2 class="section-title">Legal Requirements & Work Permits</h2>
+
+                    <p>Understanding China's legal requirements is crucial for staying compliant and avoiding serious problems. Always work legally and keep your documentation in order.</p>
+
+                    <h3 class="subsection-title">Work Visa & Residence Permit Process</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Only Work Legally</div>
+                        <p>Never work on a tourist or business visa. It's illegal and can result in detention, deportation, and being banned from re-entering China. Legitimate employers will handle proper work permit applications.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Proper Work Authorization Process</h4>
+                    <ol>
+                        <li><strong>Z Visa Entry:</strong> Enter China on a proper work visa (Z visa)</li>
+                        <li><strong>Residence Permit:</strong> Convert Z visa to residence permit within 30 days</li>
+                        <li><strong>Work Permit:</strong> Obtain work permit before starting employment</li>
+                        <li><strong>Annual Renewal:</strong> Keep permits current and renewed on time</li>
+                    </ol>
+
+                    <h4 class="subsubsection-title">Required Documents for Work Permit</h4>
+                    <ul>
+                        <li><strong>Educational Qualifications:</strong> Bachelor's degree minimum (authenticated and translated)</li>
+                        <li><strong>Criminal Background Check:</strong> From your home country (authenticated)</li>
+                        <li><strong>Medical Examination:</strong> Completed in China at approved facilities</li>
+                        <li><strong>Employment Contract:</strong> With a licensed Chinese employer</li>
+                        <li><strong>Work Experience:</strong> Proof of relevant work experience (2+ years preferred)</li>
+                    </ul>
+
+                    <h3 id="legal-requirements" class="subsection-title">Important Legal Compliance</h3>
+
+                    <h4 class="subsubsection-title">What You Must Do</h4>
+                    <ul>
+                        <li><strong>Police registration:</strong> Within 24 hours of any address change</li>
+                        <li><strong>Visa compliance:</strong> Never overstay or work illegally</li>
+                        <li><strong>Tax obligations:</strong> Pay income tax on Chinese earnings</li>
+                        <li><strong>Permit renewals:</strong> Keep all permits current</li>
+                        <li><strong>Document carrying:</strong> Always have passport and permits accessible</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">What You Must Avoid</h4>
+                    <ul>
+                        <li><strong>Drug-related activities:</strong> Extremely strict laws with severe penalties</li>
+                        <li><strong>Illegal employment:</strong> Working without proper permits</li>
+                        <li><strong>Visa violations:</strong> Overstaying or working on wrong visa type</li>
+                        <li><strong>Political activities:</strong> Avoid political demonstrations or sensitive discussions</li>
+                        <li><strong>Prostitution:</strong> Strictly illegal with harsh penalties</li>
+                    </ul>
+
+                    <h3 id="sensitive-topics" class="subsection-title">Navigating Sensitive Topics</h3>
+
+                    <p>As a foreigner in China, it's important to be aware of sensitive political and social topics. While you won't get in trouble for casual conversations, it's wise to be diplomatic.</p>
+
+                    <h4 class="subsubsection-title">Topics to Approach Carefully</h4>
+                    <ul>
+                        <li><strong>The "Three T's":</strong> Tibet, Taiwan, Tiananmen Square</li>
+                        <li><strong>Xinjiang and human rights issues</strong></li>
+                        <li><strong>Hong Kong protests and politics</strong></li>
+                        <li><strong>Chinese government criticism</strong></li>
+                        <li><strong>Falun Gong and banned religious groups</strong></li>
+                        <li><strong>Comparison of political systems</strong></li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Best Approach</div>
+                        <p>Focus on cultural exchange rather than political debates. If asked sensitive questions, you can politely say "I don't know enough about that topic" or redirect to cultural differences instead.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Safe Topics for Discussion</h4>
+                    <ul>
+                        <li><strong>Cultural differences:</strong> Food, customs, holidays</li>
+                        <li><strong>Travel and tourism:</strong> Places you've visited in China</li>
+                        <li><strong>Language learning:</strong> Your experience learning Chinese</li>
+                        <li><strong>Sports and entertainment:</strong> Movies, music, sports</li>
+                        <li><strong>Technology:</strong> Apps, gadgets, innovation</li>
+                        <li><strong>Education:</strong> Teaching methods, student differences</li>
+                    </ul>
+                </section>
+
+                <!-- City-Specific Guides -->
+                <section id="shanghai" class="section">
+                    <h2 class="section-title">City-Specific Guides</h2>
+
+                    <p>Each major Chinese city has its own character, opportunities, and challenges. Here's what you need to know about the most popular destinations for expat teachers.</p>
+
+                    <h3 class="subsection-title">Shanghai (上海) - The International Gateway</h3>
+
+                    <p>Shanghai is China's most cosmopolitan city with the largest expat community. It's expensive but offers unparalleled international amenities and career opportunities.</p>
+
+                    <h4 class="subsubsection-title">Advantages of Shanghai</h4>
+                    <ul>
+                        <li><strong>Huge expat community:</strong> Easy to find English-speaking services and friends</li>
+                        <li><strong>International dining:</strong> Authentic restaurants from every cuisine imaginable</li>
+                        <li><strong>Career opportunities:</strong> Best city for professional advancement</li>
+                        <li><strong>Infrastructure:</strong> World-class metro system, clean and efficient</li>
+                        <li><strong>Cultural scene:</strong> Museums, galleries, concerts, theater</li>
+                        <li><strong>English support:</strong> More English-speaking staff in hospitals, banks, etc.</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Disadvantages of Shanghai</h4>
+                    <ul>
+                        <li><strong>High cost of living:</strong> Rent comparable to Western cities</li>
+                        <li><strong>Competition:</strong> More expats competing for jobs and housing</li>
+                        <li><strong>Pollution:</strong> Air quality can be poor, especially in winter</li>
+                        <li><strong>Crowded:</strong> 25+ million people, very busy and stressful</li>
+                        <li><strong>Expat bubble:</strong> Easy to never truly experience "real" China</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Best Areas for Expats</h4>
+                    <ul>
+                        <li><strong>Jing'an (静安):</strong> Central, excellent transport, high-end shopping</li>
+                        <li><strong>French Concession (徐汇/黄浦):</strong> Historic charm, tree-lined streets, vibrant nightlife</li>
+                        <li><strong>Xujiahui (徐家汇):</strong> Shopping and business district, good value</li>
+                        <li><strong>Lujiazui (陆家嘴):</strong> Modern financial district in Pudong, newer apartments</li>
+                        <li><strong>Hongkou (虹口):</strong> Up-and-coming, more affordable, authentic local feel</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Shanghai Living Tips</div>
+                        <ul>
+                            <li>Follow "ShanghaiWOW" and "SmartShanghai" WeChat accounts for events</li>
+                            <li>Consider living near metro lines 2, 10, or 11 for best connectivity</li>
+                            <li>Budget ¥8,000-15,000/month for decent apartments in central areas</li>
+                            <li>Join sports leagues through Shanghai Sports Group</li>
+                            <li>Explore different districts - each has its own character</li>
+                        </ul>
+                    </div>
+
+                    <h3 id="beijing" class="subsection-title">Beijing (北京) - The Cultural Capital</h3>
+
+                    <p>China's capital city offers incredible history, culture, and political significance. It's less international than Shanghai but more authentically Chinese.</p>
+
+                    <h4 class="subsubsection-title">Advantages of Beijing</h4>
+                    <ul>
+                        <li><strong>Historical significance:</strong> Forbidden City, Great Wall, temples</li>
+                        <li><strong>Cultural immersion:</strong> More traditional Chinese culture</li>
+                        <li><strong>Education hub:</strong> Top universities and research institutions</li>
+                        <li><strong>Political center:</strong> Unique insights into Chinese governance</li>
+                        <li><strong>Four seasons:</strong> Proper winter and autumn (unlike southern cities)</li>
+                        <li><strong>Hutong culture:</strong> Traditional neighborhoods and lifestyle</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Disadvantages of Beijing</h4>
+                    <ul>
+                        <li><strong>Air pollution:</strong> Can be severe, especially in winter</li>
+                        <li><strong>Harsh winters:</strong> Very cold and dry</li>
+                        <li><strong>Water scarcity:</strong> Dry climate, limited water resources</li>
+                        <li><strong>Government oversight:</strong> More political sensitivity</li>
+                        <li><strong>Less international:</strong> Fewer Western amenities than Shanghai</li>
+                    </ul>
+
+                    <h3 id="shenzhen" class="subsection-title">Shenzhen (深圳) - The Tech Hub</h3>
+
+                    <p>A young, modern city that transformed from fishing village to tech metropolis in 40 years. Next to Hong Kong with a very entrepreneurial atmosphere.</p>
+
+                    <h4 class="subsubsection-title">Advantages of Shenzhen</h4>
+                    <ul>
+                        <li><strong>Modern infrastructure:</strong> Everything is new and well-planned</li>
+                        <li><strong>Tech ecosystem:</strong> Startups, innovation, entrepreneurial spirit</li>
+                        <li><strong>Young population:</strong> Average age around 30, very dynamic</li>
+                        <li><strong>Close to Hong Kong:</strong> Easy weekend trips (with proper visa)</li>
+                        <li><strong>Beaches nearby:</strong> Dameisha, Xiaomeisha for coastal lifestyle</li>
+                        <li><strong>Lower cost than Shanghai:</strong> More affordable luxury living</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Best Expat Areas</h4>
+                    <ul>
+                        <li><strong>Shekou (蛇口):</strong> Traditional expat area with international schools</li>
+                        <li><strong>Nanshan (南山):</strong> Tech hub with modern amenities</li>
+                        <li><strong>Futian (福田):</strong> Business center with good transport</li>
+                        <li><strong>Luohu (罗湖):</strong> Near Hong Kong border, shopping paradise</li>
+                    </ul>
+
+                    <h3 id="chengdu" class="subsection-title">Chengdu (成都) - The Laid-Back Cultural City</h3>
+
+                    <p>Capital of Sichuan province, famous for spicy food, pandas, and relaxed lifestyle. One of China's most livable cities with incredible local culture.</p>
+
+                    <h4 class="subsubsection-title">Advantages of Chengdu</h4>
+                    <ul>
+                        <li><strong>Low cost of living:</strong> Very affordable compared to tier-1 cities</li>
+                        <li><strong>Incredible food scene:</strong> Spicy Sichuan cuisine, hotpot culture</li>
+                        <li><strong>Relaxed lifestyle:</strong> Tea house culture, slower pace of life</li>
+                        <li><strong>Friendly locals:</strong> Known for hospitality and humor</li>
+                        <li><strong>Central location:</strong> Easy travel to Tibet, Yunnan, other regions</li>
+                        <li><strong>Growing expat scene:</strong> Tight-knit community</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Challenges in Chengdu</h4>
+                    <ul>
+                        <li><strong>Limited English:</strong> Fewer English speakers than tier-1 cities</li>
+                        <li><strong>Humid climate:</strong> Cloudy, drizzly weather much of the year</li>
+                        <li><strong>Spicy food:</strong> Can be overwhelming if you don't like spice</li>
+                        <li><strong>Fewer international amenities:</strong> Limited Western restaurants and services</li>
+                    </ul>
+
+                    <h3 id="other-cities" class="subsection-title">Other Popular Cities</h3>
+
+                    <h4 class="subsubsection-title">Hangzhou (杭州) - The Digital Capital</h4>
+                    <ul>
+                        <li><strong>Alibaba headquarters:</strong> Major tech scene</li>
+                        <li><strong>Beautiful West Lake:</strong> UNESCO World Heritage site</li>
+                        <li><strong>Tea culture:</strong> Famous for Longjing tea</li>
+                        <li><strong>1 hour from Shanghai:</strong> Easy access to international city</li>
+                        <li><strong>Lower cost:</strong> More affordable than Shanghai</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Suzhou (苏州) - The Garden City</h4>
+                    <ul>
+                        <li><strong>Classical gardens:</strong> UNESCO World Heritage sites</li>
+                        <li><strong>Industrial Park:</strong> Many international companies</li>
+                        <li><strong>Close to Shanghai:</strong> 25 minutes by high-speed rail</li>
+                        <li><strong>Family-friendly:</strong> Good for expats with children</li>
+                        <li><strong>Traditional culture:</strong> More authentic Chinese experience</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Guangzhou (广州) - The Trading Hub</h4>
+                    <ul>
+                        <li><strong>Cantonese culture:</strong> Dim sum, Cantonese language</li>
+                        <li><strong>International trade:</strong> Canton Fair twice yearly</li>
+                        <li><strong>Diverse expat community:</strong> African, Middle Eastern communities</li>
+                        <li><strong>Lower cost:</strong> More affordable than Shanghai/Beijing</li>
+                        <li><strong>Hot climate:</strong> Tropical weather year-round</li>
+                    </ul>
+                </section>
+
+                <!-- Final Tips Section -->
+                <section id="final-tips" class="section">
+                    <h2 class="section-title">Final Tips for Success</h2>
+
+                    <p>Living in China will be one of the most transformative experiences of your life. Here are final pieces of advice to help you not just survive, but truly thrive.</p>
+
+                    <h3 class="subsection-title">Mindset & Attitude</h3>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Stay Flexible and Positive</div>
+                        <p>The first few months will be a rollercoaster of emotions. Expect culture shock after the initial honeymoon period. This is completely normal and temporary.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Mental Preparation</h4>
+                    <ul>
+                        <li><strong>Embrace the chaos:</strong> Things won't always go as planned - roll with it</li>
+                        <li><strong>Maintain sense of humor:</strong> Laugh at misunderstandings and mistakes</li>
+                        <li><strong>Stay curious:</strong> Approach differences with genuine interest</li>
+                        <li><strong>Be patient:</strong> Everything takes longer when you're learning</li>
+                        <li><strong>Celebrate small wins:</strong> Successfully ordering food in Chinese is an achievement!</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Dealing with Homesickness</h4>
+                    <ul>
+                        <li><strong>Maintain connections home:</strong> Regular video calls with family</li>
+                        <li><strong>Create routines:</strong> Weekly activities that give structure</li>
+                        <li><strong>Find comfort foods:</strong> Import stores or learn to cook favorites</li>
+                        <li><strong>Join expat support groups:</strong> Others understand what you're going through</li>
+                        <li><strong>Focus on growth:</strong> Remember why you came and what you're gaining</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Learning & Growth</h3>
+
+                    <h4 class="subsubsection-title">Language Learning Strategy</h4>
+                    <ul>
+                        <li><strong>Take it seriously:</strong> Dedicate 1-2 hours daily to study</li>
+                        <li><strong>Use it daily:</strong> Practice with taxi drivers, shopkeepers, neighbors</li>
+                        <li><strong>Focus on tones:</strong> Critical for being understood</li>
+                        <li><strong>Learn practical phrases:</strong> Daily life vocabulary before literature</li>
+                        <li><strong>Find language partners:</strong> Chinese friends learning English</li>
+                        <li><strong>Use apps effectively:</strong> Pleco for dictionary, HelloChinese for structure</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Cultural Integration Tips</h4>
+                    <ul>
+                        <li><strong>Say yes to invitations:</strong> Even if it's outside your comfort zone</li>
+                        <li><strong>Learn chopstick etiquette:</strong> Don't point or stick them upright in rice</li>
+                        <li><strong>Practice gift-giving culture:</strong> Use both hands, modest protests when receiving</li>
+                        <li><strong>Understand "face" concept:</strong> Help others maintain dignity and respect</li>
+                        <li><strong>Join local activities:</strong> Tai chi in parks, mahjong games, calligraphy classes</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Health & Wellness</h3>
+
+                    <h4 class="subsubsection-title">Physical Health</h4>
+                    <ul>
+                        <li><strong>Bring medications:</strong> Especially prescription and specialty items</li>
+                        <li><strong>Get health insurance:</strong> Understand what your school provides</li>
+                        <li><strong>Find international clinics:</strong> For English-speaking doctors</li>
+                        <li><strong>Air quality awareness:</strong> Use AQI apps, air purifiers, masks when needed</li>
+                        <li><strong>Stay hydrated:</strong> Adopt the Chinese habit of drinking warm water</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Mental Health</h4>
+                    <ul>
+                        <li><strong>Maintain exercise routine:</strong> Join gyms, sports groups, running clubs</li>
+                        <li><strong>Practice stress management:</strong> Meditation, journaling, hobbies</li>
+                        <li><strong>Stay connected socially:</strong> Don't isolate when things get tough</li>
+                        <li><strong>Seek help when needed:</strong> Online counseling, expat support groups</li>
+                        <li><strong>Take breaks:</strong> Travel home or to nearby countries when overwhelmed</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Financial Success</h3>
+
+                    <h4 class="subsubsection-title">Saving Money Tips</h4>
+                    <ul>
+                        <li><strong>Live like locals:</strong> Use local restaurants, public transport, wet markets</li>
+                        <li><strong>Avoid expat premiums:</strong> Don't always shop at international stores</li>
+                        <li><strong>Use technology:</strong> Delivery apps, group buying, seasonal sales</li>
+                        <li><strong>Learn to bargain:</strong> Markets and small shops expect negotiation</li>
+                        <li><strong>Cook at home occasionally:</strong> Even basic Chinese dishes</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Building for the Future</h4>
+                    <ul>
+                        <li><strong>Send money home regularly:</strong> Use efficient services like Panda Remit</li>
+                        <li><strong>Keep good financial records:</strong> For taxes and future visa applications</li>
+                        <li><strong>Build Chinese credit history:</strong> Consistent use of WeChat/Alipay</li>
+                        <li><strong>Network professionally:</strong> Connections can lead to better opportunities</li>
+                        <li><strong>Develop marketable skills:</strong> Chinese language, cross-cultural communication</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Making the Most of Your Experience</h3>
+
+                    <h4 class="subsubsection-title">Travel & Exploration</h4>
+                    <ul>
+                        <li><strong>Explore domestically:</strong> China is incredibly diverse - see different regions</li>
+                        <li><strong>Use holiday time wisely:</strong> Teachers get excellent vacation periods</li>
+                        <li><strong>Visit neighboring countries:</strong> Southeast Asia, Japan, Korea are accessible</li>
+                        <li><strong>Try high-speed rail:</strong> Efficient, comfortable way to see the country</li>
+                        <li><strong>Document your journey:</strong> Photos, journal, blog for memories</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Professional Development</h4>
+                    <ul>
+                        <li><strong>Get teaching certifications:</strong> TEFL, TESOL, subject-specific qualifications</li>
+                        <li><strong>Learn about Chinese education:</strong> Different pedagogical approaches</li>
+                        <li><strong>Network internationally:</strong> Connect with other expat teachers</li>
+                        <li><strong>Develop leadership skills:</strong> Take on extra responsibilities</li>
+                        <li><strong>Build a portfolio:</strong> Document your achievements and growth</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Remember Your "Why"</div>
+                        <p>On difficult days, remember why you chose this adventure. Whether it's professional growth, cultural immersion, financial goals, or personal challenge - keep your original motivation in mind.</p>
+                    </div>
+
+                    <h3 class="subsection-title">Preparing for Success</h3>
+
+                    <p>China will challenge you, change you, and ultimately reward you with experiences and perspectives you could never gain anywhere else. The key to success is approaching everything with an open mind, patience, and sense of adventure.</p>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">You're Ready for This Adventure</div>
+                        <p>Thousands of teachers have successfully made this transition before you. With proper preparation, the right attitude, and willingness to embrace the experience, you'll not only survive but thrive in China. Welcome to what may become the most rewarding chapter of your life!</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Quick Reference Checklist</h4>
+                    <ul>
+                        <li>✅ VPN set up and tested before arrival</li>
+                        <li>✅ Essential apps downloaded (WeChat, Alipay, DiDi, Meituan)</li>
+                        <li>✅ Police registration completed within 24 hours</li>
+                        <li>✅ Chinese bank account opened and linked to mobile payments</li>
+                        <li>✅ Housing secured with proper documentation</li>
+                        <li>✅ Local phone number activated</li>
+                        <li>✅ Basic Mandarin phrases learned</li>
+                        <li>✅ Expat communities connected (WeChat groups, events)</li>
+                        <li>✅ Health insurance and medical contacts established</li>
+                        <li>✅ Emergency contacts and embassy registration</li>
+                    </ul>
+
+                    <p>Welcome to China - your adventure begins now! 欢迎来中国！(Huānyíng lái Zhōngguó!)</p>
+                </section>
             </div>
-
-            <h3>Understanding Fapiaos (发票)</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Complete guide to fapiaos - what they are, why you need them, how to request them from landlords, digitizing and organizing them, and using them for tax purposes and reimbursements]
-            </div>
-
-            <div class="checklist">
-                <h4>Housing Checklist</h4>
-                <ul>
-                    <li>Download housing apps (链家, 贝壳找房, 自如)</li>
-                    <li>Research expat-friendly neighborhoods</li>
-                    <li>Prepare required documents</li>
-                    <li>Understand lease terms and deposits</li>
-                    <li>Set up utilities and internet</li>
-                    <li>Request fapiaos for rent payments</li>
-                    <li>Register with local police</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for insider tips about housing]</p>
-            </div>
-
-            <div class="warning-box">
-                <h4>⚠️ Important</h4>
-                <p>[Placeholder for critical housing warnings]</p>
-            </div>
-        </section>
-
-        <!-- VPN Section -->
-        <section id="vpn" class="section">
-            <h2>🌐 VPN Setup & Internet Access</h2>
-            
-            <h3>Choosing the Right VPN</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Detailed comparison of VPN services that work reliably in China, installation guides, troubleshooting tips, backup options, and staying updated with the ever-changing landscape]
-            </div>
-
-            <h3>Alternative Access Methods</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Alternative ways to access international content, understanding the Great Firewall, legal considerations, and backup communication methods]
-            </div>
-
-            <div class="checklist">
-                <h4>VPN Setup Checklist</h4>
-                <ul>
-                    <li>Research current working VPN services</li>
-                    <li>Purchase subscription before arriving</li>
-                    <li>Install on all devices</li>
-                    <li>Test connection speeds</li>
-                    <li>Set up backup VPN option</li>
-                    <li>Learn troubleshooting basics</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for VPN optimization tips]</p>
-            </div>
-        </section>
-
-        <!-- WeChat & Alipay Section -->
-        <section id="wechat-alipay" class="section">
-            <h2>💳 WeChat & Alipay Setup</h2>
-            
-            <h3>WeChat Essential Setup</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Step-by-step WeChat setup including account creation, verification, WeChat Pay setup, adding bank cards, understanding QR codes, essential mini-programs, and WeChat etiquette]
-            </div>
-
-            <h3>Alipay for Daily Life</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Alipay registration process, linking bank accounts, using Alipay for utilities, transportation, shopping, food delivery, and understanding the ecosystem of services]
-            </div>
-
-            <div class="checklist">
-                <h4>Digital Payment Checklist</h4>
-                <ul>
-                    <li>Download and verify WeChat account</li>
-                    <li>Set up WeChat Pay with bank card</li>
-                    <li>Install and verify Alipay</li>
-                    <li>Learn QR code payment process</li>
-                    <li>Add transportation cards to apps</li>
-                    <li>Set up utility bill payments</li>
-                    <li>Explore essential mini-programs</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for mobile payment optimization tips]</p>
-            </div>
-        </section>
-
-        <!-- Banking Section -->
-        <section id="banking" class="section">
-            <h2>🏦 Banking & Financial Services</h2>
-            
-            <h3>Opening Your First Bank Account</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Complete guide to opening bank accounts in China, required documents, best banks for expats, account types, understanding fees, setting up online banking, and linking to mobile payments]
-            </div>
-
-            <h3>Managing Your Finances</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Managing salary payments, international transfers, understanding Chinese banking apps, ATM usage, currency exchange, and financial planning for expats]
-            </div>
-
-            <div class="checklist">
-                <h4>Banking Checklist</h4>
-                <ul>
-                    <li>Gather required documents</li>
-                    <li>Visit bank with Chinese speaker if needed</li>
-                    <li>Open checking account</li>
-                    <li>Set up online banking</li>
-                    <li>Link account to WeChat/Alipay</li>
-                    <li>Understand transfer limits</li>
-                    <li>Set up salary direct deposit</li>
-                </ul>
-            </div>
-
-            <div class="warning-box">
-                <h4>⚠️ Important</h4>
-                <p>[Placeholder for banking regulations and limitations]</p>
-            </div>
-        </section>
-
-        <!-- Medical Insurance Section -->
-        <section id="medical" class="section">
-            <h2>🏥 Medical Insurance & Healthcare</h2>
-            
-            <h3>Understanding China's Healthcare System</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Overview of China's healthcare system, public vs private options, finding international hospitals, understanding insurance coverage, and navigation tips for medical appointments]
-            </div>
-
-            <h3>Insurance Options & Claims</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Types of medical insurance available, employer coverage, private insurance options, how to make claims, understanding fapiaos for medical expenses, and emergency procedures]
-            </div>
-
-            <div class="checklist">
-                <h4>Healthcare Checklist</h4>
-                <ul>
-                    <li>Understand your employer's insurance</li>
-                    <li>Research nearby hospitals</li>
-                    <li>Find English-speaking doctors</li>
-                    <li>Download hospital apps</li>
-                    <li>Prepare medical vocabulary</li>
-                    <li>Keep emergency contacts handy</li>
-                    <li>Understand prescription process</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for healthcare navigation tips]</p>
-            </div>
-        </section>
-
-        <!-- Food Section -->
-        <section id="food" class="section">
-            <h2>🍜 Food & Dining Culture</h2>
-            
-            <h3>Navigating Chinese Cuisine</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Guide to Chinese food culture, ordering etiquette, understanding menus, dietary restrictions, food safety tips, and exploring regional cuisines]
-            </div>
-
-            <h3>Food Delivery & Grocery Shopping</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Using food delivery apps (美团外卖, 饿了么), online grocery shopping, finding international ingredients, wet markets vs supermarkets, and cooking at home]
-            </div>
-
-            <div class="checklist">
-                <h4>Food & Dining Checklist</h4>
-                <ul>
-                    <li>Download food delivery apps</li>
-                    <li>Learn basic food vocabulary</li>
-                    <li>Explore local markets</li>
-                    <li>Find international food stores</li>
-                    <li>Understand dining etiquette</li>
-                    <li>Try regional specialties</li>
-                    <li>Learn to communicate dietary needs</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for food ordering and dining tips]</p>
-            </div>
-        </section>
-
-        <!-- Fitness Section -->
-        <section id="fitness" class="section">
-            <h2>💪 Gym & Fitness</h2>
-            
-            <h3>Finding Your Fitness Community</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Guide to gym chains in China, membership options, understanding fitness culture, outdoor exercise spaces, group classes, and sports clubs for expats]
-            </div>
-
-            <h3>Alternative Fitness Options</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Public parks and exercise equipment, morning tai chi groups, running clubs, swimming pools, basketball courts, and joining sports teams]
-            </div>
-
-            <div class="checklist">
-                <h4>Fitness Checklist</h4>
-                <ul>
-                    <li>Research nearby gyms</li>
-                    <li>Compare membership options</li>
-                    <li>Visit facilities before joining</li>
-                    <li>Learn gym etiquette</li>
-                    <li>Find English-speaking trainers</li>
-                    <li>Explore outdoor exercise areas</li>
-                    <li>Join expat sports groups</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for fitness and wellness tips]</p>
-            </div>
-        </section>
-
-        <!-- Expat Community Section -->
-        <section id="expat-community" class="section">
-            <h2>👥 Finding Your Expat Community</h2>
-            
-            <h3>Building Your Social Network</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Guide to finding expat communities, online groups, social meetups, professional networking, making local friends, and building a support system in China]
-            </div>
-
-            <h3>Events & Activities</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Regular expat events, cultural activities, language exchanges, professional organizations, hobby groups, and seasonal celebrations]
-            </div>
-
-            <div class="checklist">
-                <h4>Community Building Checklist</h4>
-                <ul>
-                    <li>Join expat WeChat groups</li>
-                    <li>Attend newcomer meetups</li>
-                    <li>Find professional networks</li>
-                    <li>Join hobby/interest groups</li>
-                    <li>Participate in language exchanges</li>
-                    <li>Connect with other teachers</li>
-                    <li>Explore cultural events</li>
-                </ul>
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 Pro Tip</h4>
-                <p>[Placeholder for community building tips]</p>
-            </div>
-        </section>
-
-        <!-- Course Links -->
-        <div class="course-links">
-            <h2 style="color: white; margin-bottom: 20px;">Continue Your China Journey</h2>
-            <a href="language-course.html">Start Language Course →</a>
-            <a href="contact.html">Get Support</a>
-        </div>
+        </main>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2024 EduConnect. Your gateway to teaching in China.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 class="footer-title">EduConnect</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#about">Our Mission</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#cookies">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EduConnect Asia Ltd. All rights reserved.</p>
+                <div class="footer-address">
+                    <p>71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
+                </div>
+            </div>
         </div>
     </footer>
 
+    <script src="js/script.js"></script>
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('.course-nav a[href^="#"]').forEach(anchor => {
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
@@ -529,6 +1765,62 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                }
+            });
+        });
+
+        // Reading progress indicator
+        function updateReadingProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
+        // Active navigation highlighting
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link, .nav-sublink');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id;
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close sidebar when clicking on main content on mobile
+        document.querySelector('.guide-content').addEventListener('click', function() {
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        });
+
+        // Close sidebar when clicking nav links on mobile
+        document.querySelectorAll('.nav-link, .nav-sublink').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('open');
                 }
             });
         });

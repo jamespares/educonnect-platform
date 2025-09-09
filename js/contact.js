@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch('https://formspree.io/f/mzzbglgv', {
+            const response = await fetch('/send-message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,9 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     name,
                     email,
                     subject,
-                    message,
-                    _subject: `EduConnect Contact: ${subject}`,
-                    _cc: 'team@educonnectchina.com'
+                    message
                 })
             });
             
@@ -60,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('Message sent successfully! We will get back to you within 24 hours.', 'success');
                 contactForm.reset();
             } else {
-                const result = await response.json();
-                showMessage(result.error || 'Failed to send message. Please try again.', 'error');
+                showMessage('Failed to send message. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Contact form error:', error);

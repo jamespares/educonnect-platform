@@ -99,11 +99,17 @@
                         <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
                     </a>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html#home" class="nav-link">Home</a>
-                    <a href="index.html#about" class="nav-link">About</a>
-                    <a href="index.html#opportunities" class="nav-link">Opportunities</a>
-                    <a href="signup.html" class="nav-link cta-button">Join Now</a>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html#home" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
+                    <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
+                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
             </div>
         </nav>
@@ -358,20 +364,10 @@
                 <div class="footer-section">
                     <h4 class="footer-title">EduConnect</h4>
                     <ul class="footer-links">
-                        <li><a href="index.html#about">About</a></li>
-                        <li><a href="index.html#about">Our Mission</a></li>
-                        <li><a href="signup.html">Contact</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#about">Our Mission</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                     </ul>
-                </div>
-                <div class="footer-section">
-                    <h4 class="footer-title">Contact</h4>
-                    <p style="color: #9ca3af; font-size: 0.875rem; line-height: 1.5;">
-                        EduConnect Asia Ltd<br>
-                        71-75 Shelton Street<br>
-                        Covent Garden, London<br>
-                        United Kingdom, WC2H 9JQ<br><br>
-                        Email: team@educonnectchina.com
-                    </p>
                 </div>
                 <div class="footer-section">
                     <h4 class="footer-title">Legal</h4>
@@ -383,7 +379,10 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 EduConnectAsia Ltd. All rights reserved.</p>
+                <p>&copy; 2025 EduConnect Asia Ltd. All rights reserved.</p>
+            <div class="footer-address"></div>
+                <p>71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ<br><br>   
+                </p>
             </div>
         </div>
     </footer>

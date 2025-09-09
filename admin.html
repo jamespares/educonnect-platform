@@ -296,9 +296,81 @@
             margin-bottom: 1rem;
         }
         
+        @media (max-width: 1024px) {
+            .admin-container {
+                padding: 6rem 0 2rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .admin-header {
+                padding: 1.5rem;
+            }
+            
+            .admin-title {
+                font-size: 1.75rem;
+            }
+        }
+        
         @media (max-width: 768px) {
+            .admin-container {
+                padding: 6rem 0 2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .admin-header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .admin-title {
+                font-size: 1.5rem;
+            }
+            
+            .admin-subtitle {
+                font-size: 0.875rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            
             .teachers-table-container {
                 overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .teachers-table {
+                min-width: 800px;
+            }
+            
+            .teachers-table th,
+            .teachers-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+                white-space: nowrap;
             }
             
             .teacher-details {
@@ -311,6 +383,73 @@
             
             .action-buttons {
                 flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .btn-small {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+                text-align: center;
+                min-height: 36px;
+            }
+            
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                max-height: 85vh;
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .modal-title {
+                font-size: 1.125rem;
+            }
+            
+            .table-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .refresh-btn {
+                width: 100%;
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-title {
+                font-size: 1.25rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .stat-card {
+                padding: 0.875rem;
+            }
+            
+            .teachers-table th,
+            .teachers-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.75rem;
+            }
+            
+            .btn-small {
+                padding: 0.375rem;
+                font-size: 0.6875rem;
+            }
+            
+            .modal-content {
+                margin: 2% auto;
+                width: 98%;
+                max-height: 95vh;
             }
         }
     </style>
@@ -323,10 +462,15 @@
                 <div class="logo">
                     <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="signup.html" class="nav-link">Applications</a>
-                    <button onclick="logout()" class="nav-link cta-button" style="border: none; cursor: pointer;">Logout</button>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="signup.html" class="nav-link" onclick="closeNav()">Applications</a>
+                    <button onclick="logout(); closeNav();" class="nav-link cta-button" style="border: none; cursor: pointer;">Logout</button>
                 </div>
             </div>
         </nav>

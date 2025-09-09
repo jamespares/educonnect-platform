@@ -30,10 +30,21 @@ const ADMIN_CREDENTIALS = {
     password: adminPasswordHash
 };
 
+// Security middleware
+app.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    next();
+});
+
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? false : true,
+    credentials: true
+}));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 // Session configuration
 app.use(session({

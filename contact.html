@@ -19,11 +19,17 @@
                 <div class="logo">
                     <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="index.html#about" class="nav-link">About</a>
-                    <a href="index.html#opportunities" class="nav-link">Opportunities</a>
-                    <a href="signup.html" class="nav-link cta-button">Join Now</a>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
+                    <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
+                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
             </div>
         </nav>

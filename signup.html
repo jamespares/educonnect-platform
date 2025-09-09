@@ -141,9 +141,14 @@
             font-size: 0.875rem;
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .signup-form-wrapper {
+                padding: 0 1.5rem;
+            }
+            
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
             
             .form-group.full-width {
@@ -151,7 +156,62 @@
             }
             
             .signup-form {
+                padding: 2.5rem 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 6rem 0 2rem;
+            }
+            
+            .signup-form-wrapper {
+                padding: 0 1rem;
+            }
+            
+            .signup-form {
                 padding: 2rem 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 2rem;
+            }
+            
+            .form-subtitle {
+                font-size: 1rem;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                padding: 0.875rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .submit-button {
+                padding: 1rem;
+                font-size: 1rem;
+                margin-top: 1.5rem;
+            }
+            
+            .form-file-input {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .signup-form {
+                padding: 1.5rem 1rem;
+            }
+            
+            .form-title {
+                font-size: 1.75rem;
+            }
+            
+            .form-grid {
+                gap: 0.75rem;
+            }
+            
+            .form-input, .form-select, .form-textarea {
+                padding: 0.75rem;
             }
         }
     </style>
@@ -164,11 +224,17 @@
                 <div class="logo">
                     <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="index.html#opportunities" class="nav-link">About</a>
-                    <a href="requirements.html" class="nav-link">Requirements</a>
-                    <a href="signup.html" class="nav-link cta-button">Join Now</a>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
+                    <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
+                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
             </div>
         </nav>
@@ -336,7 +402,7 @@
             }
         });
 
-        document.getElementById('teacherSignupForm').addEventListener('submit', async function(e) {
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Show loading state
