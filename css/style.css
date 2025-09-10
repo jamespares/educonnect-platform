@@ -53,10 +53,15 @@ body {
 }
 
 .logo-accent {
-    color:rgb(230, 74, 74);
+    color: rgb(230, 74, 74);
     font-size: 1.75rem;
     font-weight: 700;
     margin-left: 0.5rem;
+    font-family: 'Noto Sans SC', 'Source Han Sans CN', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'SimHei', '黑体', sans-serif;
+    font-style: italic;
+    text-shadow: 1px 1px 3px rgba(230, 74, 74, 0.3);
+    transition: all 0.3s ease;
+    padding: 2px;
 }
 
 .nav-links {
@@ -1206,6 +1211,9 @@ textarea.form-input {
     
     .logo-accent {
         font-size: 1.5rem;
+        /* Maintain mobile compatibility for background-clip */
+        -webkit-background-clip: text;
+        background-clip: text;
     }
     
     .hero {

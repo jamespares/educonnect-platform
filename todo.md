@@ -1,4 +1,5 @@
-- set-up email passowrd and in railway
+- set-up email password and in railway
+- create end to end test including database insertion/dummby data
 - add newsletter + blog
 - do SEO and GEO
 - ensure all CVs are uploaded as PDFs so can be sent to recruiters directly on WeChat
@@ -8,3 +9,5 @@ of an extended booklet covering HSK1-3 with exercises/gap fills, and recommendat
 and paper - this will help your memory better, find a nice cafe (here are some recommendations), order and matcha and copy out all these phrases until you
 understand them, then complete the exercises - make sure it is downloadable as a PDF/add a send to my WeChat/Whatsapp as a pdf option- make it as easy as possible to use
 - favicon.png
+- tidy up integration guide - go through and ensure it is consistent. write detailed prompt. add advice about changing app store location.
+- mimic this site with fake jobs: https://echinacareers.com/Jobs/JobSearch?input=Kindergarten%20English%20Teacher%20&empID=1521&job_ID=24835 and post fake jobs on Linkedin (maybe buy followers on taobao to get started...)

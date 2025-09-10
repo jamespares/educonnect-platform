@@ -32,6 +32,98 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
+        /* Navigation Styling - Match Homepage */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-accent {
+            color: rgb(230, 74, 74) !important;
+            font-size: 1.75rem !important;
+            font-weight: 700 !important;
+            margin-left: 0.5rem !important;
+            font-family: 'Noto Sans SC', 'Source Han Sans CN', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'SimHei', '黑体', sans-serif !important;
+            font-style: italic !important;
+            text-shadow: 1px 1px 3px rgba(230, 74, 74, 0.3) !important;
+            transition: all 0.3s ease !important;
+            padding: 2px !important;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .header .nav-links .nav-link {
+            text-decoration: none !important;
+            color: #6b7280 !important;
+            font-weight: 500 !important;
+            font-size: 1rem !important;
+            transition: color 0.3s ease !important;
+            background: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .header .nav-links .nav-link:hover {
+            color: #333 !important;
+            background: none !important;
+        }
+
+        .header .nav-links .cta-button {
+            background: #1f2937 !important;
+            color: white !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+            transition: background 0.3s ease !important;
+        }
+
+        .header .nav-links .cta-button:hover {
+            background: #111827 !important;
+            color: white !important;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: #1f2937;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
         /* Main Layout */
         .guide-layout {
             display: flex;
@@ -410,6 +502,41 @@
             }
         }
 
+        /* Custom Footer for Integration Guide */
+        .footer {
+            background: #f8fafc !important;
+            color: #374151 !important;
+            border-top: 1px solid #e5e7eb;
+            margin-left: 280px;
+        }
+
+        .footer .footer-title {
+            color: #1f2937 !important;
+        }
+
+        .footer .footer-links a {
+            color: #6b7280 !important;
+        }
+
+        .footer .footer-links a:hover {
+            color: #1f2937 !important;
+        }
+
+        .footer .footer-bottom {
+            border-top: 1px solid #e5e7eb !important;
+            color: #6b7280 !important;
+        }
+
+        .footer .footer-address {
+            color: #6b7280 !important;
+        }
+
+        @media (max-width: 1024px) {
+            .footer {
+                margin-left: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .guide-title {
                 font-size: 2rem;
@@ -469,7 +596,7 @@
         <aside class="guide-sidebar" id="sidebar">
             <nav class="sidebar-nav">
                 <div class="nav-section">
-                    <div class="nav-title">Getting Started</div>
+                    <div class="nav-title">🚀 Getting Started</div>
                     <a href="#first-steps" class="nav-link">Your First Week</a>
                     <a href="#vpn" class="nav-sublink">VPN & Internet Setup</a>
                     <a href="#essential-apps" class="nav-sublink">Essential Apps</a>
@@ -477,15 +604,16 @@
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Banking & Money</div>
+                    <div class="nav-title">💰 Finance & Banking</div>
                     <a href="#banking" class="nav-link">Bank Accounts</a>
                     <a href="#mobile-payments" class="nav-sublink">WeChat & Alipay</a>
                     <a href="#money-transfers" class="nav-sublink">International Transfers</a>
                     <a href="#fapiaos" class="nav-sublink">Fapiaos & Receipts</a>
+                    <a href="#advanced-financial" class="nav-sublink">Tax Optimization</a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Housing & Living</div>
+                    <div class="nav-title">🏠 Housing & Utilities</div>
                     <a href="#housing" class="nav-link">Finding Housing</a>
                     <a href="#rental-process" class="nav-sublink">Rental Process</a>
                     <a href="#neighborhoods" class="nav-sublink">Best Areas</a>
@@ -493,41 +621,59 @@
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Daily Life</div>
-                    <a href="#shopping" class="nav-link">Shopping & Delivery</a>
-                    <a href="#food" class="nav-link">Food & Dining</a>
-                    <a href="#transportation" class="nav-sublink">Getting Around</a>
-                    <a href="#language" class="nav-sublink">Learning Mandarin</a>
+                    <div class="nav-title">🛍️ Daily Living</div>
+                    <a href="#shopping" class="nav-link">Shopping & Daily Life</a>
+                    <a href="#food" class="nav-sublink">Food & Dining</a>
+                    <a href="#transportation" class="nav-link">Transportation & Getting Around</a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Health & Wellness</div>
-                    <a href="#healthcare" class="nav-link">Medical Insurance</a>
+                    <div class="nav-title">🏥 Health & Safety</div>
+                    <a href="#healthcare" class="nav-link">Healthcare System</a>
                     <a href="#fitness" class="nav-sublink">Gyms & Exercise</a>
                     <a href="#mental-health" class="nav-sublink">Mental Health</a>
+                    <a href="#emergency-preparedness" class="nav-link">Emergency Preparedness</a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Social & Community</div>
-                    <a href="#expat-community" class="nav-link">Finding Friends</a>
+                    <div class="nav-title">👥 Social Life</div>
+                    <a href="#expat-community" class="nav-link">Building Networks</a>
                     <a href="#wechat-groups" class="nav-sublink">WeChat Communities</a>
                     <a href="#cultural-tips" class="nav-sublink">Cultural Etiquette</a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Legal & Visa</div>
-                    <a href="#work-visa" class="nav-link">Work Permits</a>
+                    <div class="nav-title">👨‍👩‍👧‍👦 Family Life</div>
+                    <a href="#family-dependents" class="nav-link">Family & Dependents</a>
+                    <a href="#international-schools" class="nav-sublink">International Schools</a>
+                    <a href="#family-healthcare" class="nav-sublink">Family Healthcare</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">🚨 Safety & Legal</div>
+                    <a href="#emergency-preparedness" class="nav-link">Emergency Preparedness</a>
+                    <a href="#work-visa" class="nav-link">Work Permits & Visas</a>
                     <a href="#legal-requirements" class="nav-sublink">Legal Compliance</a>
                     <a href="#sensitive-topics" class="nav-sublink">What to Avoid</a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">City Guides</div>
+                    <div class="nav-title">🏙️ City Guides</div>
                     <a href="#shanghai" class="nav-link">Shanghai</a>
                     <a href="#beijing" class="nav-link">Beijing</a>
                     <a href="#shenzhen" class="nav-link">Shenzhen</a>
                     <a href="#chengdu" class="nav-link">Chengdu</a>
-                    <a href="#other-cities" class="nav-link">Other Cities</a>
+                    <a href="#hangzhou" class="nav-link">Hangzhou</a>
+                    <a href="#suzhou" class="nav-link">Suzhou</a>
+                    <a href="#guangzhou" class="nav-link">Guangzhou</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">🌟 Long-term Success</div>
+                    <a href="#final-tips" class="nav-link">Final Tips & Mastery</a>
+                    <a href="#seasonal-living" class="nav-sublink">Seasonal Living</a>
+                    <a href="#long-term-success" class="nav-sublink">Career & Relationships</a>
+                    <a href="#language" class="nav-sublink">Learning & Growth</a>
                 </div>
             </nav>
         </aside>
@@ -633,6 +779,121 @@
                         </ul>
                     </div>
 
+                    <h3 class="subsection-title">Digital Privacy & Security</h3>
+
+                    <p>Living in China's digital ecosystem requires understanding privacy implications and taking appropriate security measures to protect your personal information and data.</p>
+
+                    <h4 class="subsubsection-title">VPN Legal Considerations</h4>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">VPN Legal Reality</div>
+                        <p>VPNs exist in a legal gray area in China. While commonly used by expats and businesses, technically only government-approved VPNs are legal. Use discretion and understand the risks.</p>
+                    </div>
+
+                    <ul>
+                        <li><strong>Business use:</strong> Companies often have approved VPN access for international operations</li>
+                        <li><strong>Personal use:</strong> Widely tolerated but technically restricted</li>
+                        <li><strong>Avoid discussion:</strong> Don't openly discuss VPN usage in public or online</li>
+                        <li><strong>Keep low profile:</strong> Use VPNs discretely, avoid streaming during sensitive periods</li>
+                        <li><strong>Have alternatives:</strong> Multiple VPN services and communication methods</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Data Privacy & Surveillance Awareness</h4>
+
+                    <ul>
+                        <li><strong>WeChat monitoring:</strong> All messages and activities are potentially monitored</li>
+                        <li><strong>Avoid sensitive topics:</strong> Political discussions, criticism of government policies</li>
+                        <li><strong>Location tracking:</strong> Apps track location for services but also for monitoring</li>
+                        <li><strong>Payment data:</strong> All mobile payment transactions are recorded and traceable</li>
+                        <li><strong>Social credit implications:</strong> Online behavior may affect social credit scores</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Safe Communication Practices</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Communication Method</th>
+                                <th>Privacy Level</th>
+                                <th>Monitoring Risk</th>
+                                <th>Best Use</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>WeChat</strong></td>
+                                <td><span class="status-poor">Low</span></td>
+                                <td><span class="status-poor">High</span></td>
+                                <td>Daily life, local communication</td>
+                            </tr>
+                            <tr>
+                                <td><strong>WhatsApp (via VPN)</strong></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>International friends, family</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Signal (via VPN)</strong></td>
+                                <td><span class="status-excellent">High</span></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>Sensitive communications</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email (foreign providers)</strong></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>Professional, important documents</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Cybersecurity Best Practices</h4>
+
+                    <ul>
+                        <li><strong>Use strong passwords:</strong> Unique passwords for each account, password manager recommended</li>
+                        <li><strong>Two-factor authentication:</strong> Enable 2FA on all important accounts</li>
+                        <li><strong>Regular updates:</strong> Keep apps and operating systems updated</li>
+                        <li><strong>Public WiFi caution:</strong> Avoid sensitive activities on public networks</li>
+                        <li><strong>Backup data regularly:</strong> Cloud backup to multiple services</li>
+                        <li><strong>Antivirus software:</strong> Use reputable antivirus on devices</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Digital Hygiene Tips</div>
+                        <ul>
+                            <li>Regularly review and clean app permissions</li>
+                            <li>Log out of banking apps after each use</li>
+                            <li>Use biometric locks on devices</li>
+                            <li>Be cautious with public charging stations</li>
+                            <li>Separate personal and work digital activities where possible</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Cloud Storage & Data Management</h4>
+
+                    <ul>
+                        <li><strong>Multiple cloud services:</strong> Don't rely on just one provider</li>
+                        <li><strong>International cloud services:</strong> Google Drive, Dropbox, iCloud (via VPN)</li>
+                        <li><strong>Chinese cloud services:</strong> Baidu Cloud, Tencent Cloud for local needs</li>
+                        <li><strong>Document encryption:</strong> Encrypt sensitive documents before cloud storage</li>
+                        <li><strong>Regular backups:</strong> Photos, important documents, contacts</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Financial App Security</h4>
+
+                    <ul>
+                        <li><strong>Banking apps:</strong> Always log out completely after use</li>
+                        <li><strong>WeChat/Alipay security:</strong> Enable face/fingerprint recognition</li>
+                        <li><strong>Transaction limits:</strong> Set daily/monthly limits for mobile payments</li>
+                        <li><strong>Monitor statements:</strong> Regularly check for unauthorized transactions</li>
+                        <li><strong>Separate devices:</strong> Consider separate device for financial apps if very security-conscious</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Balanced Approach to Digital Life</div>
+                        <p>Don't let security concerns prevent you from enjoying China's digital convenience. Use common sense: be cautious with sensitive information, but don't be paranoid about daily activities like ordering food or chatting with friends.</p>
+                    </div>
+
                     <h3 id="essential-apps" class="subsection-title">Essential Apps to Download First</h3>
 
                     <p>China's digital ecosystem is built around mobile apps. These essential apps will become your lifeline for everything from payments to transportation to communication.</p>
@@ -731,6 +992,18 @@
                                 <li>30-minute delivery guarantee</li>
                                 <li>Quality assured products</li>
                                 <li>Integration with Alipay</li>
+                            </ul>
+                        </div>
+
+                        <div class="app-card">
+                            <h4>XiaoHongShu (小红书)</h4>
+                            <p>China's lifestyle and discovery platform - perfect for finding local recommendations and services.</p>
+                            <ul>
+                                <li>Local recommendations for food, activities, shopping</li>
+                                <li>Find English-speaking service providers</li>
+                                <li>Connect with other expats and locals</li>
+                                <li>Discover hidden gems in your city</li>
+                                <li>Search for driving instructors, tutors, and specialists</li>
                             </ul>
                         </div>
                     </div>
@@ -914,6 +1187,216 @@
                         <div class="callout-title">Digital Fapiaos</div>
                         <p>Most fapiaos are now digital and automatically stored in your WeChat or Alipay account. You can access them anytime through the "Invoice" sections of these apps.</p>
                     </div>
+
+                    <h3 id="advanced-financial" class="subsection-title">Advanced Financial Planning</h3>
+
+                    <h4 class="subsubsection-title">Tax Obligations & Treaties</h4>
+                    <p>Understanding your tax obligations in both China and your home country is crucial for long-term financial health.</p>
+
+                    <ul>
+                        <li><strong>Chinese income tax:</strong> Progressive rates from 3% to 45% on Chinese-source income</li>
+                        <li><strong>Tax treaties:</strong> Many countries have agreements to avoid double taxation</li>
+                        <li><strong>Home country obligations:</strong> Americans must file taxes globally; others may have different rules</li>
+                        <li><strong>Professional help:</strong> Consider tax advisors familiar with expat situations</li>
+                        <li><strong>Tax residence:</strong> Usually determined by 183+ days in China per year</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Important Tax Considerations</div>
+                        <ul>
+                            <li>Keep detailed records of income, expenses, and taxes paid in China</li>
+                            <li>Save all fapiaos for potential tax deductions</li>
+                            <li>Understand exit tax implications if leaving China</li>
+                            <li>Some countries require foreign bank account reporting</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Tax Optimization Strategies</h4>
+                    <p>Understanding tax residency rules and planning your time strategically can lead to significant tax savings, especially for those with multiple income sources.</p>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">The 183-Day Rule</div>
+                        <p>Most countries, including China, determine tax residency based on spending 183+ days per year in the country. Strategic travel can help optimize your tax obligations across multiple jurisdictions.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Strategic Tax Residency Management</h4>
+                    <ul>
+                        <li><strong>Track days carefully:</strong> Use apps or spreadsheets to monitor time in each country</li>
+                        <li><strong>Plan extended trips:</strong> 2-3 month trips abroad can help manage residency status</li>
+                        <li><strong>School holidays advantage:</strong> Teachers can use long holidays for strategic travel</li>
+                        <li><strong>Avoid partial year complications:</strong> Understand entry/exit year tax implications</li>
+                        <li><strong>Treaty benefits:</strong> Leverage tax treaties between countries for optimization</li>
+                    </ul>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Strategy</th>
+                                <th>Days Outside China</th>
+                                <th>Potential Tax Impact</th>
+                                <th>Considerations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Summer Break Strategy</strong></td>
+                                <td>60-90 days</td>
+                                <td>May reduce Chinese tax residence</td>
+                                <td>Popular with teachers, plan early</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Split Year Planning</strong></td>
+                                <td>100+ days</td>
+                                <td>Significant tax optimization</td>
+                                <td>Requires careful documentation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sabbatical Year</strong></td>
+                                <td>183+ days</td>
+                                <td>Avoid Chinese tax residency</td>
+                                <td>Not practical for most working expats</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Income Source Optimization</h4>
+                    <ul>
+                        <li><strong>Foreign-sourced income:</strong> Income earned outside China may not be taxable if you're not a tax resident</li>
+                        <li><strong>Timing of payments:</strong> Consider when bonuses and large payments are received</li>
+                        <li><strong>Consulting income:</strong> Structure international consulting carefully</li>
+                        <li><strong>Investment income:</strong> Understand treatment of foreign investment gains</li>
+                        <li><strong>Pension contributions:</strong> Maximize home country retirement contributions</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Tax Optimization Warnings</div>
+                        <ul>
+                            <li><strong>Professional advice essential:</strong> Tax laws are complex and change frequently</li>
+                            <li><strong>Documentation critical:</strong> Keep detailed records of travel and income sources</li>
+                            <li><strong>Legitimate purpose required:</strong> Trips should have genuine business/personal reasons</li>
+                            <li><strong>Multiple country obligations:</strong> Consider all tax jurisdictions you're connected to</li>
+                            <li><strong>Long-term planning:</strong> Short-term savings may create long-term complications</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Common Tax Optimization Scenarios</h4>
+
+                    <ul>
+                        <li><strong>Teachers with summer holidays:</strong> Extended 2-3 month trips to home country or third countries</li>
+                        <li><strong>Digital nomads:</strong> Splitting time between China and low-tax jurisdictions</li>
+                        <li><strong>Consultants:</strong> Timing project work and payments across tax years</li>
+                        <li><strong>Retirees:</strong> Managing pension income and residency status</li>
+                        <li><strong>Business owners:</strong> Structuring companies and income across jurisdictions</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Documentation for Tax Optimization</h4>
+                    <ul>
+                        <li><strong>Travel records:</strong> Passport stamps, flight tickets, hotel bookings</li>
+                        <li><strong>Income documentation:</strong> Clear records of where income was earned</li>
+                        <li><strong>Residence proof:</strong> Lease agreements, utility bills, registration documents</li>
+                        <li><strong>Business records:</strong> Client locations, work performed, meeting records</li>
+                        <li><strong>Tax filings:</strong> Complete filings in all relevant jurisdictions</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Working with Tax Professionals</div>
+                        <ul>
+                            <li>Find advisors experienced with China-specific expat taxation</li>
+                            <li>Consider advisors licensed in both China and your home country</li>
+                            <li>Plan consultations well before tax deadlines</li>
+                            <li>Budget ¥3,000-8,000 annually for professional tax advice</li>
+                            <li>Keep advisors informed of any major life or income changes</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Cryptocurrency & Digital Assets</h4>
+                    <p>China has strict regulations on cryptocurrency. Understanding these rules is essential to avoid legal problems.</p>
+
+                    <ul>
+                        <li><strong>Cryptocurrency trading:</strong> Banned for Chinese citizens and residents</li>
+                        <li><strong>Foreign holdings:</strong> Existing foreign crypto assets may be legally held</li>
+                        <li><strong>Exchanges blocked:</strong> Most crypto exchanges are blocked in China</li>
+                        <li><strong>Digital yuan (DCEP):</strong> China's official digital currency</li>
+                        <li><strong>Enforcement:</strong> Banks monitor for crypto transactions</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Crypto Safety Guidelines</div>
+                        <ul>
+                            <li>Don't trade crypto through Chinese banks or exchanges</li>
+                            <li>Avoid discussing crypto investments openly</li>
+                            <li>Use VPN carefully if accessing foreign crypto platforms</li>
+                            <li>Understand regulations may change rapidly</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Investment Options for Expats</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Investment Type</th>
+                                <th>Accessibility</th>
+                                <th>Requirements</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Chinese Bank Deposits</strong></td>
+                                <td><span class="status-excellent">Easy</span></td>
+                                <td>Chinese bank account</td>
+                                <td>Low interest rates, very safe</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chinese Stock Market</strong></td>
+                                <td><span class="status-good">Possible</span></td>
+                                <td>Work permit, broker account</td>
+                                <td>Complex regulations, language barrier</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Home Country Investments</strong></td>
+                                <td><span class="status-excellent">Recommended</span></td>
+                                <td>Home country accounts</td>
+                                <td>Easier to manage, familiar regulations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>International Platforms</strong></td>
+                                <td><span class="status-good">Via VPN</span></td>
+                                <td>Foreign accounts, VPN access</td>
+                                <td>Legal gray area, check regulations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Retirement & Long-term Planning</h4>
+                    <ul>
+                        <li><strong>Home country pensions:</strong> Maintain contributions if possible</li>
+                        <li><strong>Chinese social security:</strong> Available to long-term residents</li>
+                        <li><strong>International retirement accounts:</strong> Consider offshore options</li>
+                        <li><strong>Health insurance continuity:</strong> Plan for coverage gaps</li>
+                        <li><strong>Property considerations:</strong> Foreigners can buy one residential property</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Financial Planning Tips</div>
+                        <ul>
+                            <li>Diversify across currencies and countries</li>
+                            <li>Keep emergency funds in both China and home country</li>
+                            <li>Review and update beneficiaries on all accounts</li>
+                            <li>Consider inflation impact on long-term savings</li>
+                            <li>Regularly review exchange rate trends for transfers</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Insurance & Risk Management</h4>
+                    <ul>
+                        <li><strong>Health insurance:</strong> Comprehensive international coverage recommended</li>
+                        <li><strong>Life insurance:</strong> Consider coverage in both countries</li>
+                        <li><strong>Property insurance:</strong> Rental insurance for belongings</li>
+                        <li><strong>Disability insurance:</strong> Income protection if unable to work</li>
+                        <li><strong>Travel insurance:</strong> For frequent international travel</li>
+                    </ul>
                 </section>
 
                 <!-- Housing Section -->
@@ -1215,7 +1698,345 @@
                     </div>
                 </section>
 
-                <!-- Continue with more sections... -->
+                <!-- Transportation & Driving Section -->
+                <section id="transportation" class="section">
+                    <h2 class="section-title">Transportation & Getting Around</h2>
+
+                    <p>China offers excellent public transportation, but learning to drive can provide additional freedom and convenience, especially for families or those living outside city centers.</p>
+
+                    <h3 class="subsection-title">Public Transportation Overview</h3>
+
+                    <h4 class="subsubsection-title">Metro Systems</h4>
+                    <ul>
+                        <li><strong>Extensive networks:</strong> Major cities have comprehensive metro systems</li>
+                        <li><strong>Affordable pricing:</strong> ¥2-8 per ride depending on distance</li>
+                        <li><strong>Mobile payments:</strong> WeChat Pay, Alipay, or dedicated transit cards</li>
+                        <li><strong>English signage:</strong> Most major cities have bilingual signs</li>
+                        <li><strong>Peak hours:</strong> Avoid 7:30-9:00am and 5:30-7:00pm if possible</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Ride-Hailing Services</h4>
+                    <ul>
+                        <li><strong>DiDi:</strong> China's dominant ride-hailing platform</li>
+                        <li><strong>English interface:</strong> Available in most major cities</li>
+                        <li><strong>Payment integration:</strong> Seamless mobile payments</li>
+                        <li><strong>Service types:</strong> Economy, premium, carpooling options</li>
+                        <li><strong>Safety features:</strong> Real-time tracking and emergency contacts</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Learning to Drive in China</h3>
+
+                    <p>Getting a Chinese driver's license can be challenging but rewarding. The process requires patience, study, and often an English-speaking instructor to navigate the requirements successfully.</p>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Who Can Drive in China</div>
+                        <p>Foreigners with valid residence permits can obtain Chinese driver's licenses. Tourist visa holders cannot get licenses but may drive with International Driving Permits for short periods (rules vary by city).</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Driver's License Requirements</h4>
+                    <ul>
+                        <li><strong>Residence permit:</strong> Valid work or residence permit required</li>
+                        <li><strong>Medical certificate:</strong> Health check from approved hospital</li>
+                        <li><strong>Passport photos:</strong> Recent white background photos</li>
+                        <li><strong>Previous license:</strong> Your home country license (if applying for transfer)</li>
+                        <li><strong>Age requirements:</strong> 18+ for cars, different ages for motorcycles</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">License Application Process</h4>
+                    <ol>
+                        <li><strong>Medical examination:</strong> Vision, hearing, and physical health check at designated hospital (¥30-50)</li>
+                        <li><strong>Driving school registration:</strong> Choose a school with English-speaking instructors</li>
+                        <li><strong>Theory test (科目一):</strong> Traffic rules and regulations (100 questions, need 90+ to pass)</li>
+                        <li><strong>Practical test (科目二):</strong> Skills test including parking, reversing, slopes</li>
+                        <li><strong>Road test (科目三):</strong> Actual road driving with examiner</li>
+                        <li><strong>Safety theory test (科目四):</strong> Additional safety knowledge exam</li>
+                    </ol>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Test Difficulty & Language Barriers</div>
+                        <ul>
+                            <li>Tests are primarily in Chinese (English available in some cities)</li>
+                            <li>Practical tests have specific requirements that differ from Western standards</li>
+                            <li>Pass rates can be low - multiple attempts are normal</li>
+                            <li>Budget ¥5,000-8,000 for total costs including instruction and fees</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Finding English-Speaking Driving Instructors</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Platform/Method</th>
+                                <th>Success Rate</th>
+                                <th>Cost</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>XiaoHongShu (小红书)</strong></td>
+                                <td><span class="status-excellent">High</span></td>
+                                <td>Standard rates</td>
+                                <td>Search "外国人学车" or "English driving instructor"</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Expat WeChat Groups</strong></td>
+                                <td><span class="status-excellent">High</span></td>
+                                <td>Varies</td>
+                                <td>Personal recommendations from other expats</td>
+                            </tr>
+                            <tr>
+                                <td><strong>International Driving Schools</strong></td>
+                                <td><span class="status-excellent">Very High</span></td>
+                                <td>Premium pricing</td>
+                                <td>Specialized in serving foreign students</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Online Platforms</strong></td>
+                                <td><span class="status-good">Medium</span></td>
+                                <td>Competitive</td>
+                                <td>58.com, Boss Zhipin for instructor listings</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Driving School Costs & Timeline</h4>
+                    <ul>
+                        <li><strong>Registration fees:</strong> ¥3,000-5,000 for complete package</li>
+                        <li><strong>English instruction premium:</strong> Additional ¥1,000-2,000</li>
+                        <li><strong>Timeline:</strong> 2-6 months depending on test scheduling and pass rates</li>
+                        <li><strong>Retake fees:</strong> ¥150-300 per test retake</li>
+                        <li><strong>Practice time:</strong> Minimum hours required varies by city</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">License Transfer vs. New License</h4>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">License Transfer Option</div>
+                        <p>Some cities allow foreign license transfers with just theory tests (no practical driving tests). Check with local DMV - this can save significant time and money if available.</p>
+                    </div>
+
+                    <ul>
+                        <li><strong>Transfer requirements:</strong> Valid home country license, official translation</li>
+                        <li><strong>Eligible countries:</strong> Varies by city - typically includes US, UK, Canada, Australia</li>
+                        <li><strong>Reduced testing:</strong> Usually just theory tests, no practical driving</li>
+                        <li><strong>Faster process:</strong> 2-4 weeks vs 2-6 months for new license</li>
+                        <li><strong>Cost savings:</strong> ¥1,000-2,000 vs ¥5,000-8,000</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Car Ownership & Driving in China</h3>
+
+                    <h4 class="subsubsection-title">Buying vs Leasing a Car</h4>
+                    <ul>
+                        <li><strong>New car purchase:</strong> Straightforward with residence permit</li>
+                        <li><strong>Used car market:</strong> Less transparent, bring knowledgeable friend</li>
+                        <li><strong>Leasing options:</strong> Growing market, good for short-term residents</li>
+                        <li><strong>Electric vehicles:</strong> Government incentives and easier license plates</li>
+                        <li><strong>License plate lottery:</strong> Some cities require winning lottery for plates</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Driving Culture & Safety</h4>
+                    <ul>
+                        <li><strong>Defensive driving essential:</strong> Traffic rules often loosely followed</li>
+                        <li><strong>Honking is communication:</strong> Normal part of driving culture</li>
+                        <li><strong>Parking challenges:</strong> Limited spaces, creative parking solutions</li>
+                        <li><strong>Traffic cameras everywhere:</strong> Strict enforcement of violations</li>
+                        <li><strong>Insurance mandatory:</strong> Comprehensive coverage recommended</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Driving Considerations</div>
+                        <ul>
+                            <li>Traffic congestion in major cities can be severe</li>
+                            <li>Parking costs can be expensive in city centers</li>
+                            <li>Public transportation is often faster and cheaper</li>
+                            <li>Air pollution exposure increased when driving</li>
+                            <li>Consider necessity vs convenience for your lifestyle</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Alternative Transportation</h4>
+                    <ul>
+                        <li><strong>Electric scooters:</strong> Popular for short distances, different license requirements</li>
+                        <li><strong>Bike sharing:</strong> Convenient for last-mile transportation</li>
+                        <li><strong>Car sharing services:</strong> Growing availability in major cities</li>
+                        <li><strong>High-speed rail:</strong> Excellent for intercity travel</li>
+                        <li><strong>Domestic flights:</strong> Competitive pricing for longer distances</li>
+                    </ul>
+                </section>
+
+                <!-- Health & Wellness Section -->
+                <section id="healthcare" class="section">
+                    <h2 class="section-title">Health & Wellness</h2>
+
+                    <h3 class="subsection-title">Medical Insurance & Healthcare System</h3>
+
+                    <p>Understanding China's healthcare system is crucial for your safety and peace of mind. The system can be complex, but knowing the basics will save you time and money.</p>
+
+                    <h4 class="subsubsection-title">Types of Healthcare Coverage</h4>
+                    <ul>
+                        <li><strong>Employer Insurance:</strong> Most schools provide basic local medical insurance</li>
+                        <li><strong>International Health Insurance:</strong> Covers international hospitals and evacuation</li>
+                        <li><strong>Social Insurance:</strong> Long-term residents may be eligible for Chinese social medical insurance</li>
+                        <li><strong>Self-pay:</strong> Always keep cash/cards for immediate medical expenses</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Using Local Hospitals</h4>
+                    <ol>
+                        <li><strong>Registration (挂号):</strong> Get a patient card with deposit (usually ¥100-200)</li>
+                        <li><strong>Department selection:</strong> Choose appropriate department (internal medicine, surgery, etc.)</li>
+                        <li><strong>Queue for doctor:</strong> Take number and wait for consultation</li>
+                        <li><strong>Payment:</strong> Pay separately for consultation, tests, and medications</li>
+                        <li><strong>Pharmacy:</strong> Get prescriptions filled at hospital pharmacy</li>
+                    </ol>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Hospital Process Tips</div>
+                        <ul>
+                            <li>Bring your passport and insurance cards always</li>
+                            <li>Arrive early - hospitals are busiest 8-11am</li>
+                            <li>Bring a Chinese-speaking friend for complex issues</li>
+                            <li>Keep all receipts for insurance reimbursement</li>
+                            <li>Download translation apps before you need them</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">International Hospitals & Clinics</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>International Hospitals</th>
+                                <th>Typical Cost</th>
+                                <th>Languages</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Shanghai</strong></td>
+                                <td>Parkway Health, Jiahui International</td>
+                                <td>¥800-2000 consultation</td>
+                                <td>English, Japanese</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Beijing</strong></td>
+                                <td>United Family, Oasis International</td>
+                                <td>¥1000-2500 consultation</td>
+                                <td>English, German</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Guangzhou</strong></td>
+                                <td>Can-Am International Medical</td>
+                                <td>¥600-1500 consultation</td>
+                                <td>English, Cantonese</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Shenzhen</strong></td>
+                                <td>Hong Kong University-Shenzhen Hospital</td>
+                                <td>¥500-1200 consultation</td>
+                                <td>English, Cantonese</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Essential Medical Phrases</h4>
+                    <ul>
+                        <li><strong>我需要看医生 (wǒ xūyào kàn yīshēng):</strong> "I need to see a doctor"</li>
+                        <li><strong>我哪里疼 (wǒ nǎlǐ téng):</strong> "I have pain here" (point to area)</li>
+                        <li><strong>我发烧了 (wǒ fāshāo le):</strong> "I have a fever"</li>
+                        <li><strong>我过敏 (wǒ guòmǐn):</strong> "I'm allergic"</li>
+                        <li><strong>请叫急救车 (qǐng jiào jíjiùchē):</strong> "Please call an ambulance"</li>
+                        <li><strong>我有保险 (wǒ yǒu bǎoxiǎn):</strong> "I have insurance"</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Prescription Medications</h4>
+                    <ul>
+                        <li><strong>Bring medication list:</strong> Generic names in English and Chinese</li>
+                        <li><strong>Import restrictions:</strong> Some medications require special permits</li>
+                        <li><strong>Local pharmacies:</strong> Chain pharmacies like Watson's have English-speaking staff</li>
+                        <li><strong>Online pharmacies:</strong> JD Health and Tmall Pharmacy deliver</li>
+                        <li><strong>Traditional medicine:</strong> Many locals combine Western and Chinese medicine</li>
+                    </ul>
+
+                    <h3 id="fitness" class="subsection-title">Gyms & Exercise</h3>
+
+                    <p>Staying active is crucial for physical and mental health. China offers diverse exercise options from ultra-modern gyms to traditional activities.</p>
+
+                    <h4 class="subsubsection-title">Gym Chains & Fitness Centers</h4>
+                    <ul>
+                        <li><strong>TERA Wellness (超能体感):</strong> High-end chain with English-speaking trainers</li>
+                        <li><strong>Will's Gym:</strong> Mid-range with good equipment and group classes</li>
+                        <li><strong>California Fitness:</strong> International chain in major cities</li>
+                        <li><strong>Local community gyms:</strong> Budget-friendly but limited English</li>
+                        <li><strong>Hotel gyms:</strong> Day passes available at international hotels</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Gym Membership Tips</div>
+                        <ul>
+                            <li>Never pay the full asking price - always negotiate</li>
+                            <li>Avoid long-term contracts initially</li>
+                            <li>Check shower facilities and changing rooms first</li>
+                            <li>Ask about class schedules in English</li>
+                            <li>Bring your own towel and water bottle</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Outdoor Exercise Culture</h4>
+                    <ul>
+                        <li><strong>Parks in morning:</strong> Free tai chi, dancing, badminton</li>
+                        <li><strong>Running groups:</strong> Hash House Harriers, Parkrun events</li>
+                        <li><strong>Cycling:</strong> Bike-sharing systems in every city</li>
+                        <li><strong>Hiking clubs:</strong> Weekend mountain trips via WeChat groups</li>
+                        <li><strong>Swimming:</strong> Public pools are very affordable (¥10-30)</li>
+                    </ul>
+
+                    <h3 id="mental-health" class="subsection-title">Mental Health & Support</h3>
+
+                    <p>Living abroad can be emotionally challenging. Having mental health resources and strategies is essential for long-term success.</p>
+
+                    <h4 class="subsubsection-title">Professional Mental Health Services</h4>
+                    <ul>
+                        <li><strong>Online counseling:</strong> BetterHelp, Talkspace (via VPN)</li>
+                        <li><strong>International clinics:</strong> Many offer counseling in English</li>
+                        <li><strong>Shanghai Mental Health Center:</strong> Has international department</li>
+                        <li><strong>Beijing United Family:</strong> Psychology and counseling services</li>
+                        <li><strong>Employee assistance programs:</strong> Many international schools provide</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Managing Culture Shock & Homesickness</h4>
+                    <ol>
+                        <li><strong>Acknowledge it's normal:</strong> Culture shock hits most expats around month 3-6</li>
+                        <li><strong>Maintain home connections:</strong> Regular video calls with family/friends</li>
+                        <li><strong>Create new routines:</strong> Find comfort activities in your new environment</li>
+                        <li><strong>Join support groups:</strong> Expat communities understand your challenges</li>
+                        <li><strong>Practice self-care:</strong> Exercise, hobbies, adequate sleep</li>
+                        <li><strong>Set small goals:</strong> Celebrate achievements like ordering in Chinese</li>
+                    </ol>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Building Resilience</div>
+                        <ul>
+                            <li>Keep a journal of positive experiences</li>
+                            <li>Learn stress management techniques (meditation, breathing)</li>
+                            <li>Find humor in daily misunderstandings</li>
+                            <li>Connect with nature - parks, hiking, beaches</li>
+                            <li>Limit negative expat social media groups</li>
+                            <li>Remember: it gets easier with time</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Crisis Resources & Emergency Contacts</h4>
+                    <ul>
+                        <li><strong>Crisis Hotline:</strong> Many cities have English-language crisis support</li>
+                        <li><strong>Your embassy:</strong> Can provide mental health resource lists</li>
+                        <li><strong>International SOS:</strong> 24/7 medical and mental health support</li>
+                        <li><strong>Local expat networks:</strong> Peer support through difficult times</li>
+                        <li><strong>Employee support:</strong> HR departments often have resources</li>
+                    </ul>
+                </section>
                 
                 <section id="expat-community" class="section">
                     <h2 class="section-title">Building Your Social Network</h2>
@@ -1351,6 +2172,380 @@
                     </div>
                 </section>
 
+                <!-- Family & Dependents Section -->
+                <section id="family-dependents" class="section">
+                    <h2 class="section-title">Living in China with Family & Dependents</h2>
+
+                    <p>Moving to China with family requires additional planning and consideration. From spouse visas to education options, here's what you need to know for a successful family transition.</p>
+
+                    <h3 class="subsection-title">Spouse & Dependent Visas</h3>
+
+                    <h4 class="subsubsection-title">Spouse Visa Requirements</h4>
+                    <ul>
+                        <li><strong>Q1 Visa:</strong> For spouses of Chinese citizens (family reunification)</li>
+                        <li><strong>S1 Visa:</strong> For spouses of foreigners working in China</li>
+                        <li><strong>Required documents:</strong> Marriage certificate, health check, criminal background check</li>
+                        <li><strong>Authentication:</strong> All documents must be notarized and authenticated</li>
+                        <li><strong>Processing time:</strong> 2-4 weeks, plan accordingly</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Spouse Work Authorization</div>
+                        <p>Spouses on dependent visas typically cannot work legally without obtaining their own work permit. Consider this when planning family finances and career paths.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Children's Visa & Residence Permits</h4>
+                    <ul>
+                        <li><strong>Same visa type as spouse:</strong> Usually Q1 or S1 depending on circumstances</li>
+                        <li><strong>Birth certificates required:</strong> Translated and authenticated</li>
+                        <li><strong>School enrollment:</strong> Often required for residence permit renewal</li>
+                        <li><strong>Health checkups:</strong> Children need medical examinations</li>
+                    </ul>
+
+                    <h3 id="international-schools" class="subsection-title">International Schools & Education</h3>
+
+                    <p>China offers excellent international education options, though costs can be significant. Planning ahead is crucial for securing spots in preferred schools.</p>
+
+                    <h4 class="subsubsection-title">Types of International Schools</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>School Type</th>
+                                <th>Annual Fees</th>
+                                <th>Curriculum</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pure International</strong></td>
+                                <td>¥150,000-400,000</td>
+                                <td>IB, American, British</td>
+                                <td>Expat families, global perspective</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bilingual Schools</strong></td>
+                                <td>¥80,000-200,000</td>
+                                <td>Chinese + International</td>
+                                <td>Cultural integration, language learning</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Local International Departments</strong></td>
+                                <td>¥50,000-120,000</td>
+                                <td>Chinese with English classes</td>
+                                <td>Budget-conscious families</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="subsubsection-title">Top International Schools by City</h4>
+
+                    <ul>
+                        <li><strong>Shanghai:</strong> Shanghai American School, Concordia International, YK Pao School</li>
+                        <li><strong>Beijing:</strong> Beijing International School, Western Academy of Beijing, Harrow Beijing</li>
+                        <li><strong>Guangzhou:</strong> American International School, Utahloy International School</li>
+                        <li><strong>Shenzhen:</strong> Shenzhen International School, Shekou International School</li>
+                        <li><strong>Suzhou:</strong> Suzhou Singapore International School, Nord Anglia Suzhou</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">School Application Timeline</div>
+                        <ul>
+                            <li>Apply 6-12 months before intended start date</li>
+                            <li>Waiting lists are common for popular schools</li>
+                            <li>Some schools prioritize certain passport holders</li>
+                            <li>Application fees (non-refundable) range from ¥1,000-3,000</li>
+                            <li>Most schools require entrance tests/interviews</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Education Costs & Financial Planning</h4>
+                    <ul>
+                        <li><strong>Tuition fees:</strong> Plan for ¥100,000-400,000 per child per year</li>
+                        <li><strong>Additional costs:</strong> Transportation, meals, uniforms, extracurriculars</li>
+                        <li><strong>School buses:</strong> ¥8,000-15,000 per year depending on distance</li>
+                        <li><strong>After-school activities:</strong> ¥5,000-20,000 per activity per semester</li>
+                        <li><strong>Educational support:</strong> Some employer packages include education allowances</li>
+                    </ul>
+
+                    <h3 id="family-healthcare" class="subsection-title">Family Healthcare & Insurance</h3>
+
+                    <h4 class="subsubsection-title">Family Health Insurance Options</h4>
+                    <ul>
+                        <li><strong>International health insurance:</strong> Comprehensive coverage for whole family</li>
+                        <li><strong>Local insurance:</strong> More affordable but language barriers</li>
+                        <li><strong>School insurance:</strong> Many international schools offer student health plans</li>
+                        <li><strong>Dental and vision:</strong> Often separate coverage needed</li>
+                        <li><strong>Maternity coverage:</strong> Plan ahead if expanding family</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Pediatric Healthcare</h4>
+                    <ul>
+                        <li><strong>International hospitals:</strong> Pediatric departments with English-speaking doctors</li>
+                        <li><strong>Vaccination schedules:</strong> Ensure children are up to date</li>
+                        <li><strong>Emergency procedures:</strong> Know nearest children's hospitals</li>
+                        <li><strong>Medication considerations:</strong> Some children's medications may not be available</li>
+                        <li><strong>Special needs support:</strong> Resources may be limited, plan accordingly</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Family Housing Considerations</h3>
+
+                    <h4 class="subsubsection-title">Family-Friendly Neighborhoods</h4>
+                    <ul>
+                        <li><strong>School proximity:</strong> Living near good international schools reduces commute stress</li>
+                        <li><strong>Expat communities:</strong> Areas with other international families</li>
+                        <li><strong>Parks and recreation:</strong> Access to playgrounds, sports facilities</li>
+                        <li><strong>Shopping conveniences:</strong> International supermarkets, familiar brands</li>
+                        <li><strong>Public transportation:</strong> Easy access to metro/bus systems</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Housing Requirements for Families</h4>
+                    <ul>
+                        <li><strong>Space considerations:</strong> Apartments are smaller than Western standards</li>
+                        <li><strong>Safety features:</strong> Window guards, balcony safety, child-proofing</li>
+                        <li><strong>Air purification:</strong> Essential in cities with air quality issues</li>
+                        <li><strong>Compound living:</strong> Many expat families choose gated communities</li>
+                        <li><strong>Lease terms:</strong> Family leases often longer and more complex</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Cultural Integration for Families</h3>
+
+                    <h4 class="subsubsection-title">Language Learning for Children</h4>
+                    <ul>
+                        <li><strong>Advantage of youth:</strong> Children adapt to languages faster than adults</li>
+                        <li><strong>Mandarin tutors:</strong> One-on-one or small group lessons</li>
+                        <li><strong>Cultural immersion:</strong> Encourage interaction with local children</li>
+                        <li><strong>Language exchange families:</strong> Chinese families learning English</li>
+                        <li><strong>Patience required:</strong> Language acquisition takes time and practice</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Building Cultural Bridges</div>
+                        <ul>
+                            <li>Celebrate both Western and Chinese holidays</li>
+                            <li>Encourage children to make local friends</li>
+                            <li>Learn about Chinese history and culture together</li>
+                            <li>Try new foods and activities as a family</li>
+                            <li>Document the journey with photos and stories</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Family Activities & Entertainment</h4>
+                    <ul>
+                        <li><strong>Theme parks:</strong> Shanghai Disneyland, Happy Valley, Ocean Park</li>
+                        <li><strong>Museums:</strong> Shanghai Science Museum, China Science & Technology Museum</li>
+                        <li><strong>Outdoor activities:</strong> Hiking trails, city parks, beaches</li>
+                        <li><strong>Cultural experiences:</strong> Traditional performances, festivals, historical sites</li>
+                        <li><strong>Sports facilities:</strong> Swimming pools, tennis courts, family gyms</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Practical Family Tips</h3>
+
+                    <h4 class="subsubsection-title">Daily Life Management</h4>
+                    <ul>
+                        <li><strong>Ayi (housekeeper) services:</strong> Common for expat families, affordable help</li>
+                        <li><strong>Grocery shopping:</strong> International supermarkets, online delivery services</li>
+                        <li><strong>Transportation:</strong> Family-friendly DiDi options, car seat considerations</li>
+                        <li><strong>Emergency contacts:</strong> Pediatricians, schools, trusted neighbors</li>
+                        <li><strong>Travel planning:</strong> Visa requirements for family trips</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Support Networks for Families</div>
+                        <ul>
+                            <li>Join international school parent communities</li>
+                            <li>Connect with other expat families through WeChat groups</li>
+                            <li>Attend family-oriented community events</li>
+                            <li>Consider joining clubs or religious organizations</li>
+                            <li>Maintain connections with home country family and friends</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Emergency Preparedness Section -->
+                <section id="emergency-preparedness" class="section">
+                    <h2 class="section-title">Emergency Preparedness & Safety</h2>
+
+                    <p>Being prepared for emergencies is crucial when living abroad. Know your resources, have backup plans, and keep important information accessible.</p>
+
+                    <h3 class="subsection-title">Essential Emergency Contacts</h3>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Save These Numbers Now</div>
+                        <ul>
+                            <li><strong>Police Emergency:</strong> 110</li>
+                            <li><strong>Ambulance:</strong> 120</li>
+                            <li><strong>Fire Emergency:</strong> 119</li>
+                            <li><strong>Traffic Accidents:</strong> 122</li>
+                            <li><strong>Your embassy:</strong> Find and save your country's embassy number</li>
+                            <li><strong>Your employer's HR:</strong> 24-hour contact</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Embassy Services & Registration</h4>
+                    <ul>
+                        <li><strong>Register with your embassy:</strong> Many embassies have citizen registration services</li>
+                        <li><strong>Emergency passport services:</strong> Know the process and required documents</li>
+                        <li><strong>Consular assistance:</strong> Legal trouble, medical emergencies, natural disasters</li>
+                        <li><strong>Evacuation procedures:</strong> Understand your embassy's emergency protocols</li>
+                        <li><strong>Travel advisories:</strong> Sign up for embassy alerts and updates</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Major City Embassy Locations</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Beijing</th>
+                                <th>Shanghai</th>
+                                <th>Guangzhou</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>US Embassy/Consulates</strong></td>
+                                <td>Embassy: Chaoyang District</td>
+                                <td>Consulate: Huangpu District</td>
+                                <td>Consulate: Tianhe District</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UK Embassy/Consulates</strong></td>
+                                <td>Embassy: Chaoyang District</td>
+                                <td>Consulate: Jing'an District</td>
+                                <td>Consulate: Tianhe District</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Canadian Embassy/Consulates</strong></td>
+                                <td>Embassy: Chaoyang District</td>
+                                <td>Consulate: Huangpu District</td>
+                                <td>Consulate: Tianhe District</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Australian Embassy/Consulates</strong></td>
+                                <td>Embassy: Chaoyang District</td>
+                                <td>Consulate: Huangpu District</td>
+                                <td>Consulate: Tianhe District</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="subsection-title">Natural Disaster Preparedness</h3>
+
+                    <h4 class="subsubsection-title">Common Natural Disasters by Region</h4>
+                    <ul>
+                        <li><strong>Typhoons:</strong> Southeastern coast (Guangzhou, Shenzhen, Fujian) - June to October</li>
+                        <li><strong>Earthquakes:</strong> Western regions (Sichuan, Yunnan) and some northern areas</li>
+                        <li><strong>Flooding:</strong> Yangtze River basin, southern China during monsoon season</li>
+                        <li><strong>Extreme weather:</strong> Northern China sandstorms, severe winter conditions</li>
+                        <li><strong>Air pollution emergencies:</strong> Northern cities during winter months</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Emergency Preparedness Kit</h4>
+                    <ul>
+                        <li><strong>Documents:</strong> Passport copies, visa copies, insurance cards, emergency contacts</li>
+                        <li><strong>Cash:</strong> At least ¥2000-5000 in small bills for emergencies</li>
+                        <li><strong>Medications:</strong> 1-week supply of essential prescriptions</li>
+                        <li><strong>Phone chargers:</strong> Portable battery pack and charging cables</li>
+                        <li><strong>Water and snacks:</strong> 3-day supply per person</li>
+                        <li><strong>Flashlight and batteries:</strong> Power outages are possible</li>
+                        <li><strong>First aid supplies:</strong> Basic medical supplies and bandages</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Weather Alert Apps</div>
+                        <ul>
+                            <li><strong>WeChat Official Accounts:</strong> Local weather bureaus post alerts</li>
+                            <li><strong>China Weather (中国天气):</strong> Official weather service app</li>
+                            <li><strong>Air Quality apps:</strong> AirVisual, AQICN for pollution alerts</li>
+                            <li><strong>Government alerts:</strong> Local government WeChat accounts</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="subsection-title">Medical Emergency Procedures</h3>
+
+                    <h4 class="subsubsection-title">What to Do in Medical Emergency</h4>
+                    <ol>
+                        <li><strong>Call 120:</strong> For ambulance (or have someone call for you)</li>
+                        <li><strong>Show insurance card:</strong> If you have local medical insurance</li>
+                        <li><strong>Contact emergency contact:</strong> Friend, colleague, or employer</li>
+                        <li><strong>Call embassy if serious:</strong> For assistance with medical decisions</li>
+                        <li><strong>Keep receipts:</strong> For insurance reimbursement</li>
+                    </ol>
+
+                    <h4 class="subsubsection-title">Emergency Medical Phrases</h4>
+                    <ul>
+                        <li><strong>救命! (jiùmìng!):</strong> "Help! / Save me!"</li>
+                        <li><strong>请叫救护车 (qǐng jiào jiùhùchē):</strong> "Please call an ambulance"</li>
+                        <li><strong>我需要医生 (wǒ xūyào yīshēng):</strong> "I need a doctor"</li>
+                        <li><strong>我不会说中文 (wǒ bù huì shuō zhōngwén):</strong> "I don't speak Chinese"</li>
+                        <li><strong>请帮助我 (qǐng bāngzhù wǒ):</strong> "Please help me"</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Financial Emergency Planning</h3>
+
+                    <h4 class="subsubsection-title">Emergency Fund Strategy</h4>
+                    <ul>
+                        <li><strong>Chinese cash:</strong> Keep ¥5000-10000 accessible for immediate needs</li>
+                        <li><strong>International card:</strong> Visa/Mastercard that works globally</li>
+                        <li><strong>Home country access:</strong> Online banking access to home accounts</li>
+                        <li><strong>Emergency transfers:</strong> Know how family can send money quickly</li>
+                        <li><strong>Multiple accounts:</strong> Don't put all funds in one Chinese bank</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">If Bank Cards Are Lost/Stolen</h4>
+                    <ol>
+                        <li><strong>Call bank immediately:</strong> Report cards lost/stolen</li>
+                        <li><strong>Go to bank branch:</strong> Bring passport for replacement</li>
+                        <li><strong>Use WeChat/Alipay:</strong> If linked accounts are still secure</li>
+                        <li><strong>Contact employer:</strong> They may advance salary if needed</li>
+                        <li><strong>Emergency wire transfers:</strong> Western Union or MoneyGram</li>
+                    </ol>
+
+                    <h3 class="subsection-title">Personal Safety & Security</h3>
+
+                    <h4 class="subsubsection-title">General Safety Tips</h4>
+                    <ul>
+                        <li><strong>Share location:</strong> Use WeChat location sharing with trusted friends</li>
+                        <li><strong>Night safety:</strong> Use DiDi instead of walking alone late at night</li>
+                        <li><strong>Drink safety:</strong> Watch drinks at bars, avoid excessive alcohol</li>
+                        <li><strong>Protest areas:</strong> Avoid any political gatherings or protests</li>
+                        <li><strong>Tourist scams:</strong> Common in tourist areas - tea house scams, fake monks</li>
+                        <li><strong>Pickpocketing:</strong> Keep valuables secure in crowded areas</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">China is Generally Very Safe</div>
+                        <p>China has low crime rates and is generally very safe for foreigners. Violent crime is rare, and most safety concerns are minor (pickpocketing, scams). The biggest risks are usually traffic accidents and health emergencies, not crime.</p>
+                    </div>
+
+                    <h4 class="subsubsection-title">Digital Security</h4>
+                    <ul>
+                        <li><strong>Backup data:</strong> Regular backups of photos, documents to cloud storage</li>
+                        <li><strong>VPN security:</strong> Use reputable VPN services, avoid free ones</li>
+                        <li><strong>WeChat security:</strong> Enable two-factor authentication</li>
+                        <li><strong>Banking apps:</strong> Log out after use, enable biometric security</li>
+                        <li><strong>Public WiFi:</strong> Avoid sensitive activities on public networks</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Communication During Emergencies</h3>
+
+                    <h4 class="subsubsection-title">Staying Connected</h4>
+                    <ul>
+                        <li><strong>Multiple communication methods:</strong> WeChat, WhatsApp (via VPN), Skype</li>
+                        <li><strong>Emergency contacts list:</strong> In both Chinese and English</li>
+                        <li><strong>Offline maps:</strong> Download offline maps for your city</li>
+                        <li><strong>Translation apps:</strong> Download offline translation capability</li>
+                        <li><strong>Emergency phrases:</strong> Written in Chinese to show people</li>
+                    </ul>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Embassy Assistance Limitations</div>
+                        <p>Your embassy can help with emergencies, legal issues, and evacuation, but they cannot provide loans, get you out of jail for breaking local laws, or override Chinese legal processes. Register with them but understand their role.</p>
+                    </div>
+                </section>
+
                 <!-- Work & Legal Section -->
                 <section id="work-visa" class="section">
                     <h2 class="section-title">Legal Requirements & Work Permits</h2>
@@ -1480,7 +2675,11 @@
                         </ul>
                     </div>
 
-                    <h3 id="beijing" class="subsection-title">Beijing (北京) - The Cultural Capital</h3>
+                </section>
+
+                <!-- Beijing Section -->
+                <section id="beijing" class="section">
+                    <h2 class="section-title">Beijing (北京) - The Cultural Capital</h2>
 
                     <p>China's capital city offers incredible history, culture, and political significance. It's less international than Shanghai but more authentically Chinese.</p>
 
@@ -1503,7 +2702,11 @@
                         <li><strong>Less international:</strong> Fewer Western amenities than Shanghai</li>
                     </ul>
 
-                    <h3 id="shenzhen" class="subsection-title">Shenzhen (深圳) - The Tech Hub</h3>
+                </section>
+
+                <!-- Shenzhen Section -->
+                <section id="shenzhen" class="section">
+                    <h2 class="section-title">Shenzhen (深圳) - The Tech Hub</h2>
 
                     <p>A young, modern city that transformed from fishing village to tech metropolis in 40 years. Next to Hong Kong with a very entrepreneurial atmosphere.</p>
 
@@ -1525,7 +2728,11 @@
                         <li><strong>Luohu (罗湖):</strong> Near Hong Kong border, shopping paradise</li>
                     </ul>
 
-                    <h3 id="chengdu" class="subsection-title">Chengdu (成都) - The Laid-Back Cultural City</h3>
+                </section>
+
+                <!-- Chengdu Section -->
+                <section id="chengdu" class="section">
+                    <h2 class="section-title">Chengdu (成都) - The Laid-Back Cultural City</h2>
 
                     <p>Capital of Sichuan province, famous for spicy food, pandas, and relaxed lifestyle. One of China's most livable cities with incredible local culture.</p>
 
@@ -1546,10 +2753,14 @@
                         <li><strong>Spicy food:</strong> Can be overwhelming if you don't like spice</li>
                         <li><strong>Fewer international amenities:</strong> Limited Western restaurants and services</li>
                     </ul>
+                </section>
 
-                    <h3 id="other-cities" class="subsection-title">Other Popular Cities</h3>
-
-                    <h4 class="subsubsection-title">Hangzhou (杭州) - The Digital Capital</h4>
+                <!-- Hangzhou Section -->
+                <section id="hangzhou" class="section">
+                    <h2 class="section-title">Hangzhou (杭州) - The Digital Capital</h2>
+                    <p>Home to Alibaba and one of China's most beautiful cities, Hangzhou offers a perfect blend of technology innovation and traditional culture.</p>
+                    
+                    <h3 class="subsection-title">Why Choose Hangzhou</h3>
                     <ul>
                         <li><strong>Alibaba headquarters:</strong> Major tech scene</li>
                         <li><strong>Beautiful West Lake:</strong> UNESCO World Heritage site</li>
@@ -1557,8 +2768,14 @@
                         <li><strong>1 hour from Shanghai:</strong> Easy access to international city</li>
                         <li><strong>Lower cost:</strong> More affordable than Shanghai</li>
                     </ul>
+                </section>
 
-                    <h4 class="subsubsection-title">Suzhou (苏州) - The Garden City</h4>
+                <!-- Suzhou Section -->
+                <section id="suzhou" class="section">
+                    <h2 class="section-title">Suzhou (苏州) - The Garden City</h2>
+                    <p>Famous for its classical gardens and modern industrial parks, Suzhou offers traditional Chinese culture with excellent international business opportunities.</p>
+                    
+                    <h3 class="subsection-title">Why Choose Suzhou</h3>
                     <ul>
                         <li><strong>Classical gardens:</strong> UNESCO World Heritage sites</li>
                         <li><strong>Industrial Park:</strong> Many international companies</li>
@@ -1566,8 +2783,14 @@
                         <li><strong>Family-friendly:</strong> Good for expats with children</li>
                         <li><strong>Traditional culture:</strong> More authentic Chinese experience</li>
                     </ul>
+                </section>
 
-                    <h4 class="subsubsection-title">Guangzhou (广州) - The Trading Hub</h4>
+                <!-- Guangzhou Section -->
+                <section id="guangzhou" class="section">
+                    <h2 class="section-title">Guangzhou (广州) - The Trading Hub</h2>
+                    <p>A major trading and business center in southern China, Guangzhou offers excellent career opportunities with a rich Cantonese culture and cuisine.</p>
+                    
+                    <h3 class="subsection-title">Why Choose Guangzhou</h3>
                     <ul>
                         <li><strong>Cantonese culture:</strong> Dim sum, Cantonese language</li>
                         <li><strong>International trade:</strong> Canton Fair twice yearly</li>
@@ -1582,6 +2805,149 @@
                     <h2 class="section-title">Final Tips for Success</h2>
 
                     <p>Living in China will be one of the most transformative experiences of your life. Here are final pieces of advice to help you not just survive, but truly thrive.</p>
+
+                    <h3 id="seasonal-living" class="subsection-title">Seasonal Living & Climate Adaptation</h3>
+
+                    <p>China's vast territory means dramatically different climates across regions and seasons. Understanding and preparing for these changes is essential for comfort and health.</p>
+
+                    <h4 class="subsubsection-title">Seasonal Clothing & Gear by Region</h4>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Region/Season</th>
+                                <th>Temperature Range</th>
+                                <th>Essential Items</th>
+                                <th>Special Considerations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Northern China Winter</strong></td>
+                                <td>-20°C to 5°C</td>
+                                <td>Heavy coat, thermal layers, winter boots</td>
+                                <td>Central heating available, very dry air</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Southern China Winter</strong></td>
+                                <td>0°C to 15°C</td>
+                                <td>Layers, waterproof jacket, humidifier</td>
+                                <td>No central heating, damp and cold indoors</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Summer (All Regions)</strong></td>
+                                <td>25°C to 40°C</td>
+                                <td>UV protection, light clothing, AC</td>
+                                <td>High humidity, strong UV, air pollution</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Spring/Fall Transition</strong></td>
+                                <td>10°C to 25°C</td>
+                                <td>Layered clothing, light jacket</td>
+                                <td>Unpredictable weather, sandstorms (north)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout-warning">
+                        <div class="callout-title">Air Quality & Pollution Management</div>
+                        <ul>
+                            <li><strong>Air purifiers:</strong> Essential for bedrooms, especially in northern cities</li>
+                            <li><strong>Masks:</strong> N95 masks for heavily polluted days (AQI >150)</li>
+                            <li><strong>Apps:</strong> AirVisual, AQICN for real-time air quality monitoring</li>
+                            <li><strong>Indoor plants:</strong> Spider plants, peace lilies help purify indoor air</li>
+                            <li><strong>Exercise timing:</strong> Avoid outdoor activities during high pollution days</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="subsubsection-title">Seasonal Food & Nutrition</h4>
+                    <ul>
+                        <li><strong>Winter warmth:</strong> Hot pot, soups, warm beverages (following local customs)</li>
+                        <li><strong>Summer cooling:</strong> Cold noodles, fresh fruits, coconut water, green tea</li>
+                        <li><strong>Seasonal vegetables:</strong> Embrace local seasonal produce for best prices and freshness</li>
+                        <li><strong>Hydration:</strong> Carry water bottles, warm water in winter (Chinese custom)</li>
+                        <li><strong>Food safety:</strong> More careful with street food in summer heat</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Dealing with Extreme Weather</h4>
+
+                    <ul>
+                        <li><strong>Typhoons (Southeast Coast):</strong> Stock food/water, avoid travel, follow government alerts</li>
+                        <li><strong>Winter heating bills:</strong> Southern China heating costs can be shocking - budget accordingly</li>
+                        <li><strong>Summer power usage:</strong> AC costs can be high, consider energy-efficient settings</li>
+                        <li><strong>Rainy season:</strong> Waterproof shoes, umbrella always, mold prevention</li>
+                        <li><strong>Sandstorms (North):</strong> Goggles, masks, indoor air filtration</li>
+                    </ul>
+
+                    <h3 class="subsection-title">Daily Life Optimization</h3>
+
+                    <h4 class="subsubsection-title">Time-Saving Life Hacks</h4>
+                    <ul>
+                        <li><strong>Delivery everything:</strong> Food, groceries, medicine, even McDonald's - save time and energy</li>
+                        <li><strong>WeChat mini-programs:</strong> Pay utilities, book services, order taxis all in one app</li>
+                        <li><strong>Avoid rush hours:</strong> 8-9am, 6-7pm are packed - plan accordingly</li>
+                        <li><strong>Meal prep Chinese style:</strong> Buy large portions, use delivery apps strategically</li>
+                        <li><strong>Metro passes:</strong> Monthly passes save money and time vs individual tickets</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Cost-Cutting Strategies</h4>
+                    <ul>
+                        <li><strong>Shop local markets:</strong> Wet markets 30-50% cheaper than supermarkets</li>
+                        <li><strong>Group buying:</strong> WeChat group buys for bulk discounts</li>
+                        <li><strong>Seasonal sales:</strong> 11.11, 6.18, Chinese New Year for major purchases</li>
+                        <li><strong>Negotiate rent:</strong> Annual payments often get discounts</li>
+                        <li><strong>Local vs expat pricing:</strong> Learn to recognize and avoid foreigner pricing</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Health & Wellness Routines</h4>
+                    <ul>
+                        <li><strong>Morning exercises:</strong> Join locals in parks for tai chi, dancing, or jogging</li>
+                        <li><strong>Regular checkups:</strong> Annual health checks are affordable and comprehensive</li>
+                        <li><strong>Stress management:</strong> Meditation apps, massage (affordable in China)</li>
+                        <li><strong>Work-life balance:</strong> Don't let work consume all your China experience</li>
+                        <li><strong>Social connections:</strong> Loneliness is the biggest threat to expat mental health</li>
+                    </ul>
+
+                    <div class="callout callout-info">
+                        <div class="callout-title">Practical Daily Essentials</div>
+                        <ul>
+                            <li><strong>Always carry:</strong> Tissues, hand sanitizer, phone charger, cash backup</li>
+                            <li><strong>Apartment essentials:</strong> Air purifier, water filter, good internet, backup heating/cooling</li>
+                            <li><strong>Transportation:</strong> Comfortable walking shoes, metro card, DiDi app ready</li>
+                            <li><strong>Communication:</strong> Translation app offline mode, emergency contacts in Chinese</li>
+                        </ul>
+                    </div>
+
+                    <h3 id="long-term-success" class="subsection-title">Long-term Success Strategies</h3>
+
+                    <h4 class="subsubsection-title">Building Lasting Relationships</h4>
+                    <ul>
+                        <li><strong>Invest in language:</strong> Even basic Chinese opens doors and shows respect</li>
+                        <li><strong>Celebrate local holidays:</strong> Show interest in Chinese culture and traditions</li>
+                        <li><strong>Give gifts thoughtfully:</strong> Small, meaningful gifts build relationships</li>
+                        <li><strong>Be a good neighbor:</strong> Simple courtesy goes far in Chinese communities</li>
+                        <li><strong>Maintain home connections:</strong> Don't let relationships back home fade</li>
+                    </ul>
+
+                    <h4 class="subsubsection-title">Career Development</h4>
+                    <ul>
+                        <li><strong>Network actively:</strong> Both expat and local professional communities</li>
+                        <li><strong>Learn industry Chinese:</strong> Technical vocabulary in your field</li>
+                        <li><strong>Understand hierarchy:</strong> Respect for seniority and position is crucial</li>
+                        <li><strong>Document achievements:</strong> Keep portfolio of your China experience</li>
+                        <li><strong>Plan exit strategy:</strong> How will this experience benefit your future goals?</li>
+                    </ul>
+
+                    <div class="callout callout-success">
+                        <div class="callout-title">Making China Feel Like Home</div>
+                        <ul>
+                            <li>Create routines that bring comfort and stability</li>
+                            <li>Find your "third places" - regular hangouts beyond work and home</li>
+                            <li>Develop local expertise - become the go-to person for something</li>
+                            <li>Embrace the unexpected - flexibility is your greatest asset</li>
+                            <li>Remember why you came - adventure, growth, experience, opportunity</li>
+                        </ul>
+                    </div>
 
                     <h3 class="subsection-title">Mindset & Attitude</h3>
 
@@ -1608,7 +2974,7 @@
                         <li><strong>Focus on growth:</strong> Remember why you came and what you're gaining</li>
                     </ul>
 
-                    <h3 class="subsection-title">Learning & Growth</h3>
+                    <h3 id="language" class="subsection-title">Learning & Growth</h3>
 
                     <h4 class="subsubsection-title">Language Learning Strategy</h4>
                     <ul>

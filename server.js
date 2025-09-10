@@ -315,6 +315,131 @@ app.post('/send-message', async (req, res) => {
     }
 });
 
+// Job listings API (public)
+app.get('/api/jobs', async (req, res) => {
+    try {
+        const jobs = await db.getAllJobs(true); // Only active jobs
+        res.json({
+            success: true,
+            data: jobs
+        });
+    } catch (error) {
+        console.error('Error fetching jobs:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching jobs: ' + error.message
+        });
+    }
+});
+
+// Get specific job (public)
+app.get('/api/jobs/:id', async (req, res) => {
+    try {
+        const job = await db.getJobById(req.params.id);
+        if (job && job.isActive) {
+            res.json({
+                success: true,
+                data: job
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Job not found or inactive'
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching job:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching job: ' + error.message
+        });
+    }
+});
+
+// Submit job interest
+app.post('/api/job-interest', async (req, res) => {
+    try {
+        const interestData = {
+            firstName: req.body.firstName?.trim(),
+            lastName: req.body.lastName?.trim(),
+            email: req.body.email?.trim(),
+            phone: req.body.phone?.trim(),
+            preferredLocation: req.body.preferredLocation?.trim(),
+            teachingSubject: req.body.teachingSubject?.trim(),
+            experience: req.body.experience?.trim(),
+            message: req.body.message?.trim()
+        };
+
+        // Basic validation
+        if (!interestData.firstName || !interestData.lastName || !interestData.email || 
+            !interestData.teachingSubject || !interestData.experience) {
+            return res.status(400).json({
+                success: false,
+                message: 'Required fields are missing'
+            });
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(interestData.email)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid email format'
+            });
+        }
+
+        const result = await db.addJobInterest(interestData);
+        
+        // Send email notification
+        try {
+            const transporter = nodemailer.createTransporter({
+                host: 'smtp.zoho.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_USER || 'team@educonnectchina.com',
+                    pass: process.env.EMAIL_PASS || 'your-zoho-password'
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER || 'team@educonnectchina.com',
+                to: process.env.EMAIL_TO || 'team@educonnectchina.com',
+                subject: `New Job Interest: ${interestData.firstName} ${interestData.lastName}`,
+                html: `
+                    <h2>New Job Interest Received</h2>
+                    <p><strong>Name:</strong> ${interestData.firstName} ${interestData.lastName}</p>
+                    <p><strong>Email:</strong> ${interestData.email}</p>
+                    <p><strong>Phone:</strong> ${interestData.phone || 'Not provided'}</p>
+                    <p><strong>Teaching Subject:</strong> ${interestData.teachingSubject}</p>
+                    <p><strong>Experience:</strong> ${interestData.experience}</p>
+                    <p><strong>Preferred Location:</strong> ${interestData.preferredLocation || 'No preference'}</p>
+                    
+                    ${interestData.message ? `<h3>Message:</h3><p>${interestData.message}</p>` : ''}
+                    
+                    <p><em>View full details in the admin dashboard.</em></p>
+                `
+            };
+
+            await transporter.sendMail(mailOptions);
+        } catch (emailError) {
+            console.error('Error sending job interest notification email:', emailError);
+        }
+        
+        res.json({
+            success: true,
+            message: 'Interest submitted successfully'
+        });
+        
+    } catch (error) {
+        console.error('Error submitting job interest:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error submitting interest: ' + error.message
+        });
+    }
+});
+
 app.get('/api/teachers', requireAuth, async (req, res) => {
     try {
         const teachers = await db.getAllTeachers();
