@@ -131,6 +131,9 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
         if (!req.body.email || !req.body.email.includes('@')) {
             return res.status(400).json({ success: false, message: 'Valid email is required' });
         }
+        if (!req.body.preferredAgeGroup || req.body.preferredAgeGroup.trim().length === 0) {
+            return res.status(400).json({ success: false, message: 'Preferred age group is required' });
+        }
 
         const teacherData = {
             firstName: req.body.firstName.trim(),
@@ -143,6 +146,7 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             teachingExperience: req.body.teachingExperience.trim(),
             subjectSpecialty: req.body.subjectSpecialty.trim(),
             preferredLocation: req.body.preferredLocation ? req.body.preferredLocation.trim() : null,
+            preferred_age_group: req.body.preferredAgeGroup ? req.body.preferredAgeGroup.trim() : null,
             introVideoPath: req.file ? req.file.filename : null,
             additionalInfo: req.body.additionalInfo ? req.body.additionalInfo.trim() : null
         };
@@ -174,6 +178,7 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
                     <p><strong>Experience:</strong> ${teacherData.yearsExperience}</p>
                     <p><strong>Subject:</strong> ${teacherData.subjectSpecialty}</p>
                     <p><strong>Preferred Location:</strong> ${teacherData.preferredLocation || 'No preference'}</p>
+                    <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group || 'Not specified'}</p>
                     
                     <h3>Education Background:</h3>
                     <p>${teacherData.education}</p>

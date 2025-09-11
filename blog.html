@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - EduConnect 中国</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/browser_icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/browser_icon.png">
+    <link rel="shortcut icon" href="images/browser_icon.png">
+    <link rel="apple-touch-icon" href="images/browser_icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/blog.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">
+                        <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
+                    </a>
+                </div>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
+                    <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="jobs.html" class="nav-link" onclick="closeNav()">Jobs</a>
+                    <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
+                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+        <div class="container">
+            <div class="blog-hero-content">
+                <h1 class="blog-title">Teaching in <span class="china-text">China</span> Blog</h1>
+                <p class="blog-subtitle">Insights, tips, and stories from the world of international education</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Posts Section -->
+    <section class="blog-posts">
+        <div class="container">
+            <div class="blog-grid">
+                <!-- Blog Post 1 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/shanghai_skyline.jpg" alt="Shanghai skyline" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">March 15, 2025</span>
+                            <span class="blog-category">Living in China</span>
+                        </div>
+                        <h2 class="blog-card-title">Your First Month in Shanghai: A Teacher's Guide</h2>
+                        <p class="blog-card-excerpt">From finding the best dumplings to navigating the metro system, here's everything you need to know about settling into life as an international teacher in Shanghai.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+
+                <!-- Blog Post 2 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/china_classroom.jpg" alt="Chinese classroom" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">March 10, 2025</span>
+                            <span class="blog-category">Teaching Tips</span>
+                        </div>
+                        <h2 class="blog-card-title">Cultural Differences in the Classroom: What to Expect</h2>
+                        <p class="blog-card-excerpt">Understanding Chinese educational culture and student expectations can make your teaching experience more effective and rewarding.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+
+                <!-- Blog Post 3 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/expat_badminton.jpg" alt="Expat community activities" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">March 5, 2025</span>
+                            <span class="blog-category">Community</span>
+                        </div>
+                        <h2 class="blog-card-title">Building Your Expat Network: Making Friends in China</h2>
+                        <p class="blog-card-excerpt">From badminton clubs to language exchanges, discover the best ways to connect with fellow expats and local communities.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+
+                <!-- Blog Post 4 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/classroom_science_lab.jpg" alt="Modern science laboratory" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">February 28, 2025</span>
+                            <span class="blog-category">Career Growth</span>
+                        </div>
+                        <h2 class="blog-card-title">From Teacher to Department Head: Career Progression in Chinese Schools</h2>
+                        <p class="blog-card-excerpt">Learn how international teachers can advance their careers quickly in China's competitive education sector.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+
+                <!-- Blog Post 5 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/elementary_classroom.jpg" alt="Elementary classroom" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">February 20, 2025</span>
+                            <span class="blog-category">Teaching Tips</span>
+                        </div>
+                        <h2 class="blog-card-title">Technology in Chinese Classrooms: Adapting Your Teaching Style</h2>
+                        <p class="blog-card-excerpt">Chinese schools often have cutting-edge technology. Here's how to leverage these tools for better student engagement.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+
+                <!-- Blog Post 6 -->
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="images/shanghai_french_concession.jpg" alt="Shanghai French Concession" loading="lazy">
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">February 15, 2025</span>
+                            <span class="blog-category">Living in China</span>
+                        </div>
+                        <h2 class="blog-card-title">Weekend Adventures: Exploring China on a Teacher's Salary</h2>
+                        <p class="blog-card-excerpt">Budget-friendly travel tips for exploring China's incredible destinations, from the Great Wall to ancient water towns.</p>
+                        <a href="#" class="blog-read-more">Read More</a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="blog-load-more">
+                <button class="btn-secondary">Load More Posts</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="blog-newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="newsletter-title">Stay Updated</h2>
+                <p class="newsletter-subtitle">Get the latest teaching insights and China living tips delivered to your inbox.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="name@email.com" class="email-input">
+                    <button type="submit" class="email-submit">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 class="footer-title">EduConnect</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#about">Our Mission</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="integration-guide.html">China Guide</a></li>
+                        <li><a href="language-course.html">Survival Chinese</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#cookies">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EduConnect Asia Ltd. All rights reserved.</p>
+                <div class="footer-address">
+                    <p>71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

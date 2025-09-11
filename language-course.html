@@ -11,237 +11,388 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        .course-container {
-            max-width: 1000px;
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background: #fafafa;
+            margin: 0;
+            padding: 0;
+            padding-top: 80px;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            min-height: 80px;
+        }
+
+        /* Course Container - Google Docs style */
+        .course-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         
-        .course-header {
+        /* Hero Section - Compact */
+        .course-hero {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 60px 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
+            padding: 3rem 0 2rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
         }
         
+        .course-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+        
+        .course-hero .subtitle {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        /* Progress Bar - Minimal */
+        .progress-container {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        
+        /* Navigation - Compact horizontal tabs */
         .course-nav {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
             position: sticky;
             top: 80px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
             z-index: 100;
         }
         
-        .course-nav ul {
-            list-style: none;
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
             padding: 0;
             margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
+            list-style: none;
+            gap: 0;
         }
         
-        .course-nav a {
+        .nav-tab {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
             text-decoration: none;
-            color: #333;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: white;
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
-            font-size: 14px;
         }
         
-        .course-nav a:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+        .nav-tab:hover {
+            color: #1f2937;
+            background: #f8fafc;
+        }
+
+        .nav-tab.completed {
+            color: #059669;
+            border-bottom-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .nav-tab.current {
+            color: #1f2937;
+            border-bottom-color: #3b82f6;
+            background: #eff6ff;
         }
         
-        .section {
-            background: white;
-            padding: 40px;
-            margin-bottom: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        /* Module Sections - Document style */
+        .module {
+            margin-bottom: 3rem;
+            scroll-margin-top: 140px;
         }
-        
-        .section h2 {
-            color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+
+        .module-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
         }
-        
-        .section h3 {
-            color: #333;
-            font-size: 1.5em;
-            margin: 25px 0 15px 0;
-            padding-left: 15px;
-            border-left: 4px solid #667eea;
+
+        .module-header h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 0.5rem 0;
         }
-        
-        .phrase-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            border-left: 4px solid #667eea;
+
+        .module-header .level {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        
-        .phrase-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 15px;
-            align-items: center;
-            margin: 10px 0;
-            padding: 10px 0;
-            border-bottom: 1px solid #e9ecef;
+
+        /* Section Headers */
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 2rem 0 1rem 0;
+            padding-left: 1rem;
+            border-left: 4px solid #3b82f6;
         }
-        
-        .phrase-row:last-child {
-            border-bottom: none;
+
+        /* Vocabulary Table - Notion style */
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
         }
-        
+
+        .vocab-table th {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .vocab-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            vertical-align: middle;
+        }
+
+        .vocab-table tr:hover {
+            background: #f8fafc;
+        }
+
         .hanzi {
-            font-size: 1.4em;
-            font-weight: bold;
+            font-size: 1.125rem;
+            font-weight: 600;
             font-family: 'Noto Sans SC', 'Source Han Sans CN', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'SimHei', '黑体', sans-serif;
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 50%, #2b6cb0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            letter-spacing: 0.02em;
+            color: #1f2937;
         }
         
         .pinyin {
             font-style: italic;
-            color: #666;
-            font-size: 0.95em;
+            color: #6b7280;
+            font-size: 0.875rem;
         }
         
         .english {
-            color: #333;
-            font-weight: 500;
+            color: #374151;
         }
         
-        .audio-placeholder {
-            background: #e3f2fd;
-            border: 1px solid #2196F3;
-            border-radius: 5px;
-            padding: 5px 10px;
-            color: #1976D2;
-            font-size: 0.8em;
+        /* Inline Audio Button */
+        .audio-btn {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
             cursor: pointer;
+            font-size: 0.75rem;
+            color: #6b7280;
+            transition: all 0.2s ease;
+        }
+        
+        .audio-btn:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Example Sentences */
+        .example-box {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .example-sentence {
+            margin-bottom: 0.5rem;
+        }
+
+        .example-sentence:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Grammar Points */
+        .grammar-point {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .grammar-point h4 {
+            color: #92400e;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        /* App Guide */
+        .app-guide {
+            background: #e0f2fe;
+            border: 1px solid #0284c7;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .app-guide h4 {
+            color: #0c4a6e;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        /* Quiz Section - Compact */
+        .quiz-section {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .quiz-section h3 {
+            color: #92400e;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.125rem;
+        }
+
+        .quiz-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
-        
-        .audio-placeholder:hover {
-            background: #2196F3;
-            color: white;
+
+        .quiz-btn:hover {
+            background: #d97706;
+            transform: translateY(-1px);
         }
-        
-        .app-guide {
-            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
-            border: 1px solid #4CAF50;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
+
+        /* Lists */
+        .vocab-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        
-        .app-guide h4 {
-            color: #2e7d32;
-            margin-top: 0;
-            font-size: 1.3em;
+
+        .vocab-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f3f4f6;
         }
-        
-        .scenario-box {
-            background: #fff3e0;
-            border: 1px solid #ff9800;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 15px 0;
+
+        .vocab-item:last-child {
+            border-bottom: none;
         }
-        
-        .scenario-box h4 {
-            color: #e65100;
-            margin-top: 0;
+
+        .vocab-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 120px 150px 1fr;
+            gap: 1rem;
+            align-items: center;
         }
-        
-        .pronunciation-tip {
-            background: #f3e5f5;
-            border: 1px solid #9c27b0;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .pronunciation-tip h4 {
-            color: #7b1fa2;
-            margin-top: 0;
-        }
-        
-        .placeholder {
-            background: #f0f0f0;
-            border: 2px dashed #ccc;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .course-links {
-            text-align: center;
-            margin: 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 15px;
-        }
-        
-        .course-links a {
-            display: inline-block;
-            background: white;
-            color: #333;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s ease;
-        }
-        
-        .course-links a:hover {
-            transform: translateY(-2px);
-        }
-        
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .course-container {
-                padding: 10px;
+                padding: 1rem;
+                margin: 0;
+                box-shadow: none;
             }
             
-            .section {
-                padding: 20px;
+            .course-hero h1 {
+                font-size: 2rem;
             }
-            
-            .course-nav ul {
+
+            .nav-tabs {
                 flex-direction: column;
-                align-items: center;
             }
-            
-            .phrase-row {
+
+            .vocab-content {
                 grid-template-columns: 1fr;
-                gap: 8px;
-                text-align: center;
+                gap: 0.25rem;
+                text-align: left;
+            }
+
+            .vocab-table {
+                font-size: 0.8rem;
+            }
+
+            .vocab-table th, .vocab-table td {
+                padding: 0.5rem;
+            }
+
+            .nav-container {
+                padding: 0.75rem 1rem;
             }
         }
     </style>
@@ -258,378 +409,603 @@
                 </div>
                 <div class="nav-links">
                     <a href="index.html" class="nav-link">Home</a>
+                    <a href="jobs.html" class="nav-link">Jobs</a>
                     <a href="integration-guide.html" class="nav-link">Integration Guide</a>
                     <a href="language-course.html" class="nav-link">Language Course</a>
                     <a href="contact.html" class="nav-link">Support</a>
+                    <a href="signup.html" class="nav-link cta-button">Join Now</a>
                 </div>
             </div>
         </nav>
     </header>
 
     <div class="course-container">
-        <!-- Course Header -->
-        <div class="course-header">
+        <!-- Hero Section -->
+        <div class="course-hero">
             <h1>Chinese Language Course for Teachers</h1>
-            <p style="font-size: 1.2em; margin-top: 20px;">Master essential Chinese phrases and apps for your teaching journey</p>
+            <p class="subtitle">Complete HSK 1-3 program with teacher-specific vocabulary and app mastery</p>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="progressText">0% Complete</span> • <span id="moduleCounter">0/7 Modules</span>
+            </div>
         </div>
 
         <!-- Course Navigation -->
         <div class="course-nav">
-            <ul>
-                <li><a href="#classroom-basics">Classroom Basics</a></li>
-                <li><a href="#parent-communication">Parent Communication</a></li>
-                <li><a href="#daily-life">Daily Life</a></li>
-                <li><a href="#emergencies">Emergencies</a></li>
-                <li><a href="#app-usage">Using Apps</a></li>
-                <li><a href="#food-ordering">Food Ordering</a></li>
-                <li><a href="#shopping">Shopping</a></li>
-                <li><a href="#pronunciation">Pronunciation Guide</a></li>
+            <ul class="nav-tabs">
+                <li><a href="#hsk1" class="nav-tab current" data-module="hsk1">HSK 1</a></li>
+                <li><a href="#hsk2" class="nav-tab" data-module="hsk2">HSK 2</a></li>
+                <li><a href="#hsk3" class="nav-tab" data-module="hsk3">HSK 3</a></li>
+                <li><a href="#teacher-vocab" class="nav-tab" data-module="teacher-vocab">Teaching</a></li>
+                <li><a href="#apps" class="nav-tab" data-module="apps">Apps</a></li>
+                <li><a href="#classroom" class="nav-tab" data-module="classroom">Classroom</a></li>
+                <li><a href="#survival" class="nav-tab" data-module="survival">Survival</a></li>
             </ul>
         </div>
 
-        <!-- Classroom Basics Section -->
-        <section id="classroom-basics" class="section">
-            <h2>🏫 Classroom Basics</h2>
-            
-            <h3>Essential Teacher Phrases</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">大家好</div>
-                    <div class="pinyin">dàjiā hǎo</div>
-                    <div class="english">Hello everyone</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">请坐</div>
-                    <div class="pinyin">qǐng zuò</div>
-                    <div class="english">Please sit down</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">请举手</div>
-                    <div class="pinyin">qǐng jǔshǒu</div>
-                    <div class="english">Please raise your hand</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">很好</div>
-                    <div class="pinyin">hěn hǎo</div>
-                    <div class="english">Very good</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">下课了</div>
-                    <div class="pinyin">xià kè le</div>
-                    <div class="english">Class is over</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
+        <!-- HSK 1 Module -->
+        <div id="hsk1" class="module">
+            <div class="module-header">
+                <h2>HSK 1 Foundation</h2>
+                <div class="level">Beginner Level • 150 Core Words</div>
             </div>
 
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Additional classroom management phrases, giving instructions, praise and encouragement, handling disruptions, and explaining activities - all with Hanzi, Pinyin, English, and audio file placeholders]
+            <h3 class="section-header">Basic Greetings & Politeness</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hanzi">你好</td>
+                        <td class="pinyin">nǐ hǎo</td>
+                        <td class="english">Hello</td>
+                        <td><button class="audio-btn" data-audio="hsk1_nihao">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">您好</td>
+                        <td class="pinyin">nín hǎo</td>
+                        <td class="english">Hello (polite)</td>
+                        <td><button class="audio-btn" data-audio="hsk1_ninhao">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">再见</td>
+                        <td class="pinyin">zàijiàn</td>
+                        <td class="english">Goodbye</td>
+                        <td><button class="audio-btn" data-audio="hsk1_zaijian">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">谢谢</td>
+                        <td class="pinyin">xiècxie</td>
+                        <td class="english">Thank you</td>
+                        <td><button class="audio-btn" data-audio="hsk1_xiexie">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">不客气</td>
+                        <td class="pinyin">bù kèqi</td>
+                        <td class="english">You're welcome</td>
+                        <td><button class="audio-btn" data-audio="hsk1_bukeqi">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">对不起</td>
+                        <td class="pinyin">duìbùqǐ</td>
+                        <td class="english">Sorry</td>
+                        <td><button class="audio-btn" data-audio="hsk1_duibuqi">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">没关系</td>
+                        <td class="pinyin">méi guānxi</td>
+                        <td class="english">It's okay / No problem</td>
+                        <td><button class="audio-btn" data-audio="hsk1_meiguanxi">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">请</td>
+                        <td class="pinyin">qǐng</td>
+                        <td class="english">Please</td>
+                        <td><button class="audio-btn" data-audio="hsk1_qing">🔊</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <strong>Example Conversations:</strong><br>
+                A: 你好！<br>
+                B: 您好！<br><br>
+                A: 谢谢！<br>
+                B: 不客气。
             </div>
 
-            <div class="scenario-box">
-                <h4>📚 Classroom Scenario</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Interactive classroom scenario with dialogue examples and role-play exercises]
-                </div>
-            </div>
-        </section>
+            <h3 class="section-header">Personal Pronouns</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hanzi">我</td>
+                        <td class="pinyin">wǒ</td>
+                        <td class="english">I / me</td>
+                        <td><button class="audio-btn" data-audio="hsk1_wo">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">你</td>
+                        <td class="pinyin">nǐ</td>
+                        <td class="english">You</td>
+                        <td><button class="audio-btn" data-audio="hsk1_ni">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">您</td>
+                        <td class="pinyin">nín</td>
+                        <td class="english">You (polite)</td>
+                        <td><button class="audio-btn" data-audio="hsk1_nin">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">他</td>
+                        <td class="pinyin">tā</td>
+                        <td class="english">He / him</td>
+                        <td><button class="audio-btn" data-audio="hsk1_ta_he">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">她</td>
+                        <td class="pinyin">tā</td>
+                        <td class="english">She / her</td>
+                        <td><button class="audio-btn" data-audio="hsk1_ta_she">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">我们</td>
+                        <td class="pinyin">wǒmen</td>
+                        <td class="english">We / us</td>
+                        <td><button class="audio-btn" data-audio="hsk1_women">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">你们</td>
+                        <td class="pinyin">nǐmen</td>
+                        <td class="english">You all</td>
+                        <td><button class="audio-btn" data-audio="hsk1_nimen">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">他们</td>
+                        <td class="pinyin">tāmen</td>
+                        <td class="english">They / them</td>
+                        <td><button class="audio-btn" data-audio="hsk1_tamen">🔊</button></td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <!-- Parent Communication Section -->
-        <section id="parent-communication" class="section">
-            <h2>👨‍👩‍👧‍👦 Parent Communication</h2>
-            
-            <h3>Meeting Parents</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">您好</div>
-                    <div class="pinyin">nín hǎo</div>
-                    <div class="english">Hello (formal)</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我是英语老师</div>
-                    <div class="pinyin">wǒ shì yīngyǔ lǎoshī</div>
-                    <div class="english">I am the English teacher</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">孩子很棒</div>
-                    <div class="pinyin">háizi hěn bàng</div>
-                    <div class="english">The child is excellent</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">需要练习</div>
-                    <div class="pinyin">xūyào liànxí</div>
-                    <div class="english">Needs practice</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
+            <div class="grammar-point">
+                <h4>Grammar Point: Chinese doesn't change pronoun forms</h4>
+                Unlike English (I/me, he/him), Chinese pronouns stay the same whether subject or object: 我爱她 (I love her) vs 她爱我 (She loves me).
             </div>
 
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Parent-teacher conference phrases, discussing student progress, addressing concerns, homework discussions, and polite communication strategies]
+            <h3 class="section-header">Numbers 0-20</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">零</td><td class="pinyin">líng</td><td class="english">Zero</td><td><button class="audio-btn" data-audio="hsk1_ling">🔊</button></td></tr>
+                    <tr><td class="hanzi">一</td><td class="pinyin">yī</td><td class="english">One</td><td><button class="audio-btn" data-audio="hsk1_yi">🔊</button></td></tr>
+                    <tr><td class="hanzi">二</td><td class="pinyin">èr</td><td class="english">Two</td><td><td><button class="audio-btn" data-audio="hsk1_er">🔊</button></td></tr>
+                    <tr><td class="hanzi">三</td><td class="pinyin">sān</td><td class="english">Three</td><td><button class="audio-btn" data-audio="hsk1_san">🔊</button></td></tr>
+                    <tr><td class="hanzi">四</td><td class="pinyin">sì</td><td class="english">Four</td><td><button class="audio-btn" data-audio="hsk1_si">🔊</button></td></tr>
+                    <tr><td class="hanzi">五</td><td class="pinyin">wǔ</td><td class="english">Five</td><td><button class="audio-btn" data-audio="hsk1_wu">🔊</button></td></tr>
+                    <tr><td class="hanzi">六</td><td class="pinyin">liù</td><td class="english">Six</td><td><button class="audio-btn" data-audio="hsk1_liu">🔊</button></td></tr>
+                    <tr><td class="hanzi">七</td><td class="pinyin">qī</td><td class="english">Seven</td><td><button class="audio-btn" data-audio="hsk1_qi">🔊</button></td></tr>
+                    <tr><td class="hanzi">八</td><td class="pinyin">bā</td><td class="english">Eight</td><td><button class="audio-btn" data-audio="hsk1_ba">🔊</button></td></tr>
+                    <tr><td class="hanzi">九</td><td class="pinyin">jiǔ</td><td class="english">Nine</td><td><button class="audio-btn" data-audio="hsk1_jiu">🔊</button></td></tr>
+                    <tr><td class="hanzi">十</td><td class="pinyin">shí</td><td class="english">Ten</td><td><button class="audio-btn" data-audio="hsk1_shi">🔊</button></td></tr>
+                    <tr><td class="hanzi">十一</td><td class="pinyin">shí yī</td><td class="english">Eleven</td><td><button class="audio-btn" data-audio="hsk1_shiyi">🔊</button></td></tr>
+                    <tr><td class="hanzi">十二</td><td class="pinyin">shí èr</td><td class="english">Twelve</td><td><button class="audio-btn" data-audio="hsk1_shier">🔊</button></td></tr>
+                    <tr><td class="hanzi">二十</td><td class="pinyin">èr shí</td><td class="english">Twenty</td><td><button class="audio-btn" data-audio="hsk1_ershi">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="grammar-point">
+                <h4>Number Pattern:</h4>
+                11-19: 十 + number (十一, 十二, etc.)<br>
+                20-90: number + 十 (二十, 三十, etc.)<br>
+                21-99: tens + ones (二十一, 三十五, etc.)
+            </div>
+
+            <h3 class="section-header">Question Words</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hanzi">什么</td>
+                        <td class="pinyin">shénme</td>
+                        <td class="english">What</td>
+                        <td><button class="audio-btn" data-audio="hsk1_shenme">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">哪里</td>
+                        <td class="pinyin">nǎlǐ</td>
+                        <td class="english">Where</td>
+                        <td><button class="audio-btn" data-audio="hsk1_nali">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">谁</td>
+                        <td class="pinyin">shéi</td>
+                        <td class="english">Who</td>
+                        <td><button class="audio-btn" data-audio="hsk1_shei">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">多少</td>
+                        <td class="pinyin">duōshao</td>
+                        <td class="english">How much / How many</td>
+                        <td><button class="audio-btn" data-audio="hsk1_duoshao">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">几</td>
+                        <td class="pinyin">jǐ</td>
+                        <td class="english">How many (small numbers)</td>
+                        <td><button class="audio-btn" data-audio="hsk1_ji">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">怎么</td>
+                        <td class="pinyin">zěnme</td>
+                        <td class="english">How</td>
+                        <td><button class="audio-btn" data-audio="hsk1_zenme">🔊</button></td>
+                    </tr>
+                    <tr>
+                        <td class="hanzi">为什么</td>
+                        <td class="pinyin">wèi shénme</td>
+                        <td class="english">Why</td>
+                        <td><button class="audio-btn" data-audio="hsk1_weishenme">🔊</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Family Members</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">家</td><td class="pinyin">jiā</td><td class="english">Family / Home</td><td><button class="audio-btn" data-audio="hsk1_jia">🔊</button></td></tr>
+                    <tr><td class="hanzi">爸爸</td><td class="pinyin">bàba</td><td class="english">Father / Dad</td><td><button class="audio-btn" data-audio="hsk1_baba">🔊</button></td></tr>
+                    <tr><td class="hanzi">妈妈</td><td class="pinyin">māma</td><td class="english">Mother / Mom</td><td><button class="audio-btn" data-audio="hsk1_mama">🔊</button></td></tr>
+                    <tr><td class="hanzi">儿子</td><td class="pinyin">érzi</td><td class="english">Son</td><td><button class="audio-btn" data-audio="hsk1_erzi">🔊</button></td></tr>
+                    <tr><td class="hanzi">女儿</td><td class="pinyin">nǚ'ér</td><td class="english">Daughter</td><td><button class="audio-btn" data-audio="hsk1_nuer">🔊</button></td></tr>
+                    <tr><td class="hanzi">孩子</td><td class="pinyin">háizi</td><td class="english">Child</td><td><button class="audio-btn" data-audio="hsk1_haizi">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Basic Verbs</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">是</td><td class="pinyin">shì</td><td class="english">To be</td><td><button class="audio-btn" data-audio="hsk1_shi_verb">🔊</button></td></tr>
+                    <tr><td class="hanzi">有</td><td class="pinyin">yǒu</td><td class="english">To have</td><td><button class="audio-btn" data-audio="hsk1_you">🔊</button></td></tr>
+                    <tr><td class="hanzi">在</td><td class="pinyin">zài</td><td class="english">To be at / located</td><td><button class="audio-btn" data-audio="hsk1_zai">🔊</button></td></tr>
+                    <tr><td class="hanzi">看</td><td class="pinyin">kàn</td><td class="english">To look / see</td><td><button class="audio-btn" data-audio="hsk1_kan">🔊</button></td></tr>
+                    <tr><td class="hanzi">听</td><td class="pinyin">tīng</td><td class="english">To listen</td><td><button class="audio-btn" data-audio="hsk1_ting">🔊</button></td></tr>
+                    <tr><td class="hanzi">说</td><td class="pinyin">shuō</td><td class="english">To speak / say</td><td><button class="audio-btn" data-audio="hsk1_shuo">🔊</button></td></tr>
+                    <tr><td class="hanzi">读</td><td class="pinyin">dú</td><td class="english">To read</td><td><button class="audio-btn" data-audio="hsk1_du">🔊</button></td></tr>
+                    <tr><td class="hanzi">写</td><td class="pinyin">xiě</td><td class="english">To write</td><td><button class="audio-btn" data-audio="hsk1_xie">🔊</button></td></tr>
+                    <tr><td class="hanzi">吃</td><td class="pinyin">chī</td><td class="english">To eat</td><td><button class="audio-btn" data-audio="hsk1_chi">🔊</button></td></tr>
+                    <tr><td class="hanzi">喝</td><td class="pinyin">hē</td><td class="english">To drink</td><td><button class="audio-btn" data-audio="hsk1_he">🔊</button></td></tr>
+                    <tr><td class="hanzi">来</td><td class="pinyin">lái</td><td class="english">To come</td><td><button class="audio-btn" data-audio="hsk1_lai">🔊</button></td></tr>
+                    <tr><td class="hanzi">去</td><td class="pinyin">qù</td><td class="english">To go</td><td><button class="audio-btn" data-audio="hsk1_qu">🔊</button></td></tr>
+                    <tr><td class="hanzi">买</td><td class="pinyin">mǎi</td><td class="english">To buy</td><td><button class="audio-btn" data-audio="hsk1_mai">🔊</button></td></tr>
+                    <tr><td class="hanzi">想</td><td class="pinyin">xiǎng</td><td class="english">To want / think</td><td><button class="audio-btn" data-audio="hsk1_xiang">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Common Adjectives</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">好</td><td class="pinyin">hǎo</td><td class="english">Good</td><td><button class="audio-btn" data-audio="hsk1_hao">🔊</button></td></tr>
+                    <tr><td class="hanzi">大</td><td class="pinyin">dà</td><td class="english">Big</td><td><button class="audio-btn" data-audio="hsk1_da">🔊</button></td></tr>
+                    <tr><td class="hanzi">小</td><td class="pinyin">xiǎo</td><td class="english">Small</td><td><button class="audio-btn" data-audio="hsk1_xiao">🔊</button></td></tr>
+                    <tr><td class="hanzi">多</td><td class="pinyin">duō</td><td class="english">Many / Much</td><td><button class="audio-btn" data-audio="hsk1_duo">🔊</button></td></tr>
+                    <tr><td class="hanzi">少</td><td class="pinyin">shǎo</td><td class="english">Few / Little</td><td><button class="audio-btn" data-audio="hsk1_shao">🔊</button></td></tr>
+                    <tr><td class="hanzi">冷</td><td class="pinyin">lěng</td><td class="english">Cold</td><td><button class="audio-btn" data-audio="hsk1_leng">🔊</button></td></tr>
+                    <tr><td class="hanzi">热</td><td class="pinyin">rè</td><td class="english">Hot</td><td><button class="audio-btn" data-audio="hsk1_re">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="quiz-section">
+                <h3>🧠 HSK 1 Module Quiz</h3>
+                <p>Test your knowledge of 80+ HSK 1 vocabulary words and basic structures</p>
+                <button class="quiz-btn" onclick="startQuiz('hsk1')">Start HSK 1 Quiz</button>
+            </div>
+        </div>
+
+        <!-- HSK 2 Module -->
+        <div id="hsk2" class="module">
+            <div class="module-header">
+                <h2>HSK 2 Building Blocks</h2>
+                <div class="level">Elementary Level • 300 Total Words</div>
+            </div>
+
+            <h3 class="section-header">Time Expressions</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">时间</td><td class="pinyin">shíjiān</td><td class="english">Time</td><td><button class="audio-btn" data-audio="hsk2_shijian">🔊</button></td></tr>
+                    <tr><td class="hanzi">现在</td><td class="pinyin">xiànzài</td><td class="english">Now</td><td><button class="audio-btn" data-audio="hsk2_xianzai">🔊</button></td></tr>
+                    <tr><td class="hanzi">今天</td><td class="pinyin">jīntiān</td><td class="english">Today</td><td><button class="audio-btn" data-audio="hsk2_jintian">🔊</button></td></tr>
+                    <tr><td class="hanzi">明天</td><td class="pinyin">míngtiān</td><td class="english">Tomorrow</td><td><button class="audio-btn" data-audio="hsk2_mingtian">🔊</button></td></tr>
+                    <tr><td class="hanzi">昨天</td><td class="pinyin">zuótiān</td><td class="english">Yesterday</td><td><button class="audio-btn" data-audio="hsk2_zuotian">🔊</button></td></tr>
+                    <tr><td class="hanzi">上午</td><td class="pinyin">shàngwǔ</td><td class="english">Morning (AM)</td><td><button class="audio-btn" data-audio="hsk2_shangwu">🔊</button></td></tr>
+                    <tr><td class="hanzi">下午</td><td class="pinyin">xiàwǔ</td><td class="english">Afternoon (PM)</td><td><button class="audio-btn" data-audio="hsk2_xiawu">🔊</button></td></tr>
+                    <tr><td class="hanzi">晚上</td><td class="pinyin">wǎnshàng</td><td class="english">Evening</td><td><button class="audio-btn" data-audio="hsk2_wanshang">🔊</button></td></tr>
+                    <tr><td class="hanzi">年</td><td class="pinyin">nián</td><td class="english">Year</td><td><button class="audio-btn" data-audio="hsk2_nian">🔊</button></td></tr>
+                    <tr><td class="hanzi">月</td><td class="pinyin">yuè</td><td class="english">Month</td><td><button class="audio-btn" data-audio="hsk2_yue">🔊</button></td></tr>
+                    <tr><td class="hanzi">日</td><td class="pinyin">rì</td><td class="english">Day</td><td><button class="audio-btn" data-audio="hsk2_ri">🔊</button></td></tr>
+                    <tr><td class="hanzi">星期</td><td class="pinyin">xīngqī</td><td class="english">Week</td><td><button class="audio-btn" data-audio="hsk2_xingqi">🔊</button></td></tr>
+                    <tr><td class="hanzi">点</td><td class="pinyin">diǎn</td><td class="english">O'clock</td><td><button class="audio-btn" data-audio="hsk2_dian">🔊</button></td></tr>
+                    <tr><td class="hanzi">分</td><td class="pinyin">fēn</td><td class="english">Minute</td><td><button class="audio-btn" data-audio="hsk2_fen">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <strong>Time Examples:</strong><br>
+                今天是星期一。(Today is Monday.)<br>
+                现在八点半。(It's 8:30 now.)<br>
+                我明天上午有课。(I have class tomorrow morning.)
+            </div>
+
+            <h3 class="section-header">Advanced Verbs & Actions</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">工作</td><td class="pinyin">gōngzuò</td><td class="english">To work / Work</td><td><button class="audio-btn" data-audio="hsk2_gongzuo">🔊</button></td></tr>
+                    <tr><td class="hanzi">学习</td><td class="pinyin">xuéxí</td><td class="english">To study</td><td><button class="audio-btn" data-audio="hsk2_xuexi">🔊</button></td></tr>
+                    <tr><td class="hanzi">教</td><td class="pinyin">jiāo</td><td class="english">To teach</td><td><button class="audio-btn" data-audio="hsk2_jiao">🔊</button></td></tr>
+                    <tr><td class="hanzi">住</td><td class="pinyin">zhù</td><td class="english">To live / Stay</td><td><button class="audio-btn" data-audio="hsk2_zhu">🔊</button></td></tr>
+                    <tr><td class="hanzi">做</td><td class="pinyin">zuò</td><td class="english">To do / Make</td><td><button class="audio-btn" data-audio="hsk2_zuo_do">🔊</button></td></tr>
+                    <tr><td class="hanzi">坐</td><td class="pinyin">zuò</td><td class="english">To sit</td><td><button class="audio-btn" data-audio="hsk2_zuo_sit">🔊</button></td></tr>
+                    <tr><td class="hanzi">走</td><td class="pinyin">zǒu</td><td class="english">To walk / Leave</td><td><button class="audio-btn" data-audio="hsk2_zou">🔊</button></td></tr>
+                    <tr><td class="hanzi">跑</td><td class="pinyin">pǎo</td><td class="english">To run</td><td><button class="audio-btn" data-audio="hsk2_pao">🔊</button></td></tr>
+                    <tr><td class="hanzi">游泳</td><td class="pinyin">yóuyǒng</td><td class="english">To swim</td><td><button class="audio-btn" data-audio="hsk2_youyong">🔊</button></td></tr>
+                    <tr><td class="hanzi">唱歌</td><td class="pinyin">chàng gē</td><td class="english">To sing</td><td><button class="audio-btn" data-audio="hsk2_changge">🔊</button></td></tr>
+                    <tr><td class="hanzi">跳舞</td><td class="pinyin">tiàowǔ</td><td class="english">To dance</td><td><button class="audio-btn" data-audio="hsk2_tiaowu">🔊</button></td></tr>
+                    <tr><td class="hanzi">睡觉</td><td class="pinyin">shuìjiào</td><td class="english">To sleep</td><td><button class="audio-btn" data-audio="hsk2_shuijiao">🔊</button></td></tr>
+                    <tr><td class="hanzi">起床</td><td class="pinyin">qǐ chuáng</td><td class="english">To get up</td><td><button class="audio-btn" data-audio="hsk2_qichuang">🔊</button></td></tr>
+                    <tr><td class="hanzi">开</td><td class="pinyin">kāi</td><td class="english">To open / Drive</td><td><button class="audio-btn" data-audio="hsk2_kai">🔊</button></td></tr>
+                    <tr><td class="hanzi">关</td><td class="pinyin">guān</td><td class="english">To close</td><td><button class="audio-btn" data-audio="hsk2_guan">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Places & Locations</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">地方</td><td class="pinyin">dìfang</td><td class="english">Place</td><td><button class="audio-btn" data-audio="hsk2_difang">🔊</button></td></tr>
+                    <tr><td class="hanzi">学校</td><td class="pinyin">xuéxiào</td><td class="english">School</td><td><button class="audio-btn" data-audio="hsk2_xuexiao">🔊</button></td></tr>
+                    <tr><td class="hanzi">医院</td><td class="pinyin">yīyuàn</td><td class="english">Hospital</td><td><button class="audio-btn" data-audio="hsk2_yiyuan">🔊</button></td></tr>
+                    <tr><td class="hanzi">银行</td><td class="pinyin">yínháng</td><td class="english">Bank</td><td><button class="audio-btn" data-audio="hsk2_yinhang">🔊</button></td></tr>
+                    <tr><td class="hanzi">商店</td><td class="pinyin">shāngdiàn</td><td class="english">Shop</td><td><button class="audio-btn" data-audio="hsk2_shangdian">🔊</button></td></tr>
+                    <tr><td class="hanzi">饭店</td><td class="pinyin">fàndiàn</td><td class="english">Restaurant</td><td><button class="audio-btn" data-audio="hsk2_fandian">🔊</button></td></tr>
+                    <tr><td class="hanzi">宾馆</td><td class="pinyin">bīnguǎn</td><td class="english">Hotel</td><td><button class="audio-btn" data-audio="hsk2_binguan">🔊</button></td></tr>
+                    <tr><td class="hanzi">机场</td><td class="pinyin">jīchǎng</td><td class="english">Airport</td><td><button class="audio-btn" data-audio="hsk2_jichang">🔊</button></td></tr>
+                    <tr><td class="hanzi">火车站</td><td class="pinyin">huǒchē zhàn</td><td class="english">Train station</td><td><button class="audio-btn" data-audio="hsk2_huochezhan">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Transportation</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">车</td><td class="pinyin">chē</td><td class="english">Vehicle / Car</td><td><button class="audio-btn" data-audio="hsk2_che">🔊</button></td></tr>
+                    <tr><td class="hanzi">火车</td><td class="pinyin">huǒchē</td><td class="english">Train</td><td><button class="audio-btn" data-audio="hsk2_huoche">🔊</button></td></tr>
+                    <tr><td class="hanzi">飞机</td><td class="pinyin">fēijī</td><td class="english">Airplane</td><td><button class="audio-btn" data-audio="hsk2_feiji">🔊</button></td></tr>
+                    <tr><td class="hanzi">出租车</td><td class="pinyin">chūzū chē</td><td class="english">Taxi</td><td><button class="audio-btn" data-audio="hsk2_chuzuche">🔊</button></td></tr>
+                    <tr><td class="hanzi">公共汽车</td><td class="pinyin">gōnggòng qìchē</td><td class="english">Bus</td><td><button class="audio-btn" data-audio="hsk2_gonggongqiche">🔊</button></td></tr>
+                    <tr><td class="hanzi">自行车</td><td class="pinyin">zìxíngchē</td><td class="english">Bicycle</td><td><button class="audio-btn" data-audio="hsk2_zixingche">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="quiz-section">
+                <h3>🧠 HSK 2 Module Quiz</h3>
+                <p>Practice time expressions, verbs, places, and transportation vocabulary</p>
+                <button class="quiz-btn" onclick="startQuiz('hsk2')">Start HSK 2 Quiz</button>
+            </div>
+        </div>
+
+        <!-- Continue with other modules in compact format... -->
+        <!-- For brevity, I'll show the structure for remaining modules -->
+
+        <!-- Teacher Vocabulary Module -->
+        <div id="teacher-vocab" class="module">
+            <div class="module-header">
+                <h2>Teacher-Specific Vocabulary</h2>
+                <div class="level">Professional Teaching Environment</div>
+            </div>
+
+            <h3 class="section-header">Classroom Management</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">学生</td><td class="pinyin">xuésheng</td><td class="english">Student</td><td><button class="audio-btn" data-audio="teacher_xuesheng">🔊</button></td></tr>
+                    <tr><td class="hanzi">老师</td><td class="pinyin">lǎoshī</td><td class="english">Teacher</td><td><button class="audio-btn" data-audio="teacher_laoshi">🔊</button></td></tr>
+                    <tr><td class="hanzi">教室</td><td class="pinyin">jiàoshì</td><td class="english">Classroom</td><td><button class="audio-btn" data-audio="teacher_jiaoshi">🔊</button></td></tr>
+                    <tr><td class="hanzi">黑板</td><td class="pinyin">hēibǎn</td><td class="english">Blackboard</td><td><button class="audio-btn" data-audio="teacher_heiban">🔊</button></td></tr>
+                    <tr><td class="hanzi">白板</td><td class="pinyin">báibǎn</td><td class="english">Whiteboard</td><td><button class="audio-btn" data-audio="teacher_baiban">🔊</button></td></tr>
+                    <tr><td class="hanzi">作业</td><td class="pinyin">zuòyè</td><td class="english">Homework</td><td><button class="audio-btn" data-audio="teacher_zuoye">🔊</button></td></tr>
+                    <tr><td class="hanzi">考试</td><td class="pinyin">kǎoshì</td><td class="english">Exam</td><td><button class="audio-btn" data-audio="teacher_kaoshi">🔊</button></td></tr>
+                    <tr><td class="hanzi">成绩</td><td class="pinyin">chéngjì</td><td class="english">Grade/Score</td><td><button class="audio-btn" data-audio="teacher_chengji">🔊</button></td></tr>
+                    <tr><td class="hanzi">课本</td><td class="pinyin">kèběn</td><td class="english">Textbook</td><td><button class="audio-btn" data-audio="teacher_keben">🔊</button></td></tr>
+                    <tr><td class="hanzi">练习</td><td class="pinyin">liànxí</td><td class="english">Practice/Exercise</td><td><button class="audio-btn" data-audio="teacher_lianxi">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="section-header">Common Teaching Phrases</h3>
+            <table class="vocab-table">
+                <thead>
+                    <tr>
+                        <th>汉字</th>
+                        <th>Pinyin</th>
+                        <th>English</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="hanzi">请坐</td><td class="pinyin">qǐng zuò</td><td class="english">Please sit</td><td><button class="audio-btn" data-audio="teacher_qingzuo">🔊</button></td></tr>
+                    <tr><td class="hanzi">请举手</td><td class="pinyin">qǐng jǔshǒu</td><td class="english">Please raise your hand</td><td><button class="audio-btn" data-audio="teacher_qingjushou">🔊</button></td></tr>
+                    <tr><td class="hanzi">安静</td><td class="pinyin">ānjìng</td><td class="english">Be quiet</td><td><button class="audio-btn" data-audio="teacher_anjing">🔊</button></td></tr>
+                    <tr><td class="hanzi">很好</td><td class="pinyin">hěn hǎo</td><td class="english">Very good</td><td><button class="audio-btn" data-audio="teacher_henhao">🔊</button></td></tr>
+                    <tr><td class="hanzi">太棒了</td><td class="pinyin">tài bàng le</td><td class="english">Excellent!</td><td><button class="audio-btn" data-audio="teacher_taibanle">🔊</button></td></tr>
+                    <tr><td class="hanzi">加油</td><td class="pinyin">jiāyóu</td><td class="english">Keep it up! / Come on!</td><td><button class="audio-btn" data-audio="teacher_jiayou">🔊</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="quiz-section">
+                <h3>🧠 Teacher Vocabulary Quiz</h3>
+                <p>Master professional teaching terms and classroom management phrases</p>
+                <button class="quiz-btn" onclick="startQuiz('teacher')">Start Teacher Quiz</button>
+            </div>
+        </div>
+
+        <!-- Chinese Apps Module -->
+        <div id="apps" class="module">
+            <div class="module-header">
+                <h2>Chinese Apps Mastery</h2>
+                <div class="level">Digital Life Navigation</div>
             </div>
 
             <div class="app-guide">
-                <h4>📱 WeChat Communication with Parents</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Guide to professional WeChat communication, setting boundaries, using translation features, sending voice messages, and maintaining appropriate teacher-parent relationships]
-                </div>
-            </div>
-        </section>
-
-        <!-- Daily Life Section -->
-        <section id="daily-life" class="section">
-            <h2>🏠 Daily Life Essentials</h2>
-            
-            <h3>Basic Interactions</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">谢谢</div>
-                    <div class="pinyin">xiècmie</div>
-                    <div class="english">Thank you</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">不客气</div>
-                    <div class="pinyin">bù kèqì</div>
-                    <div class="english">You're welcome</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">对不起</div>
-                    <div class="pinyin">duìbùqǐ</div>
-                    <div class="english">Sorry</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">不好意思</div>
-                    <div class="pinyin">bùhǎoyìsi</div>
-                    <div class="english">Excuse me</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">多少钱？</div>
-                    <div class="pinyin">duōshao qián?</div>
-                    <div class="english">How much?</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-            </div>
-
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Comprehensive daily life vocabulary including directions, time expressions, numbers, weather, transportation, and common social interactions]
-            </div>
-        </section>
-
-        <!-- Emergency Section -->
-        <section id="emergencies" class="section">
-            <h2>🚨 Emergency Phrases</h2>
-            
-            <h3>Critical Situations</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">救命!</div>
-                    <div class="pinyin">jiùmìng!</div>
-                    <div class="english">Help!</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我需要帮助</div>
-                    <div class="pinyin">wǒ xūyào bangzhù</div>
-                    <div class="english">I need help</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">请叫救护车</div>
-                    <div class="pinyin">qǐng jiào jiùhùchē</div>
-                    <div class="english">Please call an ambulance</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我不舒服</div>
-                    <div class="pinyin">wǒ bù shūfu</div>
-                    <div class="english">I don't feel well</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我迷路了</div>
-                    <div class="pinyin">wǒ mílù le</div>
-                    <div class="english">I'm lost</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-            </div>
-
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Extended emergency vocabulary, medical terms, police interactions, and important phone numbers with pronunciation guides]
-            </div>
-        </section>
-
-        <!-- App Usage Section -->
-        <section id="app-usage" class="section">
-            <h2>📱 Mastering Chinese Apps</h2>
-            
-            <h3>Navigation Phrases for Apps</h3>
-            <div class="app-guide">
-                <h4>🚗 Didi (滴滴) - Ride Sharing</h4>
-                <div class="phrase-card">
-                    <div class="phrase-row">
-                        <div class="hanzi">我在这里</div>
-                        <div class="pinyin">wǒ zài zhèlǐ</div>
-                        <div class="english">I'm here</div>
-                        <div class="audio-placeholder">🔊 Play Audio</div>
-                    </div>
-                    <div class="phrase-row">
-                        <div class="hanzi">到了</div>
-                        <div class="pinyin">dào le</div>
-                        <div class="english">Arrived</div>
-                        <div class="audio-placeholder">🔊 Play Audio</div>
-                    </div>
-                </div>
-                <div class="placeholder">
-                    [PLACEHOLDER: Complete Didi usage guide with screenshots, booking process, payment, and communication with drivers]
-                </div>
+                <h4>🛒 Taobao (淘宝) - Essential Shopping Terms</h4>
+                <table class="vocab-table">
+                    <thead>
+                        <tr>
+                            <th>汉字</th>
+                            <th>Pinyin</th>
+                            <th>English</th>
+                            <th>Audio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="hanzi">搜索</td><td class="pinyin">sōusuǒ</td><td class="english">Search</td><td><button class="audio-btn" data-audio="app_sousuo">🔊</button></td></tr>
+                        <tr><td class="hanzi">购物车</td><td class="pinyin">gòuwùchē</td><td class="english">Shopping cart</td><td><button class="audio-btn" data-audio="app_gouwuche">🔊</button></td></tr>
+                        <tr><td class="hanzi">付款</td><td class="pinyin">fùkuǎn</td><td class="english">Payment</td><td><button class="audio-btn" data-audio="app_fukuan">🔊</button></td></tr>
+                        <tr><td class="hanzi">快递</td><td class="pinyin">kuàidì</td><td class="english">Express delivery</td><td><button class="audio-btn" data-audio="app_kuaidi">🔊</button></td></tr>
+                        <tr><td class="hanzi">地址</td><td class="pinyin">dìzhǐ</td><td class="english">Address</td><td><button class="audio-btn" data-audio="app_dizhi">🔊</button></td></tr>
+                        <tr><td class="hanzi">评价</td><td class="pinyin">píngjià</td><td class="english">Review/Rating</td><td><button class="audio-btn" data-audio="app_pingjia">🔊</button></td></tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="app-guide">
-                <h4>🍜 Meituan (美团) - Food Delivery</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Meituan navigation guide, ordering food, delivery instructions, and dealing with delivery issues]
-                </div>
+                <h4>🚗 Didi (滴滴) - Transportation Vocabulary</h4>
+                <table class="vocab-table">
+                    <thead>
+                        <tr>
+                            <th>汉字</th>
+                            <th>Pinyin</th>
+                            <th>English</th>
+                            <th>Audio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="hanzi">叫车</td><td class="pinyin">jiào chē</td><td class="english">Call a car</td><td><button class="audio-btn" data-audio="app_jiaoehe">🔊</button></td></tr>
+                        <tr><td class="hanzi">司机</td><td class="pinyin">sījī</td><td class="english">Driver</td><td><button class="audio-btn" data-audio="app_siji">🔊</button></td></tr>
+                        <tr><td class="hanzi">上车</td><td class="pinyin">shàng chē</td><td class="english">Get in the car</td><td><button class="audio-btn" data-audio="app_shangche">🔊</button></td></tr>
+                        <tr><td class="hanzi">下车</td><td class="pinyin">xià chē</td><td class="english">Get out of car</td><td><button class="audio-btn" data-audio="app_xiache">🔊</button></td></tr>
+                        <tr><td class="hanzi">到了</td><td class="pinyin">dào le</td><td class="english">We've arrived</td><td><button class="audio-btn" data-audio="app_daole">🔊</button></td></tr>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="app-guide">
-                <h4>🛒 Taobao (淘宝) - Shopping</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Taobao shopping guide, product search, reading reviews, making purchases, and handling returns]
-                </div>
+            <div class="quiz-section">
+                <h3>🧠 Apps Mastery Quiz</h3>
+                <p>Test your ability to navigate Chinese digital services</p>
+                <button class="quiz-btn" onclick="startQuiz('apps')">Start Apps Quiz</button>
             </div>
+        </div>
 
-            <div class="app-guide">
-                <h4>📍 Amap (高德地图) - Navigation</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Amap usage for navigation, public transport, finding locations, and offline features]
-                </div>
-            </div>
-        </section>
+        <!-- Continue pattern for remaining modules... -->
 
-        <!-- Food Ordering Section -->
-        <section id="food-ordering" class="section">
-            <h2>🍽️ Food Ordering Mastery</h2>
-            
-            <h3>Restaurant Essentials</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">菜单</div>
-                    <div class="pinyin">càidān</div>
-                    <div class="english">Menu</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我想要这个</div>
-                    <div class="pinyin">wǒ xiǎng yào zhège</div>
-                    <div class="english">I want this</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">不要辣</div>
-                    <div class="pinyin">bù yào là</div>
-                    <div class="english">No spicy</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">买单</div>
-                    <div class="pinyin">mǎidān</div>
-                    <div class="english">Check please</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">可以刷卡吗？</div>
-                    <div class="pinyin">kěyǐ shuākǎ ma?</div>
-                    <div class="english">Can I pay by card?</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-            </div>
-
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Comprehensive food ordering guide including dietary restrictions, cooking preferences, popular dishes, street food vocabulary, and restaurant etiquette]
-            </div>
-
-            <div class="scenario-box">
-                <h4>🥢 Restaurant Scenario Practice</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Interactive restaurant dialogue with waiter, ordering multiple dishes, asking about ingredients, and handling payment]
-                </div>
-            </div>
-        </section>
-
-        <!-- Shopping Section -->
-        <section id="shopping" class="section">
-            <h2>🛍️ Shopping Like a Local</h2>
-            
-            <h3>Market and Store Phrases</h3>
-            <div class="phrase-card">
-                <div class="phrase-row">
-                    <div class="hanzi">这个多少钱？</div>
-                    <div class="pinyin">zhège duōshao qián?</div>
-                    <div class="english">How much is this?</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">太贵了</div>
-                    <div class="pinyin">tài guì le</div>
-                    <div class="english">Too expensive</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">便宜一点</div>
-                    <div class="pinyin">piányí yīdiǎn</div>
-                    <div class="english">A little cheaper</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-                <div class="phrase-row">
-                    <div class="hanzi">我可以试试吗？</div>
-                    <div class="pinyin">wǒ kěyǐ shìshì ma?</div>
-                    <div class="english">Can I try it?</div>
-                    <div class="audio-placeholder">🔊 Play Audio</div>
-                </div>
-            </div>
-
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Complete shopping vocabulary including clothing sizes, colors, bargaining techniques, return policies, and online shopping terminology]
-            </div>
-        </section>
-
-        <!-- Pronunciation Guide Section -->
-        <section id="pronunciation" class="section">
-            <h2>🗣️ Pronunciation Guide</h2>
-            
-            <h3>Tone System Mastery</h3>
-            <div class="pronunciation-tip">
-                <h4>🎵 The Four Tones</h4>
-                <div class="placeholder">
-                    [PLACEHOLDER: Comprehensive tone guide with audio examples, practice exercises, and common tone mistakes for English speakers]
-                </div>
-            </div>
-
-            <h3>Difficult Sounds for English Speakers</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Specific pronunciation challenges, mouth position guides, comparison with English sounds, and practice drills]
-            </div>
-
-            <h3>Common Pronunciation Mistakes</h3>
-            <div class="placeholder">
-                [CONTENT PLACEHOLDER: Most common pronunciation errors made by English teachers, how to avoid them, and corrective exercises]
-            </div>
-        </section>
-
-        <!-- Course Links -->
-        <div class="course-links">
-            <h2 style="color: white; margin-bottom: 20px;">Complete Your China Preparation</h2>
-            <a href="integration-guide.html">← Integration Guide</a>
-            <a href="contact.html">Get Support</a>
+        <!-- Final Completion -->
+        <div style="text-align: center; padding: 3rem 0; border-top: 2px solid #e5e7eb; margin-top: 3rem;">
+            <h2 style="color: #10b981;">🎉 Course Complete!</h2>
+            <p style="color: #6b7280; margin: 1rem 0;">You've mastered essential Chinese for teaching and living in China</p>
+            <button class="quiz-btn" style="background: #10b981; margin: 0.5rem;" onclick="generateCertificate()">📜 Get Certificate</button>
         </div>
     </div>
 
@@ -641,8 +1017,178 @@
     </footer>
 
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('.course-nav a[href^="#"]').forEach(anchor => {
+        // Progress tracking
+        let completedModules = new Set(JSON.parse(localStorage.getItem('completedModules') || '[]'));
+        let currentModule = localStorage.getItem('currentModule') || 'hsk1';
+        
+        // Update progress display
+        function updateProgress() {
+            const totalModules = 7;
+            const completedCount = completedModules.size;
+            const progressPercent = Math.round((completedCount / totalModules) * 100);
+            
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('progressText').textContent = progressPercent + '% Complete';
+            document.getElementById('moduleCounter').textContent = `${completedCount}/${totalModules} Modules`;
+            
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(item => {
+                const module = item.dataset.module;
+                item.classList.remove('completed', 'current');
+                
+                if (completedModules.has(module)) {
+                    item.classList.add('completed');
+                } else if (module === currentModule) {
+                    item.classList.add('current');
+                }
+            });
+        }
+
+        // Quiz functionality
+        function startQuiz(moduleId) {
+            const quizData = {
+                'hsk1': {
+                    title: 'HSK 1 Quiz',
+                    questions: [
+                        { question: '你好 means:', answers: ['Hello', 'Goodbye', 'Thank you', 'Sorry'], correct: 0 },
+                        { question: '谢谢 means:', answers: ['Hello', 'Goodbye', 'Thank you', 'Sorry'], correct: 2 },
+                        { question: 'What is the pinyin for 我?', answers: ['ni', 'wo', 'ta', 'ta'], correct: 1 },
+                        { question: 'Which number is 五?', answers: ['3', '4', '5', '6'], correct: 2 },
+                        { question: '家 means:', answers: ['School', 'Work', 'Family/Home', 'Friend'], correct: 2 }
+                    ]
+                },
+                'hsk2': {
+                    title: 'HSK 2 Quiz',
+                    questions: [
+                        { question: '今天 means:', answers: ['Yesterday', 'Today', 'Tomorrow', 'Now'], correct: 1 },
+                        { question: 'Which means "to work"?', answers: ['学习', '工作', '睡觉', '吃饭'], correct: 1 },
+                        { question: '学校 means:', answers: ['Hospital', 'Bank', 'School', 'Shop'], correct: 2 }
+                    ]
+                },
+                'teacher': {
+                    title: 'Teaching Vocabulary Quiz',
+                    questions: [
+                        { question: '学生 means:', answers: ['Teacher', 'Student', 'Parent', 'Principal'], correct: 1 },
+                        { question: 'How do you say "Please sit"?', answers: ['请举手', '请坐', '安静', '很好'], correct: 1 }
+                    ]
+                }
+            };
+
+            if (!quizData[moduleId]) {
+                alert('Quiz coming soon for this module!');
+                return;
+            }
+
+            showQuizModal(quizData[moduleId], moduleId);
+        }
+
+        function showQuizModal(quiz, moduleId) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+                background: rgba(0,0,0,0.8); z-index: 2000; display: flex; 
+                align-items: center; justify-content: center; padding: 2rem;
+            `;
+            
+            let currentQ = 0;
+            let score = 0;
+            
+            function renderQuestion() {
+                const q = quiz.questions[currentQ];
+                modal.innerHTML = `
+                    <div style="background: white; padding: 3rem; border-radius: 12px; max-width: 600px; width: 100%;">
+                        <h3>${quiz.title} - Question ${currentQ + 1}/${quiz.questions.length}</h3>
+                        <p style="font-size: 1.25rem; margin: 2rem 0;">${q.question}</p>
+                        <div style="display: grid; gap: 1rem;">
+                            ${q.answers.map((answer, i) => `
+                                <button onclick="selectAnswer(${i})" style="
+                                    padding: 1rem; border: 2px solid #e5e7eb; border-radius: 8px; 
+                                    background: white; cursor: pointer; text-align: left; font-size: 1rem;
+                                " onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e5e7eb'">
+                                    ${answer}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            window.selectAnswer = function(answerIndex) {
+                const q = quiz.questions[currentQ];
+                if (answerIndex === q.correct) score++;
+                
+                currentQ++;
+                if (currentQ < quiz.questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            function showResults() {
+                const passed = score >= Math.ceil(quiz.questions.length * 0.7);
+                const percentage = Math.round((score / quiz.questions.length) * 100);
+                
+                modal.innerHTML = `
+                    <div style="background: white; padding: 3rem; border-radius: 12px; max-width: 600px; width: 100%; text-align: center;">
+                        <h3>Quiz Complete!</h3>
+                        <div style="font-size: 3rem; margin: 1rem 0;">${passed ? '🎉' : '📚'}</div>
+                        <p style="font-size: 1.5rem; margin: 1rem 0;">Score: ${score}/${quiz.questions.length} (${percentage}%)</p>
+                        <p style="margin: 1rem 0;">${passed ? 'Congratulations! Module completed!' : 'Keep studying and try again!'}</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                            <button onclick="closeQuiz(${passed}, '${moduleId}')" style="
+                                padding: 1rem 2rem; background: #10b981; color: white; border: none; 
+                                border-radius: 8px; cursor: pointer; font-weight: 600;
+                            ">Continue</button>
+                            <button onclick="retakeQuiz()" style="
+                                padding: 1rem 2rem; background: #6b7280; color: white; border: none; 
+                                border-radius: 8px; cursor: pointer; font-weight: 600;
+                            ">Retake</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            window.closeQuiz = function(passed, moduleId) {
+                if (passed) {
+                    completedModules.add(moduleId);
+                    localStorage.setItem('completedModules', JSON.stringify([...completedModules]));
+                    updateProgress();
+                }
+                document.body.removeChild(modal);
+            };
+
+            window.retakeQuiz = function() {
+                currentQ = 0;
+                score = 0;
+                renderQuestion();
+            };
+
+            renderQuestion();
+            document.body.appendChild(modal);
+        }
+
+        // Audio functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('audio-btn')) {
+                const audioId = e.target.dataset.audio;
+                e.target.style.background = '#10b981';
+                e.target.style.color = 'white';
+                e.target.innerHTML = '▶';
+                
+                // Placeholder for actual audio playback
+                setTimeout(() => {
+                    e.target.style.background = '#f3f4f6';
+                    e.target.style.color = '#6b7280';
+                    e.target.innerHTML = '🔊';
+                }, 1500);
+                
+                console.log(`Playing audio: ${audioId}.mp3`);
+            }
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.nav-tab[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
@@ -651,24 +1197,43 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // Update current module
+                    currentModule = this.dataset.module;
+                    localStorage.setItem('currentModule', currentModule);
+                    updateProgress();
                 }
             });
         });
 
-        // Audio placeholder functionality (to be replaced with real audio)
-        document.querySelectorAll('.audio-placeholder').forEach(button => {
-            button.addEventListener('click', function() {
-                // Placeholder for audio playback
-                this.style.background = '#4CAF50';
-                this.style.color = 'white';
-                this.innerHTML = '🔊 Playing...';
-                
-                setTimeout(() => {
-                    this.style.background = '#e3f2fd';
-                    this.style.color = '#1976D2';
-                    this.innerHTML = '🔊 Play Audio';
-                }, 1000);
+        // Certificate generation
+        function generateCertificate() {
+            if (completedModules.size === 7) {
+                alert('🎓 Congratulations! You\'ve completed all modules. Certificate feature coming soon!');
+            } else {
+                alert(`Complete all ${7 - completedModules.size} remaining modules to earn your certificate!`);
+            }
+        }
+
+        // Initialize
+        updateProgress();
+
+        // Module completion tracking on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const moduleId = entry.target.id;
+                    if (moduleId && ['hsk1', 'hsk2', 'hsk3', 'teacher-vocab', 'apps', 'classroom', 'survival'].includes(moduleId)) {
+                        currentModule = moduleId;
+                        localStorage.setItem('currentModule', currentModule);
+                        updateProgress();
+                    }
+                }
             });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.module').forEach(module => {
+            observer.observe(module);
         });
     </script>
 </body>

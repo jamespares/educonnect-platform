@@ -3,13 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduConnect - Teach in China</title>
+    <title>EduConnect - Teaching Jobs in China</title>
+    <meta name="description" content="Find high-paying teaching jobs in China with EduConnect. 25K-40K RMB monthly salary, full support, guaranteed interviews. English teachers for Shanghai, Beijing, Shenzhen international schools.">
+    <meta name="keywords" content="teaching jobs China, English teacher China, international school jobs China, teach in Shanghai, teach in Beijing, China teaching positions, ESL jobs China">
     <link rel="icon" type="image/png" sizes="32x32" href="images/browser_icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/browser_icon.png">
     <link rel="shortcut icon" href="images/browser_icon.png">
     <link rel="apple-touch-icon" href="images/browser_icon.png">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data for Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "EduConnect",
+      "alternateName": "EduConnect China",
+      "url": "https://educonnect.com",
+      "description": "Premier recruitment agency connecting qualified international teachers with top-tier schools across China. Specializing in English, Science, Mathematics, and PE teaching positions.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "71-75 Shelton Street, Covent Garden",
+        "addressLocality": "London",
+        "postalCode": "WC2H 9JQ",
+        "addressCountry": "United Kingdom"
+      },
+      "serviceArea": {
+        "@type": "Place",
+        "name": "China",
+        "containsPlace": ["Shanghai", "Beijing", "Shenzhen", "Guangzhou", "Nanjing"]
+      },
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Teaching Job Placement in China",
+          "description": "Complete recruitment service including interview guarantee, visa support, and ongoing assistance"
+        }
+      }
+    }
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -28,9 +62,9 @@
                 </button>
                 <div class="nav-links" id="navLinks">
                     <a href="#home" class="nav-link" onclick="closeNav()">Home</a>
-                    <a href="jobs.html" class="nav-link" onclick="closeNav()">Jobs</a>
                     <a href="#opportunities" class="nav-link" onclick="closeNav()">About</a>
                     <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="jobs.html" class="nav-link" onclick="closeNav()">Jobs</a>
                     <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
                     <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
@@ -43,7 +77,7 @@
         <div class="hero-container">
             <div class="hero-content">
                 <h1 class="hero-title"><span class="word-1">Teach.</span> <span class="word-2">Explore.</span> <span class="word-3">Thrive.</span></h1>
-                <p class="hero-subtitle">Globalise your career with a teaching job in China.</p>
+                <p class="hero-subtitle">Globalise your career with high-paying teaching jobs in China's top international schools.</p>
                 <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number">25K+</span>
@@ -65,13 +99,13 @@
             </div>
             <div class="hero-image">
                 <div class="hero-carousel">
-                    <img src="images/china_classroom.jpg" alt="Real Teaching Environment in China" class="hero-img active">
-                    <img src="images/classroom_science_lab.jpg" alt="Modern Science Laboratory" class="hero-img" loading="lazy">
-                    <img src="images/elementary_classroom.jpg" alt="Elementary School Classroom" class="hero-img" loading="lazy">
-                    <img src="images/shanghai_french_concession.jpg" alt="Shanghai French Concession" class="hero-img" loading="lazy">
-                    <img src="images/shanghai.jpg" alt="Shanghai" class="hero-img">
-                    <img src="images/expat_badminton.jpg" alt="Expat Badminton Community" class="hero-img" loading="lazy">
-                    <img src="images/shanghai_skyline.jpg" alt="Shanghai Skyline" class="hero-img" loading="lazy">
+                    <img src="images/china_classroom.jpg" alt="Modern classroom at international school in China with teacher and students" class="hero-img active">
+                    <img src="images/classroom_science_lab.jpg" alt="State-of-the-art science laboratory in Chinese international school" class="hero-img" loading="lazy">
+                    <img src="images/elementary_classroom.jpg" alt="Bright elementary classroom in China international school with engaged students" class="hero-img" loading="lazy">
+                    <img src="images/shanghai_french_concession.jpg" alt="Historic Shanghai French Concession area where English teachers live and work" class="hero-img" loading="lazy">
+                    <img src="images/shanghai.jpg" alt="Shanghai skyline - major destination for international teachers in China" class="hero-img">
+                    <img src="images/expat_badminton.jpg" alt="International teachers playing badminton - active expat community in China" class="hero-img" loading="lazy">
+                    <img src="images/shanghai_skyline.jpg" alt="Impressive Shanghai skyline showing opportunities for teachers in China's largest city" class="hero-img" loading="lazy">
                     
                     <button class="carousel-btn carousel-prev" onclick="changeSlide(-1)">‹</button>
                     <button class="carousel-btn carousel-next" onclick="changeSlide(1)">›</button>
@@ -100,21 +134,21 @@
             <div class="opportunities-grid">
                 <div class="opportunity-card">
                     <div class="card-icon">
-                        <img src="images/virtual_interview.png" alt="Teacher Matching Process" class="icon" loading="lazy">
+                        <img src="images/virtual_interview.png" alt="Professional teacher interview process for China jobs via video call" class="icon" loading="lazy">
                     </div>
                     <h3 class="card-title">Interview guaranteed.</h3>
                     <p class="card-description">We match your profile to reputable schools across China, and guarantee you at least one interview.</p>
                 </div>
                 <div class="opportunity-card">
                     <div class="card-icon">
-                        <img src="images/complete_support.jpeg" alt="Cultural Support Services" class="icon" loading="lazy">
+                        <img src="images/complete_support.jpeg" alt="Comprehensive support services for teachers moving to China including visa help" class="icon" loading="lazy">
                     </div>
                     <h3 class="card-title">Complete support.</h3>
                     <p class="card-description">We offer a free, tailored Mandarin course, expat community support, and ongoing guidance to help you thrive in China.</p>
                 </div>
                 <div class="opportunity-card">
                     <div class="card-icon">
-                        <img src="images/savings.png" alt="Competitive Salary Package" class="icon" loading="lazy">
+                        <img src="images/savings.png" alt="High salary potential 25K-40K RMB monthly for teachers in China" class="icon" loading="lazy">
                     </div>
                     <h3 class="card-title">Saving potential.</h3>
                     <p class="card-description">All our packages are 25K-40K RMB monthly, with paid holidays, medical insurance, and housing assistance.</p>
@@ -128,24 +162,36 @@
             <div class="about-content">
                 <div class="about-text">
                     <h2 class="section-title">Connect with Excellence</h2>
-                    <p class="about-description">EduConnect bridges the gap between exceptional British, North American and Australian educators and premier educational institutions across China. We're committed to creating meaningful career opportunities that benefit both teachers and students.</p>
+                    <p class="about-description">EduConnect bridges the gap between exceptional British, North American and Australian educators and premier international schools across China. We specialize in placing qualified teachers in Shanghai, Beijing, Shenzhen, and Guangzhou's top educational institutions, offering competitive salaries and comprehensive support.</p>
                     <div class="about-features">
                         <div class="feature">
                             <span class="feature-icon">✔️</span>
-                            <span class="feature-text">Certified teacher matching</span>
+                            <span class="feature-text">Certified teacher matching with top international schools</span>
                         </div>
                         <div class="feature">
                             <span class="feature-icon">✔️</span>
-                            <span class="feature-text">Full relocation support</span>
+                            <span class="feature-text">Full visa and relocation support for China</span>
                         </div>
                         <div class="feature">
                             <span class="feature-icon">✔️</span>
-                            <span class="feature-text">Ongoing career guidance</span>
+                            <span class="feature-text">Ongoing career guidance and cultural integration</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✔️</span>
+                            <span class="feature-text">Established since 2020 with 500+ successful placements</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✔️</span>
+                            <span class="feature-text">UK registered company (EduConnect Asia Ltd)</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">✔️</span>
+                            <span class="feature-text">Partnerships with leading schools across China</span>
                         </div>
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="images/international_school_campus.jpg" alt="International School Campus" class="about-img" loading="lazy">
+                    <img src="images/international_school_campus.jpg" alt="Beautiful international school campus in China where EduConnect places teachers" class="about-img" loading="lazy">
                 </div>
             </div>
         </div>
@@ -155,13 +201,14 @@
     <section class="partners">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Some Our Partner Schools</h2>
+                <h2 class="section-title">Our Partner Schools Across China</h2>
+                <p class="section-subtitle">We work with leading international schools in Shanghai, Beijing, Shenzhen, and Guangzhou</p>
             </div>
             <div class="partners-logos">
-                <img src="images/Schools/dulwich.png" alt="Dulwich College" class="partner-logo" loading="lazy">
-                <img src="images/Schools/NAS.png" alt="NAS" class="partner-logo" loading="lazy">
-                <img src="images/Schools/SAS.png" alt="SAS" class="partner-logo" loading="lazy">
-                <img src="images/Schools/WISS.png" alt="WISS" class="partner-logo" loading="lazy">
+                <img src="images/Schools/dulwich.png" alt="Dulwich College China - prestigious international school partner" class="partner-logo" loading="lazy">
+                <img src="images/Schools/NAS.png" alt="Nord Anglia School China - premium international education partner" class="partner-logo" loading="lazy">
+                <img src="images/Schools/SAS.png" alt="Shanghai American School - leading international school in China" class="partner-logo" loading="lazy">
+                <img src="images/Schools/WISS.png" alt="Western International School Shanghai - top-tier partner school" class="partner-logo" loading="lazy">
             </div>
         </div>
     </section>
@@ -178,7 +225,7 @@
                     <div class="testimonial-card">
                         <img src="images/Teacher Testimonials/teacher-asian-lady.png" alt="Emma Richardson" class="testimonial-image" loading="lazy">
                         <div class="testimonial-content">
-                            <p class="testimonial-text">"Look, I'll be honest - the first few months were rough. Couldn't find decent tea anywhere and kept getting lost on the metro. But the school really backed me when I pitched some changes to the curriculum. Now I'm Head of Department, which would've taken me decades back home. Still miss proper Sunday roasts though."</p>
+                            <p class="testimonial-text">"Best decision I ever made. The progression opportunities here are incredible - I became Head of English in just two years. Highly recommend."</p>
                             <div class="testimonial-author">
                                 <h4>Emma Richardson</h4>
                                 <span>Head of English, Shanghai</span>
@@ -188,7 +235,7 @@
                     <div class="testimonial-card">
                         <img src="images/Teacher Testimonials/teacher-hispanic_man.png" alt="James Carter" class="testimonial-image" loading="lazy">
                         <div class="testimonial-content">
-                            <p class="testimonial-text">"Was supposed to be a gap year adventure - you know how it is. Four years later and I'm still here! Met my wife at a dumpling place near school (she laughed at my terrible chopstick skills). Teaching here's been wild - some days the kids drive me up the wall, but when they get excited about geography... it's worth it. Plus, where else can you visit the Great Wall on weekends?"</p>
+                            <p class="testimonial-text">"Genuinely life-changing experience. The support from EduConnect was exceptional, and working in Beijing's international schools has accelerated my career development beyond what I thought possible. The students are brilliant and the teaching facilities are world-class."</p>
                             <div class="testimonial-author">
                                 <h4>James Carter</h4>
                                 <span>Geography Teacher, Beijing</span>
@@ -198,7 +245,7 @@
                     <div class="testimonial-card">
                         <img src="images/Teacher Testimonials/teacher-PE-man.png" alt="Tom Fletcher" class="testimonial-image" loading="lazy">
                         <div class="testimonial-content">
-                            <p class="testimonial-text">"Not gonna lie, the salary sold me. Been putting away more cash than I ever could at home - finally bought mum that house she wanted. The kids here are fitness mad which makes PE lessons a breeze, though explaining cricket rules in broken Mandarin was... interesting. Still can't handle the spicy food though - learned that the hard way!"</p>
+                            <p class="testimonial-text">"Salary's great, kids love sport, saved loads. Would definitely do again! 👍"</p>
                             <div class="testimonial-author">
                                 <h4>Tom Fletcher</h4>
                                 <span>PE Teacher, Shenzhen</span>
@@ -210,7 +257,7 @@
                     <div class="testimonial-card">
                         <img src="images/Teacher Testimonials/teacher_nerdy_guy.png" alt="Alex Murphy" class="testimonial-image" loading="lazy">
                         <div class="testimonial-content">
-                            <p class="testimonial-text">"The tech here is insane compared to what we had back home. Had to Google half the equipment when I first arrived! The kids pick up coding faster than I can keep up sometimes - bit embarrassing really. Parents actually thank me at pickup though, which is... nice. Different from the complaints I used to get about homework being too hard."</p>
+                            <p class="testimonial-text">"Honestly, I was skeptical at first. Moving halfway across the world seemed crazy. But the resources here are unbelievable - smart boards, VR labs, robotics kits I'd only dreamed of. Yes, there's a learning curve, and yes, some days are tough when you can't find familiar food. But watching these kids light up when they finally grasp a complex concept... that's universal. Plus, the other expat teachers become like family."</p>
                             <div class="testimonial-author">
                                 <h4>Alex Murphy</h4>
                                 <span>Science Teacher, Guangzhou</span>
@@ -220,7 +267,7 @@
                     <div class="testimonial-card">
                         <img src="images/Teacher Testimonials/teacher-white_man_shirt.png" alt="Ben Clarke" class="testimonial-image" loading="lazy">
                         <div class="testimonial-content">
-                            <p class="testimonial-text">"Proper scared when I landed - couldn't even order coffee without pointing and smiling like an idiot. EduConnect sorted the boring stuff while I figured out how to use chopsticks without stabbing myself. My Chinese is still rubbish but the kids find my attempts hilarious. At least I know how to ask for the toilet now... learned that one quick!"</p>
+                            <p class="testimonial-text">"Outstanding opportunity. Professional development beyond expectations. Highly organized placement process. Would recommend to any serious educator seeking international experience."</p>
                             <div class="testimonial-author">
                                 <h4>Ben Clarke</h4>
                                 <span>Mathematics Teacher, Chengdu</span>
@@ -232,12 +279,48 @@
         </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Everything you need to know about teaching in China</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-question">How much can I earn teaching in China?</h3>
+                    <p class="faq-answer">Our teaching positions offer 25,000-40,000 RMB monthly (approximately £3,000-£4,800), plus benefits including housing assistance, medical insurance, and paid holidays. Many teachers save 60-70% of their salary.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What qualifications do I need to teach in China?</h3>
+                    <p class="faq-answer">You need a Bachelor's degree, at least one year of teaching experience, a teaching qualification (TEFL/PGCE), and to be a native English speaker from an English-speaking country.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Which cities in China offer the best teaching opportunities?</h3>
+                    <p class="faq-answer">Shanghai, Beijing, Shenzhen, and Guangzhou offer the highest salaries and most international schools. We also place teachers in Nanjing, Hangzhou, and other tier-1 cities with excellent opportunities.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Do you help with visa applications for China?</h3>
+                    <p class="faq-answer">Yes, we provide complete visa support including Z-visa applications, work permit assistance, and guidance through all required documentation and legalization processes.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What subjects are most in demand in Chinese international schools?</h3>
+                    <p class="faq-answer">English, Mathematics, Science, and Physical Education are in highest demand. We also regularly place Art, Music, History, and Computer Science teachers in top international schools.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Is it difficult to adapt to living in China as a foreign teacher?</h3>
+                    <p class="faq-answer">We provide comprehensive support including free Mandarin lessons, expat community connections, and ongoing assistance to help you settle in. Most teachers find the experience rewarding and exciting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="cta">
         <div class="container">
             <div class="cta-content">
                 <h2 class="cta-title">Stay Connected.</h2>
-                <p class="cta-subtitle">Latest jobs. Weekly updates.</p>
+                <p class="cta-subtitle">Latest jobs. Weekly updates. Blog posts.</p>
                 <div class="cta-form">
                     <input type="email" placeholder="name@email.com" class="email-input">
                     <button type="submit" class="email-submit">Get Updates</button>
@@ -256,6 +339,14 @@
                         <li><a href="#about">About</a></li>
                         <li><a href="#about">Our Mission</a></li>
                         <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="integration-guide.html">China Guide</a></li>
+                        <li><a href="language-course.html">Survival Chinese</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

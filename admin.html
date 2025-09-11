@@ -363,7 +363,7 @@
             }
             
             .teachers-table {
-                min-width: 800px;
+                min-width: 1000px;
             }
             
             .teachers-table th,
@@ -601,6 +601,8 @@
                     <th>Nationality</th>
                     <th>Experience</th>
                     <th>Subject</th>
+                    <th>Location</th>
+                    <th>Age Group</th>
                     <th>Status</th>
                     <th>Applied</th>
                     <th>Actions</th>
@@ -617,6 +619,8 @@
                     <td>${teacher.nationality}</td>
                     <td>${teacher.yearsExperience}</td>
                     <td>${teacher.subjectSpecialty}</td>
+                    <td>${teacher.preferredLocation || 'No preference'}</td>
+                    <td>${teacher.preferred_age_group || 'Not specified'}</td>
                     <td><span class="status-badge status-${teacher.status}">${teacher.status}</span></td>
                     <td>${new Date(teacher.createdAt).toLocaleDateString()}</td>
                     <td>
@@ -677,6 +681,10 @@
                             <div class="detail-group">
                                 <div class="detail-label">Preferred Location</div>
                                 <div class="detail-value">${teacher.preferredLocation || 'No preference'}</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Preferred Age Group</div>
+                                <div class="detail-value">${teacher.preferred_age_group || 'Not specified'}</div>
                             </div>
                             <div class="detail-group">
                                 <div class="detail-label">Status</div>

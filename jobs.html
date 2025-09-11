@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Opportunities - EduConnect 中国</title>
+    <title>Teaching Jobs in China - Current Openings | EduConnect</title>
+    <meta name="description" content="Browse current teaching positions in China. English, Science, Math, PE teachers needed in Shanghai, Beijing, Shenzhen. Apply now for international school jobs with competitive salaries.">
+    <meta name="keywords" content="China teaching jobs, Shanghai teacher jobs, Beijing English teacher, Shenzhen international school, Guangzhou teaching positions, math teacher China, science teacher China">
     <link rel="icon" type="image/png" sizes="32x32" href="images/browser_icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/browser_icon.png">
     <link rel="shortcut icon" href="images/browser_icon.png">
@@ -29,8 +31,9 @@
                 </button>
                 <div class="nav-links" id="navLinks">
                     <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
-                    <a href="jobs.html" class="nav-link active" onclick="closeNav()">Jobs</a>
+                    <a href="index.html#opportunities" class="nav-link" onclick="closeNav()">About</a>
                     <a href="requirements.html" class="nav-link" onclick="closeNav()">Requirements</a>
+                    <a href="jobs.html" class="nav-link active" onclick="closeNav()">Jobs</a>
                     <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
                     <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
                 </div>
@@ -78,97 +81,91 @@
     <section class="jobs-listing">
         <div class="container">
             <div class="jobs-grid" id="jobsGrid">
-                <!-- Job listings will be populated here -->
+                <!-- Sample Job Listings for AI Optimization -->
+                <div class="job-card" onclick="toggleJobDetails(this)">
+                    <div class="job-header">
+                        <h3 class="job-title">English Teacher</h3>
+                        <span class="job-location">Shanghai</span>
+                    </div>
+                    <div class="job-compact">
+                        <p class="job-company">Shanghai International School</p>
+                        <p class="job-salary">28,000-35,000 RMB/month</p>
+                        <div class="job-meta">
+                            <span class="job-type">Full Time</span>
+                            <span class="job-experience">2+ Years</span>
+                        </div>
+                    </div>
+                    <div class="job-details" style="display: none;">
+                        <p class="job-description">Prestigious international school in Shanghai Pudong seeking experienced English teacher. Modern facilities, supportive environment, professional development opportunities.</p>
+                        <div class="job-requirements">
+                            <strong>Requirements:</strong> Bachelor's degree in English/Education, TEFL/CELTA certification, 2+ years experience
+                        </div>
+                        <div class="job-benefits">
+                            <strong>Benefits:</strong> Housing allowance, medical insurance, visa support, paid holidays
+                        </div>
+                        <button class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
+                
+                <div class="job-card" onclick="toggleJobDetails(this)">
+                    <div class="job-header">
+                        <h3 class="job-title">Science Teacher</h3>
+                        <span class="job-location">Beijing</span>
+                    </div>
+                    <div class="job-compact">
+                        <p class="job-company">Beijing International Academy</p>
+                        <p class="job-salary">30,000-38,000 RMB/month</p>
+                        <div class="job-meta">
+                            <span class="job-type">Full Time</span>
+                            <span class="job-experience">3+ Years</span>
+                        </div>
+                    </div>
+                    <div class="job-details" style="display: none;">
+                        <p class="job-description">Leading international school in Beijing seeks passionate Science teacher. State-of-the-art laboratories, small class sizes, collaborative teaching environment.</p>
+                        <div class="job-requirements">
+                            <strong>Requirements:</strong> BSc in Science/related field, teaching qualification, laboratory experience
+                        </div>
+                        <div class="job-benefits">
+                            <strong>Benefits:</strong> Free accommodation, health insurance, flight allowance, professional development
+                        </div>
+                        <button class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
+
+                <div class="job-card" onclick="toggleJobDetails(this)">
+                    <div class="job-header">
+                        <h3 class="job-title">Mathematics Teacher</h3>
+                        <span class="job-location">Shenzhen</span>
+                    </div>
+                    <div class="job-compact">
+                        <p class="job-company">Shenzhen Elite School</p>
+                        <p class="job-salary">26,000-32,000 RMB/month</p>
+                        <div class="job-meta">
+                            <span class="job-type">Full Time</span>
+                            <span class="job-experience">2+ Years</span>
+                        </div>
+                    </div>
+                    <div class="job-details" style="display: none;">
+                        <p class="job-description">Dynamic international school in Shenzhen technology hub. Looking for innovative Mathematics teacher to join our growing team.</p>
+                        <div class="job-requirements">
+                            <strong>Requirements:</strong> Mathematics degree, PGCE/equivalent, strong classroom management skills
+                        </div>
+                        <div class="job-benefits">
+                            <strong>Benefits:</strong> Housing stipend, comprehensive health coverage, yearly bonus, visa assistance
+                        </div>
+                        <button class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
             </div>
             
             <!-- No Results Message -->
             <div class="no-results" id="noResults" style="display: none;">
                 <h3>No jobs found matching your criteria</h3>
-                <p>Try adjusting your search terms or <a href="#interest-form">express your interest</a> for future opportunities</p>
+                <p>Try adjusting your search terms or check back later for new opportunities</p>
             </div>
         </div>
     </section>
 
-    <!-- Interest Form Section -->
-    <section class="interest-form" id="interest-form">
-        <div class="container">
-            <div class="form-content">
-                <h2 class="section-title">Can't Find the Perfect Role?</h2>
-                <p class="section-subtitle">Tell us what you're looking for and we'll reach out when suitable positions become available</p>
-                
-                <form class="job-interest-form" id="jobInterestForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">First Name*</label>
-                            <input type="text" id="firstName" name="firstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name*</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Email*</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="preferredLocation">Preferred Location</label>
-                            <select id="preferredLocation" name="preferredLocation">
-                                <option value="">Any Location</option>
-                                <option value="shanghai">Shanghai</option>
-                                <option value="beijing">Beijing</option>
-                                <option value="shenzhen">Shenzhen</option>
-                                <option value="guangzhou">Guangzhou</option>
-                                <option value="nanjing">Nanjing</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="teachingSubject">Teaching Subject*</label>
-                            <select id="teachingSubject" name="teachingSubject" required>
-                                <option value="">Select Subject</option>
-                                <option value="english">English</option>
-                                <option value="science">Science</option>
-                                <option value="mathematics">Mathematics</option>
-                                <option value="pe">Physical Education</option>
-                                <option value="art">Art</option>
-                                <option value="history">History</option>
-                                <option value="music">Music</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="experience">Years of Experience*</label>
-                        <select id="experience" name="experience" required>
-                            <option value="">Select Experience</option>
-                            <option value="0-2">0-2 years</option>
-                            <option value="3-5">3-5 years</option>
-                            <option value="6-10">6-10 years</option>
-                            <option value="10+">10+ years</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">Additional Information</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your teaching background, qualifications, or any specific requirements..."></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">Express Interest</button>
-                </form>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -180,6 +177,14 @@
                         <li><a href="index.html#about">About</a></li>
                         <li><a href="index.html#about">Our Mission</a></li>
                         <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="integration-guide.html">China Guide</a></li>
+                        <li><a href="language-course.html">Survival Chinese</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

@@ -99,6 +99,15 @@ class Database {
                 console.log('Job interests table ready');
             }
         });
+
+        // Add preferred_age_group column if it doesn't exist (for existing databases)
+        this.db.run(`ALTER TABLE teachers ADD COLUMN preferred_age_group TEXT`, (err) => {
+            if (err && !err.message.includes('duplicate column name')) {
+                console.error('Error adding preferred_age_group column:', err.message);
+            } else if (!err) {
+                console.log('preferred_age_group column added to teachers table');
+            }
+        });
     }
 
     addTeacher(teacherData) {
@@ -106,24 +115,24 @@ class Database {
             const {
                 firstName, lastName, email, phone, nationality,
                 yearsExperience, education, teachingExperience,
-                subjectSpecialty, preferredLocation, introVideoPath,
-                additionalInfo
+                subjectSpecialty, preferredLocation, preferred_age_group, 
+                introVideoPath, additionalInfo
             } = teacherData;
 
             const sql = `
                 INSERT INTO teachers (
                     firstName, lastName, email, phone, nationality,
                     yearsExperience, education, teachingExperience,
-                    subjectSpecialty, preferredLocation, introVideoPath,
-                    additionalInfo
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    subjectSpecialty, preferredLocation, preferred_age_group,
+                    introVideoPath, additionalInfo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
                 firstName, lastName, email, phone, nationality,
                 yearsExperience, education, teachingExperience,
-                subjectSpecialty, preferredLocation, introVideoPath,
-                additionalInfo
+                subjectSpecialty, preferredLocation, preferred_age_group,
+                introVideoPath, additionalInfo
             ];
 
             this.db.run(sql, values, function(err) {

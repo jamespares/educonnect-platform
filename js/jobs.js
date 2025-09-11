@@ -1,6 +1,8 @@
 let currentJobs = [];
 let allJobs = [];
 let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+let displayedJobsCount = 6; // Number of jobs to show initially
+let jobsPerPage = 3; // Number of additional jobs to load when "Show More" is clicked
 
 // Initialize the jobs page
 document.addEventListener('DOMContentLoaded', function() {
@@ -67,7 +69,6 @@ function setupEventListeners() {
     const searchInput = document.getElementById('jobSearch');
     const locationFilter = document.getElementById('locationFilter');
     const subjectFilter = document.getElementById('subjectFilter');
-    const interestForm = document.getElementById('jobInterestForm');
 
     // Search functionality
     searchBtn.addEventListener('click', performSearch);
@@ -80,11 +81,6 @@ function setupEventListeners() {
     // Filter functionality
     locationFilter.addEventListener('change', performSearch);
     subjectFilter.addEventListener('change', performSearch);
-
-    // Interest form submission
-    if (interestForm) {
-        interestForm.addEventListener('submit', handleInterestFormSubmit);
-    }
 }
 
 // Perform search and filter
@@ -122,18 +118,37 @@ function renderJobs(jobs) {
     if (jobs.length === 0) {
         jobsGrid.style.display = 'none';
         noResults.style.display = 'block';
+        hideShowMoreButton();
         return;
     }
 
     jobsGrid.style.display = 'grid';
     noResults.style.display = 'none';
 
-    jobsGrid.innerHTML = jobs.map(job => createJobCard(job)).join('');
+    // Reset display count when new search/filter is applied
+    displayedJobsCount = 6;
+    
+    renderJobsWithPagination(jobs);
+}
+
+// Render jobs with pagination
+function renderJobsWithPagination(jobs) {
+    const jobsGrid = document.getElementById('jobsGrid');
+    const jobsToShow = jobs.slice(0, displayedJobsCount);
+    
+    jobsGrid.innerHTML = jobsToShow.map(job => createJobCard(job)).join('');
 
     // Add event listeners to save buttons
     document.querySelectorAll('.btn-save').forEach(btn => {
         btn.addEventListener('click', toggleSaveJob);
     });
+
+    // Show/hide "Show More" button based on remaining jobs
+    if (displayedJobsCount < jobs.length) {
+        showShowMoreButton(jobs);
+    } else {
+        hideShowMoreButton();
+    }
 }
 
 // Create individual job card HTML
@@ -202,10 +217,6 @@ function createJobCard(job) {
                 </div>
                 
                 <p class="job-description">${job.description}</p>
-                
-                <div class="job-tags">
-                    ${job.jobFunctions.map(func => `<span class="job-tag">${func}</span>`).join('')}
-                </div>
             </div>
             
             <div class="job-actions">
@@ -238,134 +249,63 @@ function toggleSaveJob(event) {
 
 // Apply to job function
 function applyToJob(jobId) {
-    const job = allJobs.find(j => j.id === jobId);
-    if (job) {
-        // Scroll to interest form
-        document.getElementById('interest-form').scrollIntoView({ behavior: 'smooth' });
-        
-        // Pre-fill form if possible
-        const subjectSelect = document.getElementById('teachingSubject');
-        const locationSelect = document.getElementById('preferredLocation');
-        const messageTextarea = document.getElementById('message');
-        
-        // Try to match subject
-        if (job.title.toLowerCase().includes('art')) {
-            subjectSelect.value = 'art';
-        } else if (job.title.toLowerCase().includes('math')) {
-            subjectSelect.value = 'mathematics';
-        } else if (job.title.toLowerCase().includes('english')) {
-            subjectSelect.value = 'english';
-        } else if (job.title.toLowerCase().includes('science')) {
-            subjectSelect.value = 'science';
-        } else if (job.title.toLowerCase().includes('pe') || job.title.toLowerCase().includes('physical')) {
-            subjectSelect.value = 'pe';
-        }
-        
-        // Set location
-        const locationMap = {
-            'shanghai': 'shanghai',
-            'beijing': 'beijing',
-            'shenzhen': 'shenzhen',
-            'guangzhou': 'guangzhou',
-            'nanjing': 'nanjing'
-        };
-        
-        const jobLocation = job.location.toLowerCase();
-        for (const [key, value] of Object.entries(locationMap)) {
-            if (jobLocation.includes(key)) {
-                locationSelect.value = value;
-                break;
-            }
-        }
-        
-        // Pre-fill message
-        messageTextarea.value = `I am interested in the ${job.title} position at ${job.company} in ${job.location}. Please consider my application for this role.`;
+    // Redirect to signup page for complete application
+    window.location.href = 'signup.html';
+}
+
+
+// Toggle job details visibility
+function toggleJobDetails(jobCard) {
+    const details = jobCard.querySelector('.job-details');
+    const isExpanded = details.style.display !== 'none';
+    
+    if (isExpanded) {
+        details.style.display = 'none';
+        jobCard.classList.remove('expanded');
+    } else {
+        details.style.display = 'block';
+        jobCard.classList.add('expanded');
     }
 }
 
-// Handle interest form submission
-async function handleInterestFormSubmit(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-    
-    // Disable submit button and show loading state
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="loading-spinner"></span> Submitting...';
-    
-    try {
-        const formData = new FormData(form);
-        const interestData = Object.fromEntries(formData.entries());
+// Show More button functions
+function showShowMoreButton(jobs) {
+    let showMoreBtn = document.getElementById('showMoreBtn');
+    if (!showMoreBtn) {
+        // Create the button if it doesn't exist
+        const jobsSection = document.querySelector('.jobs-listing .container');
+        const showMoreContainer = document.createElement('div');
+        showMoreContainer.className = 'show-more-container';
+        showMoreContainer.innerHTML = `
+            <button id="showMoreBtn" class="btn-show-more">
+                Show More Roles
+                <span class="remaining-count">(${jobs.length - displayedJobsCount} more)</span>
+            </button>
+        `;
+        jobsSection.appendChild(showMoreContainer);
+        showMoreBtn = document.getElementById('showMoreBtn');
         
-        const response = await fetch('/api/job-interest', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(interestData)
+        showMoreBtn.addEventListener('click', function() {
+            displayedJobsCount += jobsPerPage;
+            renderJobsWithPagination(currentJobs);
         });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showFormSuccessMessage();
-            form.reset();
-        } else {
-            showFormErrorMessage(result.message || 'Failed to submit interest');
+    } else {
+        showMoreBtn.style.display = 'block';
+        const remainingCount = showMoreBtn.querySelector('.remaining-count');
+        if (remainingCount) {
+            remainingCount.textContent = `(${jobs.length - displayedJobsCount} more)`;
         }
-        
-    } catch (error) {
-        console.error('Error submitting job interest:', error);
-        showFormErrorMessage('Unable to submit interest. Please try again later.');
-    } finally {
-        // Re-enable submit button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
     }
 }
 
-// Show form success message
-function showFormSuccessMessage() {
-    const form = document.getElementById('jobInterestForm');
-    const successMessage = document.createElement('div');
-    successMessage.className = 'message-alert message-alert-success';
-    successMessage.innerHTML = `
-        <strong>Thank you for your interest!</strong> We've received your information and will contact you when suitable positions become available.
-    `;
-    
-    form.parentNode.insertBefore(successMessage, form);
-    
-    // Remove message after 5 seconds
-    setTimeout(() => {
-        successMessage.remove();
-    }, 5000);
-    
-    // Scroll to success message
-    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-// Show form error message
-function showFormErrorMessage(message) {
-    const form = document.getElementById('jobInterestForm');
-    const errorMessage = document.createElement('div');
-    errorMessage.className = 'message-alert message-alert-error';
-    errorMessage.innerHTML = `
-        <strong>Error:</strong> ${message}
-    `;
-    
-    form.parentNode.insertBefore(errorMessage, form);
-    
-    // Remove message after 5 seconds
-    setTimeout(() => {
-        errorMessage.remove();
-    }, 5000);
-    
-    // Scroll to error message
-    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+function hideShowMoreButton() {
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+        showMoreBtn.style.display = 'none';
+    }
 }
 
 // Export functions for global access
 window.applyToJob = applyToJob;
 window.loadJobsFromAPI = loadJobsFromAPI;
+window.toggleJobDetails = toggleJobDetails;
