@@ -65,17 +65,25 @@ if (window.location.pathname.includes('login')) {
             const username = document.querySelector('#username').value;
             const password = document.querySelector('#password').value;
             
-            // Simple client-side authentication for demo purposes
-            // In production, use proper server-side authentication
-            const ADMIN_USERNAME = 'admin';
-            const ADMIN_PASSWORD = 'educonnect2024';
-            
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                // Store token and redirect to admin
-                localStorage.setItem('adminToken', 'admin-' + Date.now());
-                window.location.href = '/admin.html';
-            } else {
-                alert('Invalid credentials');
+            // Send credentials to server for authentication
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem('adminToken', result.token);
+                    window.location.href = '/admin.html';
+                } else {
+                    alert('Invalid credentials');
+                }
+            } catch (error) {
+                alert('Login failed. Please try again.');
             }
         });
     }
