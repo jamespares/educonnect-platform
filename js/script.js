@@ -101,17 +101,18 @@ let autoSlideInterval;
 function showSlide(index) {
     const heroImages = document.querySelectorAll('.hero-img');
     const dots = document.querySelectorAll('.dot');
-    
+
     if (heroImages.length === 0) return;
-    
+
+    // Update current index and ensure it's within bounds
+    currentSlideIndex = index;
+    if (currentSlideIndex >= heroImages.length) currentSlideIndex = 0;
+    if (currentSlideIndex < 0) currentSlideIndex = heroImages.length - 1;
+
     // Remove active class from all images and dots
     heroImages.forEach(img => img.classList.remove('active'));
     dots.forEach(dot => dot.classList.remove('active'));
-    
-    // Ensure index is within bounds
-    if (index >= heroImages.length) currentSlideIndex = 0;
-    if (index < 0) currentSlideIndex = heroImages.length - 1;
-    
+
     // Show current image and dot
     heroImages[currentSlideIndex].classList.add('active');
     if (dots[currentSlideIndex]) {
@@ -126,10 +127,11 @@ function changeSlide(direction) {
 }
 
 function currentSlide(index) {
-    currentSlideIndex = index - 1;
-    showSlide(currentSlideIndex);
+    showSlide(index);
     resetAutoSlide();
 }
+
+// Remove global window assignments - we'll use event listeners instead
 
 function nextSlide() {
     currentSlideIndex++;
@@ -143,10 +145,31 @@ function resetAutoSlide() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroImages = document.querySelectorAll('.hero-img');
-    
+
     if (heroImages.length > 0) {
+        // Initialize the carousel state
+        currentSlideIndex = 0;
+        showSlide(0);
+
         // Start the auto carousel
         autoSlideInterval = setInterval(nextSlide, 4000);
+
+        // Add event listeners for carousel controls
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
+        const dots = document.querySelectorAll('.dot');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => changeSlide(-1));
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => changeSlide(1));
+        }
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => currentSlide(index));
+        });
     }
     
     // Smooth scrolling for anchor links
@@ -200,4 +223,4 @@ function initMobileNav() {
             navLinks.classList.remove('active');
         }
     });
-});
+}

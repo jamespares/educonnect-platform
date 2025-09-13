@@ -1565,8 +1565,39 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2024 EduConnect. Your gateway to teaching in China.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 class="footer-title">EduConnect</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#about">Our Mission</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="integration-guide.html">China Guide</a></li>
+                        <li><a href="language-course.html">Basic Chinese Course</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#cookies">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EduConnect Asia Ltd. All rights reserved.</p>
+                <div class="footer-address">
+                    <p>71-75 Shelton Street, Covent Garden, London, United Kingdom, WC2H 9JQ</p>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -1729,15 +1760,60 @@
                 e.target.style.background = '#1f2937';
                 e.target.style.color = 'white';
                 e.target.innerHTML = 'Playing...';
-                
-                // Placeholder for actual audio playback
-                setTimeout(() => {
+
+                // Determine the correct audio folder based on the audio ID prefix
+                let audioFolder = 'chinese_vocab';
+                if (audioId.startsWith('hsk1_')) {
+                    audioFolder = 'hsk1';
+                } else if (audioId.startsWith('hsk2_')) {
+                    audioFolder = 'hsk2';
+                } else if (audioId.startsWith('hsk3_')) {
+                    audioFolder = 'hsk3';
+                } else if (audioId.startsWith('teacher_')) {
+                    audioFolder = 'teacher';
+                } else if (audioId.startsWith('apps_')) {
+                    audioFolder = 'apps';
+                } else if (audioId.startsWith('survival_')) {
+                    audioFolder = 'survival';
+                } else if (audioId.startsWith('classroom_')) {
+                    audioFolder = 'classroom';
+                }
+
+                // Create and play audio
+                const audio = new Audio(`audio/${audioFolder}/${audioId}.mp3`);
+
+                audio.addEventListener('loadeddata', () => {
+                    audio.play().catch(error => {
+                        console.error('Audio playback failed:', error);
+                        alert('Audio playback failed. Please check if the audio file exists.');
+                    });
+                });
+
+                audio.addEventListener('ended', () => {
                     e.target.style.background = '#f3f4f6';
                     e.target.style.color = '#6b7280';
                     e.target.innerHTML = 'Play';
-                }, 1500);
-                
-                console.log(`Playing audio: ${audioId}.mp3`);
+                });
+
+                audio.addEventListener('error', () => {
+                    e.target.style.background = '#dc2626';
+                    e.target.style.color = 'white';
+                    e.target.innerHTML = 'Error';
+                    setTimeout(() => {
+                        e.target.style.background = '#f3f4f6';
+                        e.target.style.color = '#6b7280';
+                        e.target.innerHTML = 'Play';
+                    }, 2000);
+                });
+
+                // Fallback timeout in case audio doesn't trigger ended event
+                setTimeout(() => {
+                    if (e.target.innerHTML === 'Playing...') {
+                        e.target.style.background = '#f3f4f6';
+                        e.target.style.color = '#6b7280';
+                        e.target.innerHTML = 'Play';
+                    }
+                }, 5000);
             }
         });
 
