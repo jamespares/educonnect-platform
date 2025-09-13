@@ -478,7 +478,25 @@
             }
 
             .nav-tabs {
-                flex-direction: column;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: flex-start;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding-bottom: 0.5rem;
+            }
+
+            .nav-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-tab {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                white-space: nowrap;
+                flex-shrink: 0;
             }
 
             .vocab-content {
@@ -488,11 +506,79 @@
             }
 
             .vocab-table {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                width: 100%;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                scrollbar-color: #cbd5e1 #f1f5f9;
+                margin: 0.5rem 0;
+            }
+
+            .vocab-table::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .vocab-table::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 3px;
+            }
+
+            .vocab-table::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
+
+            .vocab-table::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+
+            .vocab-table thead,
+            .vocab-table tbody,
+            .vocab-table th,
+            .vocab-table td,
+            .vocab-table tr {
+                display: table;
+                width: 100%;
             }
 
             .vocab-table th, .vocab-table td {
-                padding: 0.5rem;
+                padding: 0.4rem 0.3rem;
+                text-align: left;
+                vertical-align: middle;
+            }
+
+            .vocab-table th:first-child, .vocab-table td:first-child {
+                width: 20%;
+                min-width: 60px;
+                font-size: 0.85rem;
+            }
+
+            .vocab-table th:nth-child(2), .vocab-table td:nth-child(2) {
+                width: 25%;
+                min-width: 80px;
+                font-size: 0.7rem;
+                color: #6b7280;
+            }
+
+            .vocab-table th:nth-child(3), .vocab-table td:nth-child(3) {
+                width: 35%;
+                min-width: 100px;
+                font-size: 0.75rem;
+            }
+
+            .vocab-table th:last-child, .vocab-table td:last-child {
+                width: 20%;
+                min-width: 60px;
+                text-align: center;
+            }
+
+            .audio-btn {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
+                white-space: nowrap;
             }
 
             .nav-container {

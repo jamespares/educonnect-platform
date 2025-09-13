@@ -1,6 +1,5 @@
+- ensure audio 
 - set-up email password in railway
-- finish chinese course + audio (get list of words)
-- fix images in hero section
 - add newsletter + blog
 - ensure all CVs are uploaded as PDFs so can be sent to recruiters directly on WeChat
 - add Stripe with Wechat + Alipay and the integration package for teachers (friends, apartment, chinese incl. for apps, include downloadable pdf
