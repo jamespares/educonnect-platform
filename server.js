@@ -13,21 +13,13 @@ const Database = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Hash admin password on startup if needed
-let adminPasswordHash;
-if (process.env.ADMIN_PASSWORD) {
-    adminPasswordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10);
-} else {
-    adminPasswordHash = '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'; // 'password'
-}
-
 // Initialize database
 const db = new Database();
 
-// Admin credentials
+// Admin credentials - store plain password for comparison
 const ADMIN_CREDENTIALS = {
     username: process.env.ADMIN_USERNAME || 'admin',
-    password: adminPasswordHash
+    password: process.env.ADMIN_PASSWORD || 'password'
 };
 
 // Security middleware
@@ -215,29 +207,33 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
 });
 
 // Authentication API routes
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', (req, res) => {
     try {
         const { username, password } = req.body;
-        
+
+        console.log('Login attempt:', { username, password, expected: ADMIN_CREDENTIALS });
+
         if (!username || !password) {
             return res.status(400).json({
                 success: false,
                 message: 'Username and password are required'
             });
         }
-        
+
         // Check credentials
-        if (username === ADMIN_CREDENTIALS.username && 
-            await bcrypt.compare(password, ADMIN_CREDENTIALS.password)) {
-            
+        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
             req.session.authenticated = true;
             req.session.username = username;
-            
+
+            console.log('Login successful for:', username);
+
             res.json({
                 success: true,
                 message: 'Login successful'
             });
         } else {
+            console.log('Login failed for:', username, 'with password:', password);
+
             res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
@@ -247,7 +243,7 @@ app.post('/api/admin/login', async (req, res) => {
         console.error('Login error:', error);
         res.status(500).json({
             success: false,
-            message: 'Login failed'
+            message: 'Login failed: ' + error.message
         });
     }
 });
