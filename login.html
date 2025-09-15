@@ -188,18 +188,24 @@
             try {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
-                
-                // Simple client-side authentication (same as script.js)
-                const ADMIN_USERNAME = 'admin';
-                const ADMIN_PASSWORD = 'educonnect2024';
-                
-                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                    // Store token and redirect to admin
-                    localStorage.setItem('adminToken', 'admin-' + Date.now());
+
+                // Server-side authentication
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Redirect to admin on successful login
                     window.location.href = '/admin.html';
                 } else {
                     // Show error message
-                    errorDiv.textContent = 'Invalid credentials';
+                    errorDiv.textContent = result.message || 'Invalid credentials';
                     errorDiv.style.display = 'block';
                 }
             } catch (error) {
