@@ -54,12 +54,20 @@ app.use(session({
 
 // Serve static files
 app.use(express.static(path.join(__dirname)));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Use Railway volume if available, otherwise use local uploads directory
+const uploadsDir = process.env.RAILWAY_VOLUME_MOUNT_PATH
+    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'uploads')
+    : path.join(__dirname, 'uploads');
+
+console.log('📁 Uploads directory:', uploadsDir);
+
+app.use('/uploads', express.static(uploadsDir));
 
 // Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('✅ Created uploads directory');
 }
 
 // Configure multer for file uploads
