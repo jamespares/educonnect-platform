@@ -7,8 +7,11 @@ const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const Database = require('./database');
+
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -144,22 +147,12 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
         };
 
         const result = await db.addTeacher(teacherData);
-        
+
         // Send email notification for new application
         try {
-            const transporter = nodemailer.createTransporter({
-                host: 'smtp.zoho.com',
-                port: 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_USER || 'team@educonnectchina.com',
-                    pass: process.env.EMAIL_PASS || 'your-zoho-password'
-                }
-            });
-
-            const mailOptions = {
-                from: process.env.EMAIL_USER || 'team@educonnectchina.com',
-                to: process.env.EMAIL_TO || 'team@educonnectchina.com',
+            await resend.emails.send({
+                from: 'EduConnect <team@educonnectchina.com>',
+                to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
                 subject: `New Teacher Application: ${teacherData.firstName} ${teacherData.lastName}`,
                 html: `
                     <h2>New Teacher Application Received</h2>
@@ -171,22 +164,20 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
                     <p><strong>Subject:</strong> ${teacherData.subjectSpecialty}</p>
                     <p><strong>Preferred Location:</strong> ${teacherData.preferredLocation || 'No preference'}</p>
                     <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group || 'Not specified'}</p>
-                    
+
                     <h3>Education Background:</h3>
                     <p>${teacherData.education}</p>
-                    
+
                     <h3>Teaching Experience:</h3>
                     <p>${teacherData.teachingExperience}</p>
-                    
+
                     ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${teacherData.additionalInfo}</p>` : ''}
-                    
+
                     <p><strong>Video:</strong> ${teacherData.introVideoPath ? 'Uploaded' : 'Not provided'}</p>
-                    
+
                     <p><em>View full details in the admin dashboard.</em></p>
                 `
-            };
-
-            await transporter.sendMail(mailOptions);
+            });
         } catch (emailError) {
             console.error('Error sending application notification email:', emailError);
             // Don't fail the application if email fails
@@ -269,7 +260,7 @@ app.post('/api/admin/logout', (req, res) => {
 app.post('/send-message', async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
-        
+
         // Basic validation
         if (!name || !email || !subject || !message) {
             return res.status(400).json({
@@ -277,22 +268,12 @@ app.post('/send-message', async (req, res) => {
                 message: 'All fields are required'
             });
         }
-        
-        // Create transporter (using Zoho Mail)
-        const transporter = nodemailer.createTransporter({
-            host: 'smtp.zoho.com',
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: process.env.EMAIL_USER || 'team@educonnectchina.com',
-                pass: process.env.EMAIL_PASS || 'your-zoho-password'
-            }
-        });
-        
-        // Email options
-        const mailOptions = {
-            from: process.env.EMAIL_USER || 'team@educonnectchina.com',
-            to: process.env.EMAIL_TO || 'team@educonnectchina.com',
+
+        // Send email
+        await resend.emails.send({
+            from: 'EduConnect <team@educonnectchina.com>',
+            to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
+            replyTo: email,
             subject: `EduConnect Contact: ${subject}`,
             html: `
                 <h2>New Contact Form Message</h2>
@@ -304,11 +285,8 @@ app.post('/send-message', async (req, res) => {
                 <hr>
                 <p><small>This message was sent via the EduConnect contact form.</small></p>
             `
-        };
-        
-        // Send email
-        await transporter.sendMail(mailOptions);
-        
+        });
+
         res.redirect('/contact.html?success=true');
     } catch (error) {
         console.error('Error sending email:', error);
@@ -390,22 +368,12 @@ app.post('/api/job-interest', async (req, res) => {
         }
 
         const result = await db.addJobInterest(interestData);
-        
+
         // Send email notification
         try {
-            const transporter = nodemailer.createTransporter({
-                host: 'smtp.zoho.com',
-                port: 587,
-                secure: false,
-                auth: {
-                    user: process.env.EMAIL_USER || 'team@educonnectchina.com',
-                    pass: process.env.EMAIL_PASS || 'your-zoho-password'
-                }
-            });
-
-            const mailOptions = {
-                from: process.env.EMAIL_USER || 'team@educonnectchina.com',
-                to: process.env.EMAIL_TO || 'team@educonnectchina.com',
+            await resend.emails.send({
+                from: 'EduConnect <team@educonnectchina.com>',
+                to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
                 subject: `New Job Interest: ${interestData.firstName} ${interestData.lastName}`,
                 html: `
                     <h2>New Job Interest Received</h2>
@@ -415,14 +383,12 @@ app.post('/api/job-interest', async (req, res) => {
                     <p><strong>Teaching Subject:</strong> ${interestData.teachingSubject}</p>
                     <p><strong>Experience:</strong> ${interestData.experience}</p>
                     <p><strong>Preferred Location:</strong> ${interestData.preferredLocation || 'No preference'}</p>
-                    
+
                     ${interestData.message ? `<h3>Message:</h3><p>${interestData.message}</p>` : ''}
-                    
+
                     <p><em>View full details in the admin dashboard.</em></p>
                 `
-            };
-
-            await transporter.sendMail(mailOptions);
+            });
         } catch (emailError) {
             console.error('Error sending job interest notification email:', emailError);
         }
