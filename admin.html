@@ -72,6 +72,11 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
+
+        .table-wrapper {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
         
         .table-header {
             padding: 1.5rem;
@@ -104,16 +109,21 @@
         
         .teachers-table {
             width: 100%;
+            min-width: 1400px;
             border-collapse: collapse;
+            table-layout: fixed;
         }
-        
+
         .teachers-table th,
         .teachers-table td {
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
+
         .teachers-table th {
             background: #f9fafb;
             font-weight: 600;
@@ -121,11 +131,46 @@
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
+
         .teachers-table td {
             color: #6b7280;
+            font-size: 0.95rem;
         }
+
+        /* Column widths - optimized for readability */
+        .teachers-table th:nth-child(1),
+        .teachers-table td:nth-child(1) { width: 180px; font-weight: 500; color: #1f2937; } /* Name */
+
+        .teachers-table th:nth-child(2),
+        .teachers-table td:nth-child(2) { width: 220px; } /* Email */
+
+        .teachers-table th:nth-child(3),
+        .teachers-table td:nth-child(3) { width: 120px; } /* Nationality */
+
+        .teachers-table th:nth-child(4),
+        .teachers-table td:nth-child(4) { width: 110px; text-align: center; } /* Experience */
+
+        .teachers-table th:nth-child(5),
+        .teachers-table td:nth-child(5) { width: 140px; } /* Subject */
+
+        .teachers-table th:nth-child(6),
+        .teachers-table td:nth-child(6) { width: 130px; } /* Location */
+
+        .teachers-table th:nth-child(7),
+        .teachers-table td:nth-child(7) { width: 140px; } /* Age Group */
+
+        .teachers-table th:nth-child(8),
+        .teachers-table td:nth-child(8) { width: 120px; text-align: center; } /* Status */
+
+        .teachers-table th:nth-child(9),
+        .teachers-table td:nth-child(9) { width: 110px; text-align: center; } /* Applied */
+
+        .teachers-table th:nth-child(10),
+        .teachers-table td:nth-child(10) { width: 240px; white-space: normal; } /* Actions */
         
         .status-badge {
             padding: 0.25rem 0.75rem;
@@ -158,16 +203,19 @@
         .action-buttons {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
         }
-        
+
         .btn-small {
-            padding: 0.375rem 0.75rem;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.813rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
         
         .btn-view {
@@ -214,7 +262,7 @@
             padding: 0;
             border-radius: 12px;
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -245,27 +293,44 @@
         }
         
         .modal-body {
-            padding: 1.5rem;
+            padding: 2rem;
         }
-        
+
         .teacher-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 2rem 1.5rem;
         }
-        
+
         .detail-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0;
         }
-        
+
         .detail-label {
             font-weight: 600;
             color: #374151;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        
+
         .detail-value {
-            color: #6b7280;
+            color: #1f2937;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .detail-value.multiline {
+            white-space: pre-wrap;
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
         }
         
         .video-container {
@@ -361,9 +426,14 @@
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            
+
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
             .teachers-table {
-                min-width: 1000px;
+                min-width: 1200px;
             }
             
             .teachers-table th,
@@ -635,8 +705,13 @@
             });
             table.appendChild(tbody);
 
+            // Wrap table in scrollable wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+            wrapper.appendChild(table);
+
             document.getElementById('tableContent').innerHTML = '';
-            document.getElementById('tableContent').appendChild(table);
+            document.getElementById('tableContent').appendChild(wrapper);
         }
 
         async function viewTeacher(id) {
@@ -696,18 +771,18 @@
                                 <div class="detail-label">Applied Date</div>
                                 <div class="detail-value">${new Date(teacher.createdAt).toLocaleDateString()}</div>
                             </div>
-                            <div class="detail-group" style="grid-column: span 2;">
+                            <div class="detail-group full-width">
                                 <div class="detail-label">Educational Background</div>
-                                <div class="detail-value">${teacher.education}</div>
+                                <div class="detail-value multiline">${teacher.education}</div>
                             </div>
-                            <div class="detail-group" style="grid-column: span 2;">
+                            <div class="detail-group full-width">
                                 <div class="detail-label">Teaching Experience</div>
-                                <div class="detail-value">${teacher.teachingExperience}</div>
+                                <div class="detail-value multiline">${teacher.teachingExperience}</div>
                             </div>
                             ${teacher.additionalInfo ? `
-                                <div class="detail-group" style="grid-column: span 2;">
+                                <div class="detail-group full-width">
                                     <div class="detail-label">Additional Information</div>
-                                    <div class="detail-value">${teacher.additionalInfo}</div>
+                                    <div class="detail-value multiline">${teacher.additionalInfo}</div>
                                 </div>
                             ` : ''}
                             ${teacher.introVideoPath ? `
