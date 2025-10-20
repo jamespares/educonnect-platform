@@ -1868,14 +1868,16 @@
                 });
 
                 audio.addEventListener('error', () => {
-                    e.target.style.background = '#dc2626';
-                    e.target.style.color = 'white';
-                    e.target.innerHTML = 'Error';
+                    e.target.style.background = '#fbbf24';
+                    e.target.style.color = '#78350f';
+                    e.target.innerHTML = 'Audio Pending';
+                    e.target.title = 'Audio file coming soon';
                     setTimeout(() => {
                         e.target.style.background = '#f3f4f6';
                         e.target.style.color = '#6b7280';
                         e.target.innerHTML = 'Play';
-                    }, 2000);
+                        e.target.title = '';
+                    }, 3000);
                 });
 
                 // Fallback timeout in case audio doesn't trigger ended event

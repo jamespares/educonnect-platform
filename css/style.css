@@ -1394,65 +1394,77 @@ textarea.form-input {
 
 /* Legal Page Styles */
 .legal-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 120px 20px 60px;
-    line-height: 1.7;
+    padding: 120px 40px 80px;
+    line-height: 1.8;
+    background: #ffffff;
 }
 
 .legal-title {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
     font-weight: 700;
     color: #1f2937;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     text-align: center;
+    letter-spacing: -0.5px;
 }
 
 .legal-section {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+    padding: 0 20px;
 }
 
 .legal-section h2 {
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-size: 2rem;
+    font-weight: 700;
     color: #1f2937;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 2rem;
+    margin-top: 3rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid #e5e7eb;
 }
 
 .legal-section h3 {
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     font-weight: 600;
     color: #374151;
-    margin: 1.5rem 0 1rem;
+    margin: 2rem 0 1rem;
 }
 
 .legal-section p {
     color: #4b5563;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.0625rem;
 }
 
 .legal-section ul, .legal-section ol {
-    margin-left: 1.5rem;
-    margin-bottom: 1rem;
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .legal-section li {
     color: #4b5563;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
 }
 
 .contact-info {
-    background: #f8fafc;
-    padding: 1.5rem;
-    border-radius: 8px;
+    background: #f9fafb;
+    padding: 2rem;
+    border-radius: 12px;
     margin: 2rem 0;
+    border-left: 4px solid #3b82f6;
+    font-size: 1.0625rem;
+    line-height: 1.8;
 }
 
 .effective-date {
     text-align: center;
     color: #6b7280;
+    font-size: 1.0625rem;
+    margin-bottom: 3rem;
     font-style: italic;
     margin-bottom: 3rem;
 }
