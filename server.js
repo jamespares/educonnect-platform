@@ -19,6 +19,16 @@ const PORT = process.env.PORT || 3000;
 // Initialize database
 const db = new Database();
 
+// Log database configuration
+const mysqlConfigured = process.env.MYSQL_HOST || process.env.MYSQLHOST;
+console.log('🔍 Database Configuration:');
+console.log('  - MYSQL_HOST:', mysqlConfigured ? '✓ Set' : '✗ Not set (using SQLite)');
+console.log('  - Database Type:', mysqlConfigured ? 'MySQL' : 'SQLite');
+if (mysqlConfigured) {
+    console.log('  - MySQL Database:', process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'not specified');
+    console.log('  - MySQL Host:', process.env.MYSQL_HOST || process.env.MYSQLHOST);
+}
+
 // Admin credentials - store plain password for comparison
 const ADMIN_CREDENTIALS = {
     username: process.env.ADMIN_USERNAME || 'admin',
@@ -47,8 +57,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // Set to true in production with HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax'
     }
 }));
 
@@ -485,6 +497,47 @@ app.delete('/api/teachers/:id', requireAuth, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error deleting teacher: ' + error.message
+        });
+    }
+});
+
+// Diagnostic endpoint to check environment and database status
+app.get('/api/debug/status', requireAuth, async (req, res) => {
+    try {
+        const status = {
+            environment: process.env.NODE_ENV || 'development',
+            database: {
+                type: process.env.MYSQL_HOST ? 'MySQL' : 'SQLite',
+                mysqlConfigured: !!process.env.MYSQL_HOST,
+                mysqlHost: process.env.MYSQL_HOST ? '***configured***' : 'not set',
+            },
+            uploads: {
+                directory: process.env.RAILWAY_VOLUME_MOUNT_PATH
+                    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'uploads')
+                    : path.join(__dirname, 'uploads'),
+                volumeMountPath: process.env.RAILWAY_VOLUME_MOUNT_PATH || 'not set',
+            },
+            timestamp: new Date().toISOString()
+        };
+
+        // Try to get teacher count
+        try {
+            const teachers = await db.getAllTeachers();
+            status.database.teacherCount = teachers.length;
+            status.database.connectionStatus = 'connected';
+        } catch (dbError) {
+            status.database.connectionStatus = 'error';
+            status.database.error = dbError.message;
+        }
+
+        res.json({
+            success: true,
+            data: status
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error getting status: ' + error.message
         });
     }
 });
