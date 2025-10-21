@@ -2,7 +2,8 @@ const path = require('path');
 
 // Determine which database to use based on environment
 // Support both MYSQL_HOST and MYSQLHOST naming conventions (Railway uses both)
-const USE_MYSQL = process.env.MYSQL_HOST || process.env.MYSQLHOST ? true : false;
+// Also support MYSQL_URL for Railway's standard format
+const USE_MYSQL = process.env.MYSQL_URL || process.env.MYSQL_HOST || process.env.MYSQLHOST ? true : false;
 
 class Database {
     constructor() {
@@ -18,17 +19,47 @@ class Database {
     initMySQL() {
         const mysql = require('mysql2/promise');
 
-        // Support both naming conventions for Railway compatibility
-        this.pool = mysql.createPool({
-            host: process.env.MYSQL_HOST || process.env.MYSQLHOST,
-            port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
-            user: process.env.MYSQL_USER || process.env.MYSQLUSER,
-            password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD,
-            database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE,
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
-        });
+        let config = {};
+
+        // Parse MYSQL_URL if available (Railway's standard format)
+        if (process.env.MYSQL_URL) {
+            try {
+                const url = new URL(process.env.MYSQL_URL);
+                config = {
+                    host: url.hostname,
+                    port: url.port || 3306,
+                    user: url.username,
+                    password: url.password,
+                    database: url.pathname.substring(1), // Remove leading '/'
+                    waitForConnections: true,
+                    connectionLimit: 10,
+                    queueLimit: 0
+                };
+                console.log('Using MYSQL_URL for connection');
+                console.log('  - Host:', config.host);
+                console.log('  - Database:', config.database);
+            } catch (error) {
+                console.error('Error parsing MYSQL_URL:', error.message);
+                // Fall back to individual variables
+            }
+        }
+
+        // Fall back to individual environment variables if MYSQL_URL not available
+        if (!config.host) {
+            config = {
+                host: process.env.MYSQL_HOST || process.env.MYSQLHOST,
+                port: process.env.MYSQL_PORT || process.env.MYSQLPORT || 3306,
+                user: process.env.MYSQL_USER || process.env.MYSQLUSER,
+                password: process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD,
+                database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE,
+                waitForConnections: true,
+                connectionLimit: 10,
+                queueLimit: 0
+            };
+            console.log('Using individual MySQL environment variables');
+        }
+
+        this.pool = mysql.createPool(config);
 
         console.log('MySQL connection pool created');
         this.initMySQLTables();
