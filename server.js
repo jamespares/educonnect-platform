@@ -52,46 +52,17 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(p
 // This middleware handles Cloudflare proxy headers correctly
 // With 'trust proxy' enabled, Express automatically reads X-Forwarded-* headers
 app.use((req, res, next) => {
-    // Debug: Log all relevant headers to understand what Cloudflare is sending
-    const hostHeader = req.get('host');
-    const forwardedHost = req.get('x-forwarded-host');
-    const forwardedProto = req.get('x-forwarded-proto');
-    const originalUrl = req.originalUrl;
-    
     // Get host from forwarded header (Cloudflare) or direct host header
     // With trust proxy enabled, req.get('host') already reads from X-Forwarded-Host
-    const host = hostHeader || forwardedHost;
+    const host = req.get('host') || req.get('x-forwarded-host');
     
-    // Debug logging for www requests
-    if (host && (host.includes('www.') || forwardedHost?.includes('www.'))) {
-        console.log('[WWW Debug]', {
-            hostHeader,
-            forwardedHost,
-            host,
-            forwardedProto,
-            protocol: req.protocol,
-            originalUrl,
-            url: req.url,
-            headers: {
-                'host': req.headers.host,
-                'x-forwarded-host': req.headers['x-forwarded-host'],
-                'x-forwarded-proto': req.headers['x-forwarded-proto'],
-                'cf-ray': req.headers['cf-ray'],
-                'cf-visitor': req.headers['cf-visitor']
-            }
-        });
-    }
-    
-    // Check if host starts with www.
+    // Check if host starts with www. and redirect to non-www version
     if (host && host.startsWith('www.')) {
         const nonWwwHost = host.replace(/^www\./, '');
-        // req.protocol will be 'https' when behind Cloudflare proxy (thanks to trust proxy)
         // Force HTTPS in production (Cloudflare always uses HTTPS)
         const protocol = process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
         const redirectUrl = `${protocol}://${nonWwwHost}${req.originalUrl}`;
         
-        console.log(`[Redirect] www -> non-www: ${host} -> ${nonWwwHost} (${protocol})`);
-        console.log(`[Redirect] Full URL: ${redirectUrl}`);
         return res.redirect(301, redirectUrl);
     }
     next();
@@ -177,8 +148,8 @@ app.get('/api/admin/check-auth', (req, res) => {
     });
 });
 
-// Debug endpoint to check headers and host detection (public, no auth required)
-app.get('/api/debug/headers', (req, res) => {
+// Debug endpoint to check headers and host detection (admin only for security)
+app.get('/api/debug/headers', requireAuth, (req, res) => {
     res.json({
         host: req.get('host'),
         xForwardedHost: req.get('x-forwarded-host'),
