@@ -1258,12 +1258,6 @@ textarea.form-input {
     pointer-events: none;
 }
 
-.callout-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    display: block;
-}
-
 .flexible-requirements-callout h2 {
     font-size: 2rem;
     font-weight: 700;
@@ -1365,10 +1359,6 @@ textarea.form-input {
     
     .callout-subtext {
         font-size: 1rem;
-    }
-    
-    .callout-icon {
-        font-size: 2.5rem;
     }
     
     .flexible-requirements-callout .btn-primary,
