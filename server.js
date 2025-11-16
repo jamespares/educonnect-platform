@@ -9,8 +9,22 @@ const bcrypt = require('bcryptjs');
 const { Resend } = require('resend');
 const SupabaseDatabase = require('./supabase-database');
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend (non-blocking, will fail gracefully if no key)
+let resend;
+try {
+    resend = new Resend(process.env.RESEND_API_KEY);
+} catch (error) {
+    console.warn('⚠️  Resend not initialized:', error.message);
+    // Create a dummy resend object to prevent crashes
+    resend = {
+        emails: {
+            send: async () => {
+                console.warn('⚠️  Email sending skipped - RESEND_API_KEY not configured');
+                return { id: 'skipped' };
+            }
+        }
+    };
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -778,17 +792,26 @@ app.use((error, req, res, next) => {
 });
 
 // Start server - this MUST happen even if database fails
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ EduConnect server running on port ${PORT}`);
-    console.log(`   Health check available at: http://0.0.0.0:${PORT}/health`);
-    console.log(`   Database initialized: ${dbInitialized ? 'Yes' : 'No'}`);
-    if (!dbInitialized) {
-        console.warn('⚠️  Warning: Database not initialized. Some features will not work.');
-    }
-}).on('error', (err) => {
-    console.error('❌ Failed to start server:', err);
+try {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`✅ EduConnect server running on port ${PORT}`);
+        console.log(`   Health check available at: http://0.0.0.0:${PORT}/health`);
+        console.log(`   Database initialized: ${dbInitialized ? 'Yes' : 'No'}`);
+        console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+        if (!dbInitialized) {
+            console.warn('⚠️  Warning: Database not initialized. Some features will not work.');
+        }
+    }).on('error', (err) => {
+        console.error('❌ Failed to start server:', err);
+        console.error('   Error details:', err.message);
+        console.error('   Port:', PORT);
+        process.exit(1);
+    });
+} catch (error) {
+    console.error('❌ Critical error starting server:', error);
+    console.error('   Stack:', error.stack);
     process.exit(1);
-});
+}
 
 // Graceful shutdown
 process.on('SIGINT', () => {
