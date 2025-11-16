@@ -29,11 +29,31 @@ if (mysqlConfigured) {
     console.log('  - MySQL Host:', process.env.MYSQL_HOST || process.env.MYSQLHOST);
 }
 
-// Admin credentials - store plain password for comparison
-const ADMIN_CREDENTIALS = {
-    username: process.env.ADMIN_USERNAME || 'admin',
-    password: process.env.ADMIN_PASSWORD || 'password'
-};
+// Helper function to sanitize HTML input
+function sanitizeHtml(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
+// Admin credentials - password will be hashed
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+// Hash the default password if no env var is set (for development only)
+// In production, set ADMIN_PASSWORD_HASH in environment variables
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'password', 10);
+
+// Redirect www to non-www (or vice versa)
+app.use((req, res, next) => {
+    const host = req.get('host');
+    if (host && host.startsWith('www.')) {
+        return res.redirect(301, `${req.protocol}://${host.replace(/^www\./, '')}${req.originalUrl}`);
+    }
+    next();
+});
 
 // Security middleware
 app.use((req, res, next) => {
@@ -133,6 +153,13 @@ app.get('/admin', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Check authentication status API endpoint
+app.get('/api/admin/check-auth', (req, res) => {
+    res.json({
+        authenticated: !!(req.session && req.session.authenticated)
+    });
+});
+
 // API Routes
 app.post('/api/submit-application', upload.single('introVideo'), async (req, res) => {
     try {
@@ -173,25 +200,25 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             await resend.emails.send({
                 from: 'EduConnect <team@educonnectchina.com>',
                 to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
-                subject: `New Teacher Application: ${teacherData.firstName} ${teacherData.lastName}`,
+                subject: `New Teacher Application: ${sanitizeHtml(teacherData.firstName)} ${sanitizeHtml(teacherData.lastName)}`,
                 html: `
                     <h2>New Teacher Application Received</h2>
-                    <p><strong>Name:</strong> ${teacherData.firstName} ${teacherData.lastName}</p>
-                    <p><strong>Email:</strong> ${teacherData.email}</p>
-                    <p><strong>Phone:</strong> ${teacherData.phone}</p>
-                    <p><strong>Nationality:</strong> ${teacherData.nationality}</p>
-                    <p><strong>Experience:</strong> ${teacherData.yearsExperience}</p>
-                    <p><strong>Subject:</strong> ${teacherData.subjectSpecialty}</p>
-                    <p><strong>Preferred Location:</strong> ${teacherData.preferredLocation || 'No preference'}</p>
-                    <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group || 'Not specified'}</p>
+                    <p><strong>Name:</strong> ${sanitizeHtml(teacherData.firstName)} ${sanitizeHtml(teacherData.lastName)}</p>
+                    <p><strong>Email:</strong> ${sanitizeHtml(teacherData.email)}</p>
+                    <p><strong>Phone:</strong> ${sanitizeHtml(teacherData.phone)}</p>
+                    <p><strong>Nationality:</strong> ${sanitizeHtml(teacherData.nationality)}</p>
+                    <p><strong>Experience:</strong> ${sanitizeHtml(teacherData.yearsExperience)}</p>
+                    <p><strong>Subject:</strong> ${sanitizeHtml(teacherData.subjectSpecialty)}</p>
+                    <p><strong>Preferred Location:</strong> ${teacherData.preferredLocation ? sanitizeHtml(teacherData.preferredLocation) : 'No preference'}</p>
+                    <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group ? sanitizeHtml(teacherData.preferred_age_group) : 'Not specified'}</p>
 
                     <h3>Education Background:</h3>
-                    <p>${teacherData.education}</p>
+                    <p>${sanitizeHtml(teacherData.education)}</p>
 
                     <h3>Teaching Experience:</h3>
-                    <p>${teacherData.teachingExperience}</p>
+                    <p>${sanitizeHtml(teacherData.teachingExperience)}</p>
 
-                    ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${teacherData.additionalInfo}</p>` : ''}
+                    ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${sanitizeHtml(teacherData.additionalInfo)}</p>` : ''}
 
                     <p><strong>Video:</strong> ${teacherData.introVideoPath ? 'Uploaded' : 'Not provided'}</p>
 
@@ -218,11 +245,9 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
 });
 
 // Authentication API routes
-app.post('/api/admin/login', (req, res) => {
+app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-
-        console.log('Login attempt:', { username, password, expected: ADMIN_CREDENTIALS });
 
         if (!username || !password) {
             return res.status(400).json({
@@ -231,8 +256,11 @@ app.post('/api/admin/login', (req, res) => {
             });
         }
 
-        // Check credentials
-        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        // Check username and compare hashed password
+        const usernameMatch = username === ADMIN_USERNAME;
+        const passwordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+
+        if (usernameMatch && passwordMatch) {
             req.session.authenticated = true;
             req.session.username = username;
 
@@ -243,7 +271,7 @@ app.post('/api/admin/login', (req, res) => {
                 message: 'Login successful'
             });
         } else {
-            console.log('Login failed for:', username, 'with password:', password);
+            console.log('Login failed for username:', username);
 
             res.status(401).json({
                 success: false,
@@ -294,23 +322,32 @@ app.post('/send-message', async (req, res) => {
             from: 'EduConnect <team@educonnectchina.com>',
             to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
             replyTo: email,
-            subject: `EduConnect Contact: ${subject}`,
+            subject: `EduConnect Contact: ${sanitizeHtml(subject)}`,
             html: `
                 <h2>New Contact Form Message</h2>
-                <p><strong>From:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>From:</strong> ${sanitizeHtml(name)}</p>
+                <p><strong>Email:</strong> ${sanitizeHtml(email)}</p>
+                <p><strong>Subject:</strong> ${sanitizeHtml(subject)}</p>
                 <p><strong>Message:</strong></p>
-                <p>${message.replace(/\n/g, '<br>')}</p>
+                <p>${sanitizeHtml(message).replace(/\n/g, '<br>')}</p>
                 <hr>
                 <p><small>This message was sent via the EduConnect contact form.</small></p>
             `
         });
 
-        res.redirect('/contact.html?success=true');
+        // Return JSON response instead of redirect for AJAX requests
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            res.json({ success: true, message: 'Message sent successfully' });
+        } else {
+            res.redirect('/contact.html?success=true');
+        }
     } catch (error) {
         console.error('Error sending email:', error);
-        res.redirect('/contact.html?error=true');
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            res.status(500).json({ success: false, message: 'Failed to send message' });
+        } else {
+            res.redirect('/contact.html?error=true');
+        }
     }
 });
 
@@ -394,17 +431,17 @@ app.post('/api/job-interest', async (req, res) => {
             await resend.emails.send({
                 from: 'EduConnect <team@educonnectchina.com>',
                 to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
-                subject: `New Job Interest: ${interestData.firstName} ${interestData.lastName}`,
+                subject: `New Job Interest: ${sanitizeHtml(interestData.firstName)} ${sanitizeHtml(interestData.lastName)}`,
                 html: `
                     <h2>New Job Interest Received</h2>
-                    <p><strong>Name:</strong> ${interestData.firstName} ${interestData.lastName}</p>
-                    <p><strong>Email:</strong> ${interestData.email}</p>
-                    <p><strong>Phone:</strong> ${interestData.phone || 'Not provided'}</p>
-                    <p><strong>Teaching Subject:</strong> ${interestData.teachingSubject}</p>
-                    <p><strong>Experience:</strong> ${interestData.experience}</p>
-                    <p><strong>Preferred Location:</strong> ${interestData.preferredLocation || 'No preference'}</p>
+                    <p><strong>Name:</strong> ${sanitizeHtml(interestData.firstName)} ${sanitizeHtml(interestData.lastName)}</p>
+                    <p><strong>Email:</strong> ${sanitizeHtml(interestData.email)}</p>
+                    <p><strong>Phone:</strong> ${interestData.phone ? sanitizeHtml(interestData.phone) : 'Not provided'}</p>
+                    <p><strong>Teaching Subject:</strong> ${sanitizeHtml(interestData.teachingSubject)}</p>
+                    <p><strong>Experience:</strong> ${sanitizeHtml(interestData.experience)}</p>
+                    <p><strong>Preferred Location:</strong> ${interestData.preferredLocation ? sanitizeHtml(interestData.preferredLocation) : 'No preference'}</p>
 
-                    ${interestData.message ? `<h3>Message:</h3><p>${interestData.message}</p>` : ''}
+                    ${interestData.message ? `<h3>Message:</h3><p>${sanitizeHtml(interestData.message)}</p>` : ''}
 
                     <p><em>View full details in the admin dashboard.</em></p>
                 `

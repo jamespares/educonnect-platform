@@ -1,8 +1,18 @@
 // Admin page functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
-    const adminToken = localStorage.getItem('adminToken');
-    if (!adminToken) {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check authentication via session
+    try {
+        const response = await fetch('/api/admin/check-auth', {
+            credentials: 'include' // Include cookies for session
+        });
+        const data = await response.json();
+        
+        if (!data.authenticated) {
+            window.location.href = '/login.html';
+            return;
+        }
+    } catch (error) {
+        console.error('Auth check failed:', error);
         window.location.href = '/login.html';
         return;
     }
@@ -53,10 +63,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup logout functionality
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
+        logoutBtn.addEventListener('click', async function(e) {
             e.preventDefault();
             if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('adminToken');
+                try {
+                    await fetch('/api/admin/logout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
                 window.location.href = '/login.html';
             }
         });

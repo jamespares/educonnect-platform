@@ -77,10 +77,14 @@ if (window.location.pathname.includes('login')) {
 
                 if (response.ok) {
                     const result = await response.json();
-                    localStorage.setItem('adminToken', result.token);
-                    window.location.href = '/admin.html';
+                    if (result.success) {
+                        window.location.href = '/admin.html';
+                    } else {
+                        alert(result.message || 'Invalid credentials');
+                    }
                 } else {
-                    alert('Invalid credentials');
+                    const result = await response.json().catch(() => ({}));
+                    alert(result.message || 'Invalid credentials');
                 }
             } catch (error) {
                 alert('Login failed. Please try again.');
