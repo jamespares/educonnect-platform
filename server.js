@@ -720,8 +720,6 @@ app.get('/api/photos/:path(*)', async (req, res) => {
         });
     }
 });
-<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
-read_file
 
 // Diagnostic endpoint to check environment and database status
 app.get('/api/debug/status', requireAuth, async (req, res) => {
