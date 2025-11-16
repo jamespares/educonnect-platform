@@ -18,6 +18,16 @@ const PORT = process.env.PORT || 3000;
 // Trust proxy (needed for Cloudflare and Railway to correctly detect HTTPS)
 app.set('trust proxy', true);
 
+// Health check endpoint (must be first, before any middleware)
+// This allows Railway/deployment healthchecks to work even if other parts fail
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        database: process.env.SUPABASE_URL ? 'configured' : 'not configured'
+    });
+});
+
 // Initialize Supabase database
 let db;
 try {
@@ -742,8 +752,12 @@ app.use((error, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`EduConnect server running on port ${PORT}`);
-    console.log(`Visit http://localhost:${PORT} to view the website`);
+    console.log(`✅ EduConnect server running on port ${PORT}`);
+    console.log(`   Health check available at: http://localhost:${PORT}/health`);
+    console.log(`   Visit http://localhost:${PORT} to view the website`);
+}).on('error', (err) => {
+    console.error('❌ Failed to start server:', err);
+    process.exit(1);
 });
 
 // Graceful shutdown
