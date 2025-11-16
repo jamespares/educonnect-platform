@@ -52,9 +52,35 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(p
 // This middleware handles Cloudflare proxy headers correctly
 // With 'trust proxy' enabled, Express automatically reads X-Forwarded-* headers
 app.use((req, res, next) => {
+    // Debug: Log all relevant headers to understand what Cloudflare is sending
+    const hostHeader = req.get('host');
+    const forwardedHost = req.get('x-forwarded-host');
+    const forwardedProto = req.get('x-forwarded-proto');
+    const originalUrl = req.originalUrl;
+    
     // Get host from forwarded header (Cloudflare) or direct host header
     // With trust proxy enabled, req.get('host') already reads from X-Forwarded-Host
-    const host = req.get('host') || req.get('x-forwarded-host');
+    const host = hostHeader || forwardedHost;
+    
+    // Debug logging for www requests
+    if (host && (host.includes('www.') || forwardedHost?.includes('www.'))) {
+        console.log('[WWW Debug]', {
+            hostHeader,
+            forwardedHost,
+            host,
+            forwardedProto,
+            protocol: req.protocol,
+            originalUrl,
+            url: req.url,
+            headers: {
+                'host': req.headers.host,
+                'x-forwarded-host': req.headers['x-forwarded-host'],
+                'x-forwarded-proto': req.headers['x-forwarded-proto'],
+                'cf-ray': req.headers['cf-ray'],
+                'cf-visitor': req.headers['cf-visitor']
+            }
+        });
+    }
     
     // Check if host starts with www.
     if (host && host.startsWith('www.')) {
@@ -65,6 +91,7 @@ app.use((req, res, next) => {
         const redirectUrl = `${protocol}://${nonWwwHost}${req.originalUrl}`;
         
         console.log(`[Redirect] www -> non-www: ${host} -> ${nonWwwHost} (${protocol})`);
+        console.log(`[Redirect] Full URL: ${redirectUrl}`);
         return res.redirect(301, redirectUrl);
     }
     next();
@@ -147,6 +174,27 @@ app.get('/admin', requireAuth, (req, res) => {
 app.get('/api/admin/check-auth', (req, res) => {
     res.json({
         authenticated: !!(req.session && req.session.authenticated)
+    });
+});
+
+// Debug endpoint to check headers and host detection (public, no auth required)
+app.get('/api/debug/headers', (req, res) => {
+    res.json({
+        host: req.get('host'),
+        xForwardedHost: req.get('x-forwarded-host'),
+        xForwardedProto: req.get('x-forwarded-proto'),
+        protocol: req.protocol,
+        originalUrl: req.originalUrl,
+        url: req.url,
+        headers: {
+            host: req.headers.host,
+            'x-forwarded-host': req.headers['x-forwarded-host'],
+            'x-forwarded-proto': req.headers['x-forwarded-proto'],
+            'cf-ray': req.headers['cf-ray'],
+            'cf-visitor': req.headers['cf-visitor'],
+            'x-forwarded-for': req.headers['x-forwarded-for']
+        },
+        isWww: req.get('host')?.startsWith('www.') || req.get('x-forwarded-host')?.startsWith('www.')
     });
 });
 
