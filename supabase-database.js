@@ -33,6 +33,11 @@ class SupabaseDatabase {
                 preferred_location: teacherData.preferredLocation,
                 preferred_age_group: teacherData.preferred_age_group,
                 intro_video_path: teacherData.introVideoPath,
+                headshot_photo_path: teacherData.headshotPhotoPath,
+                linkedin: teacherData.linkedin,
+                instagram: teacherData.instagram,
+                wechat_id: teacherData.wechatId,
+                professional_experience: teacherData.professionalExperience,
                 additional_info: teacherData.additionalInfo
             })
             .select()
@@ -311,7 +316,44 @@ class SupabaseDatabase {
         };
     }
 
+    // Storage methods for photo uploads
+    async uploadPhoto(file, fileName) {
+        // file is a multer file object with buffer property
+        const fileBuffer = file.buffer || file;
+        const contentType = file.mimetype || 'image/jpeg';
+
+        const { data, error } = await this.supabase.storage
+            .from(this.storageBucket)
+            .upload(fileName, fileBuffer, {
+                contentType: contentType,
+                upsert: false,
+                cacheControl: '3600'
+            });
+
+        if (error) {
+            throw new Error(`Failed to upload photo: ${error.message}`);
+        }
+
+        // Get public URL
+        const { data: urlData } = this.supabase.storage
+            .from(this.storageBucket)
+            .getPublicUrl(data.path);
+
+        return {
+            path: data.path,
+            url: urlData.publicUrl
+        };
+    }
+
     async getVideoUrl(filePath) {
+        const { data } = this.supabase.storage
+            .from(this.storageBucket)
+            .getPublicUrl(filePath);
+
+        return data.publicUrl;
+    }
+
+    async getPhotoUrl(filePath) {
         const { data } = this.supabase.storage
             .from(this.storageBucket)
             .getPublicUrl(filePath);
@@ -335,6 +377,11 @@ class SupabaseDatabase {
             preferredLocation: teacher.preferred_location,
             preferred_age_group: teacher.preferred_age_group,
             introVideoPath: teacher.intro_video_path,
+            headshotPhotoPath: teacher.headshot_photo_path,
+            linkedin: teacher.linkedin,
+            instagram: teacher.instagram,
+            wechatId: teacher.wechat_id,
+            professionalExperience: teacher.professional_experience,
             additionalInfo: teacher.additional_info,
             status: teacher.status,
             createdAt: teacher.created_at,

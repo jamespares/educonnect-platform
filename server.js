@@ -101,19 +101,51 @@ app.use(session({
 app.use(express.static(path.join(__dirname)));
 
 // Configure multer for in-memory file uploads (we'll upload to Supabase Storage)
+// Handle both video and image files
 const upload = multer({
     storage: multer.memoryStorage(), // Store in memory temporarily
     limits: {
-        fileSize: 100 * 1024 * 1024 // 100MB limit
+        fileSize: 100 * 1024 * 1024 // 100MB limit (max for videos, photos will be validated separately)
     },
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('video/')) {
+        // Allow video files for introVideo
+        if (file.fieldname === 'introVideo' && file.mimetype.startsWith('video/')) {
+            cb(null, true);
+        }
+        // Allow image files for headshotPhoto
+        else if (file.fieldname === 'headshotPhoto' && file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
-            cb(new Error('Only video files are allowed!'), false);
+            cb(new Error(`Invalid file type for ${file.fieldname}. Videos allowed for introVideo, images for headshotPhoto.`), false);
         }
     }
-});
+}).fields([
+    { name: 'introVideo', maxCount: 1 },
+    { name: 'headshotPhoto', maxCount: 1 }
+]);
+
+// Multer error handling middleware
+const handleMulterError = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+                success: false,
+                message: 'File too large. Maximum size is 100MB for videos and 10MB for photos.'
+            });
+        }
+        return res.status(400).json({
+            success: false,
+            message: 'File upload error: ' + err.message
+        });
+    }
+    if (err) {
+        return res.status(400).json({
+            success: false,
+            message: err.message || 'File upload error'
+        });
+    }
+    next();
+};
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -170,7 +202,7 @@ app.get('/api/debug/headers', requireAuth, (req, res) => {
 });
 
 // API Routes
-app.post('/api/submit-application', upload.single('introVideo'), async (req, res) => {
+app.post('/api/submit-application', upload, handleMulterError, async (req, res) => {
     try {
         // Basic validation
         if (!req.body.firstName || req.body.firstName.trim().length < 2) {
@@ -186,14 +218,28 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             return res.status(400).json({ success: false, message: 'Preferred age group is required' });
         }
 
+        // Validate media requirement: must have video OR photo OR LinkedIn OR Instagram
+        const videoFile = req.files && req.files['introVideo'] ? req.files['introVideo'][0] : null;
+        const photoFile = req.files && req.files['headshotPhoto'] ? req.files['headshotPhoto'][0] : null;
+        const linkedin = req.body.linkedin ? req.body.linkedin.trim() : '';
+        const instagram = req.body.instagram ? req.body.instagram.trim() : '';
+        
+        const hasMedia = videoFile || photoFile || linkedin || instagram;
+        if (!hasMedia) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please provide at least one of the following: Introduction Video, Headshot Photo, LinkedIn Profile, or Instagram Username.' 
+            });
+        }
+
         // Upload video to Supabase Storage if provided
         let videoPath = null;
-        if (req.file) {
+        if (videoFile) {
             try {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-                const fileName = `introVideo-${uniqueSuffix}${path.extname(req.file.originalname)}`;
+                const fileName = `introVideo-${uniqueSuffix}${path.extname(videoFile.originalname)}`;
                 
-                const uploadResult = await db.uploadVideo(req.file, fileName);
+                const uploadResult = await db.uploadVideo(videoFile, fileName);
                 videoPath = uploadResult.path; // Store the path, not the full URL
                 console.log('✅ Video uploaded to Supabase Storage:', uploadResult.path);
             } catch (uploadError) {
@@ -201,6 +247,34 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
                 return res.status(500).json({
                     success: false,
                     message: 'Error uploading video: ' + uploadError.message
+                });
+            }
+        }
+
+        // Upload photo to Supabase Storage if provided
+        let photoPath = null;
+        if (photoFile) {
+            // Validate photo file size (10MB limit for photos)
+            const maxPhotoSize = 10 * 1024 * 1024; // 10MB
+            if (photoFile.size > maxPhotoSize) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Photo file is too large. Maximum size is 10MB.'
+                });
+            }
+            
+            try {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const fileName = `headshot-${uniqueSuffix}${path.extname(photoFile.originalname)}`;
+                
+                const uploadResult = await db.uploadPhoto(photoFile, fileName);
+                photoPath = uploadResult.path; // Store the path, not the full URL
+                console.log('✅ Photo uploaded to Supabase Storage:', uploadResult.path);
+            } catch (uploadError) {
+                console.error('Error uploading photo to Supabase:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error uploading photo: ' + uploadError.message
                 });
             }
         }
@@ -218,6 +292,11 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             preferredLocation: req.body.preferredLocation ? req.body.preferredLocation.trim() : null,
             preferred_age_group: req.body.preferredAgeGroup ? req.body.preferredAgeGroup.trim() : null,
             introVideoPath: videoPath,
+            headshotPhotoPath: photoPath,
+            linkedin: linkedin || null,
+            instagram: instagram || null,
+            wechatId: req.body.wechatId ? req.body.wechatId.trim() : null,
+            professionalExperience: req.body.professionalExperience ? req.body.professionalExperience.trim() : null,
             additionalInfo: req.body.additionalInfo ? req.body.additionalInfo.trim() : null
         };
 
@@ -246,9 +325,16 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
                     <h3>Teaching Experience:</h3>
                     <p>${sanitizeHtml(teacherData.teachingExperience)}</p>
 
+                    ${teacherData.professionalExperience ? `<h3>Professional Experience & Fit:</h3><p>${sanitizeHtml(teacherData.professionalExperience)}</p>` : ''}
+
                     ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${sanitizeHtml(teacherData.additionalInfo)}</p>` : ''}
 
+                    <h3>Media & Social Profiles:</h3>
                     <p><strong>Video:</strong> ${teacherData.introVideoPath ? 'Uploaded' : 'Not provided'}</p>
+                    <p><strong>Headshot Photo:</strong> ${teacherData.headshotPhotoPath ? 'Uploaded' : 'Not provided'}</p>
+                    <p><strong>LinkedIn:</strong> ${teacherData.linkedin ? `<a href="${sanitizeHtml(teacherData.linkedin)}">${sanitizeHtml(teacherData.linkedin)}</a>` : 'Not provided'}</p>
+                    <p><strong>Instagram:</strong> ${teacherData.instagram ? sanitizeHtml(teacherData.instagram) : 'Not provided'}</p>
+                    <p><strong>WeChat ID:</strong> ${teacherData.wechatId ? sanitizeHtml(teacherData.wechatId) : 'Not provided'}</p>
 
                     <p><em>View full details in the admin dashboard.</em></p>
                 `
@@ -581,6 +667,23 @@ app.get('/api/videos/:path(*)', async (req, res) => {
     }
 });
 
+// Serve photo files from Supabase Storage
+app.get('/api/photos/:path(*)', async (req, res) => {
+    try {
+        const photoPath = req.params.path;
+        const photoUrl = await db.getPhotoUrl(photoPath);
+        res.redirect(photoUrl);
+    } catch (error) {
+        console.error('Error getting photo URL:', error);
+        res.status(404).json({
+            success: false,
+            message: 'Photo not found'
+        });
+    }
+});
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+read_file
+
 // Diagnostic endpoint to check environment and database status
 app.get('/api/debug/status', requireAuth, async (req, res) => {
     try {
@@ -616,16 +719,21 @@ app.get('/api/debug/status', requireAuth, async (req, res) => {
     }
 });
 
-// Error handling middleware
+// Error handling middleware (catches any unhandled errors)
 app.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({
                 success: false,
-                message: 'File too large. Maximum size is 100MB.'
+                message: 'File too large. Maximum size is 100MB for videos and 10MB for photos.'
             });
         }
+        return res.status(400).json({
+            success: false,
+            message: 'File upload error: ' + error.message
+        });
     }
+    console.error('Unhandled error:', error);
     res.status(500).json({
         success: false,
         message: 'Something went wrong!'

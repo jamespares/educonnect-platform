@@ -299,6 +299,13 @@
                         </select>
                     </div>
                     
+                    <div class="form-group full-width" id="professionalExperienceGroup" style="display: none;">
+                        <label for="professionalExperience" class="form-label">Professional Experience & Fit</label>
+                        <textarea id="professionalExperience" name="professionalExperience" class="form-textarea" 
+                                  placeholder="If you don't have teaching experience but have relevant professional experience, please describe your background, transferable skills, and why you believe you would be a good fit for teaching in China. Highlight your communication abilities, adaptability, and passion for education."></textarea>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">This field is for candidates without formal teaching experience who have other relevant professional experience.</p>
+                    </div>
+                    
                     <div class="form-group full-width">
                         <label for="education" class="form-label">Educational Background *</label>
                         <textarea id="education" name="education" class="form-textarea" 
@@ -356,14 +363,47 @@
                     </div>
                     
                     <div class="form-group full-width">
-                        <label for="introVideo" class="form-label">Introduction Video *</label>
+                        <label for="introVideo" class="form-label">Introduction Video</label>
                         <div class="form-file-input" onclick="document.getElementById('videoFile').click()">
-                            <input type="file" id="videoFile" name="introVideo" accept="video/*" required>
-                            <div class="file-upload-text">
+                            <input type="file" id="videoFile" name="introVideo" accept="video/*">
+                            <div class="file-upload-text" id="videoUploadText">
                                 <strong>Click to upload your introduction video</strong><br>
                                 Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="headshotPhoto" class="form-label">Headshot Photo</label>
+                        <div class="form-file-input" onclick="document.getElementById('photoFile').click()">
+                            <input type="file" id="photoFile" name="headshotPhoto" accept="image/*">
+                            <div class="file-upload-text" id="photoUploadText">
+                                <strong>Click to upload your professional headshot</strong><br>
+                                Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin" class="form-label">LinkedIn Profile URL</label>
+                        <input type="url" id="linkedin" name="linkedin" class="form-input" 
+                               placeholder="https://linkedin.com/in/yourprofile">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instagram" class="form-label">Instagram Username</label>
+                        <input type="text" id="instagram" name="instagram" class="form-input" 
+                               placeholder="@yourusername">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="wechatId" class="form-label">WeChat ID</label>
+                        <input type="text" id="wechatId" name="wechatId" class="form-input" 
+                               placeholder="Your WeChat ID">
+                    </div>
+                    
+                    <div class="form-note" id="mediaRequirementNote" style="display: none; background: #fef3c7; border-color: #f59e0b; color: #92400e;">
+                        <strong>Required:</strong> Please provide at least one of the following: Introduction Video, Headshot Photo, LinkedIn Profile, or Instagram Username. This helps us assess your professional presentation and suitability for teaching positions.
                     </div>
                     
                     <div class="form-group full-width">
@@ -418,16 +458,84 @@
 
     <script src="js/script.js"></script>
     <script>
-        document.getElementById('videoFile').addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name;
-            if (fileName) {
-                const uploadText = e.target.parentElement.querySelector('.file-upload-text');
-                uploadText.innerHTML = `<strong>Selected:</strong> ${fileName}`;
+        // Show/hide professional experience field based on teaching experience
+        document.getElementById('yearsExperience').addEventListener('change', function(e) {
+            const professionalExperienceGroup = document.getElementById('professionalExperienceGroup');
+            const selectedValue = e.target.value;
+            
+            // Show if 0-1 years (no experience or minimal experience)
+            if (selectedValue === '0-1' || selectedValue === '') {
+                professionalExperienceGroup.style.display = 'block';
+            } else {
+                professionalExperienceGroup.style.display = 'none';
             }
         });
 
+        // File upload handlers
+        document.getElementById('videoFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('videoUploadText').innerHTML = `<strong>Selected:</strong> ${fileName}`;
+            } else {
+                document.getElementById('videoUploadText').innerHTML = `
+                    <strong>Click to upload your introduction video</strong><br>
+                    Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
+                `;
+            }
+            checkMediaRequirement();
+        });
+
+        document.getElementById('photoFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('photoUploadText').innerHTML = `<strong>Selected:</strong> ${fileName}`;
+            } else {
+                document.getElementById('photoUploadText').innerHTML = `
+                    <strong>Click to upload your professional headshot</strong><br>
+                    Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
+                `;
+            }
+            checkMediaRequirement();
+        });
+
+        // Check if at least one media option is provided
+        function checkMediaRequirement() {
+            const videoFile = document.getElementById('videoFile').files[0];
+            const photoFile = document.getElementById('photoFile').files[0];
+            const linkedin = document.getElementById('linkedin').value.trim();
+            const instagram = document.getElementById('instagram').value.trim();
+            
+            const hasMedia = videoFile || photoFile || linkedin || instagram;
+            const note = document.getElementById('mediaRequirementNote');
+            
+            if (!hasMedia) {
+                note.style.display = 'block';
+            } else {
+                note.style.display = 'none';
+            }
+        }
+
+        // Add event listeners for LinkedIn and Instagram fields
+        document.getElementById('linkedin').addEventListener('input', checkMediaRequirement);
+        document.getElementById('instagram').addEventListener('input', checkMediaRequirement);
+
+        // Form submission handler
         document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Validate media requirement
+            const videoFile = document.getElementById('videoFile').files[0];
+            const photoFile = document.getElementById('photoFile').files[0];
+            const linkedin = document.getElementById('linkedin').value.trim();
+            const instagram = document.getElementById('instagram').value.trim();
+            
+            const hasMedia = videoFile || photoFile || linkedin || instagram;
+            
+            if (!hasMedia) {
+                alert('Please provide at least one of the following: Introduction Video, Headshot Photo, LinkedIn Profile, or Instagram Username.');
+                document.getElementById('mediaRequirementNote').style.display = 'block';
+                return;
+            }
             
             // Show loading state
             const submitButton = this.querySelector('.submit-button');
@@ -452,10 +560,16 @@
                     
                     // Reset form
                     this.reset();
-                    document.querySelector('.file-upload-text').innerHTML = `
+                    document.getElementById('videoUploadText').innerHTML = `
                         <strong>Click to upload your introduction video</strong><br>
                         Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
                     `;
+                    document.getElementById('photoUploadText').innerHTML = `
+                        <strong>Click to upload your professional headshot</strong><br>
+                        Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
+                    `;
+                    document.getElementById('professionalExperienceGroup').style.display = 'none';
+                    document.getElementById('mediaRequirementNote').style.display = 'none';
                 } else {
                     alert('Error submitting application: ' + result.message);
                 }
