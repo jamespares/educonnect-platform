@@ -95,10 +95,10 @@ CREATE POLICY "Service role can do everything on teacher_school_matches" ON teac
     FOR ALL USING (true) WITH CHECK (true);
 
 -- Insert a default master admin user (password: 'admin123' - CHANGE THIS IMMEDIATELY!)
--- Password hash for 'admin123' using bcrypt
+-- Password hash for 'admin123' using bcrypt (verified)
 -- IMPORTANT: Change this password immediately after first login!
 -- Master admin can manage other staff members from the dashboard
 INSERT INTO staff (username, password_hash, full_name, role) 
-VALUES ('admin', '$2b$10$TzEhPvDZuWatX/Ziw8EBfew6qBB9iamR5L3TJZmqYMu6mHrpg25V2', 'Master Admin', 'master_admin')
+VALUES ('admin', '$2b$10$OQYQnjzQs4cbY0Xn4yoi/eyuvet7/o6IqGtzzUl8/KHhVT/L391Ea', 'Master Admin', 'master_admin')
 ON CONFLICT (username) DO NOTHING;
 
