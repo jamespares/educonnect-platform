@@ -4,11 +4,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const { Resend } = require('resend');
-const Database = require('./database');
+const SupabaseDatabase = require('./supabase-database');
 
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -16,17 +15,17 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize database
-const db = new Database();
-
-// Log database configuration
-const mysqlConfigured = process.env.MYSQL_HOST || process.env.MYSQLHOST;
-console.log('🔍 Database Configuration:');
-console.log('  - MYSQL_HOST:', mysqlConfigured ? '✓ Set' : '✗ Not set (using SQLite)');
-console.log('  - Database Type:', mysqlConfigured ? 'MySQL' : 'SQLite');
-if (mysqlConfigured) {
-    console.log('  - MySQL Database:', process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'not specified');
-    console.log('  - MySQL Host:', process.env.MYSQL_HOST || process.env.MYSQLHOST);
+// Initialize Supabase database
+let db;
+try {
+    db = new SupabaseDatabase();
+    console.log('🔍 Database Configuration:');
+    console.log('  - Database Type: Supabase');
+    console.log('  - Supabase URL:', process.env.SUPABASE_URL ? '✓ Set' : '✗ Not set');
+} catch (error) {
+    console.error('❌ Failed to initialize Supabase:', error.message);
+    console.error('   Make sure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in environment variables');
+    process.exit(1);
 }
 
 // Helper function to sanitize HTML input
@@ -87,34 +86,9 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Use Railway volume if available, otherwise use local uploads directory
-const uploadsDir = process.env.RAILWAY_VOLUME_MOUNT_PATH
-    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'uploads')
-    : path.join(__dirname, 'uploads');
-
-console.log('📁 Uploads directory:', uploadsDir);
-
-app.use('/uploads', express.static(uploadsDir));
-
-// Create uploads directory if it doesn't exist
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    console.log('✅ Created uploads directory');
-}
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
+// Configure multer for in-memory file uploads (we'll upload to Supabase Storage)
 const upload = multer({
-    storage: storage,
+    storage: multer.memoryStorage(), // Store in memory temporarily
     limits: {
         fileSize: 100 * 1024 * 1024 // 100MB limit
     },
@@ -177,6 +151,25 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             return res.status(400).json({ success: false, message: 'Preferred age group is required' });
         }
 
+        // Upload video to Supabase Storage if provided
+        let videoPath = null;
+        if (req.file) {
+            try {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const fileName = `introVideo-${uniqueSuffix}${path.extname(req.file.originalname)}`;
+                
+                const uploadResult = await db.uploadVideo(req.file, fileName);
+                videoPath = uploadResult.path; // Store the path, not the full URL
+                console.log('✅ Video uploaded to Supabase Storage:', uploadResult.path);
+            } catch (uploadError) {
+                console.error('Error uploading video to Supabase:', uploadError);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error uploading video: ' + uploadError.message
+                });
+            }
+        }
+
         const teacherData = {
             firstName: req.body.firstName.trim(),
             lastName: req.body.lastName.trim(),
@@ -189,7 +182,7 @@ app.post('/api/submit-application', upload.single('introVideo'), async (req, res
             subjectSpecialty: req.body.subjectSpecialty.trim(),
             preferredLocation: req.body.preferredLocation ? req.body.preferredLocation.trim() : null,
             preferred_age_group: req.body.preferredAgeGroup ? req.body.preferredAgeGroup.trim() : null,
-            introVideoPath: req.file ? req.file.filename : null,
+            introVideoPath: videoPath,
             additionalInfo: req.body.additionalInfo ? req.body.additionalInfo.trim() : null
         };
 
@@ -538,21 +531,30 @@ app.delete('/api/teachers/:id', requireAuth, async (req, res) => {
     }
 });
 
+// Serve video files from Supabase Storage
+app.get('/api/videos/:path(*)', async (req, res) => {
+    try {
+        const videoPath = req.params.path;
+        const videoUrl = await db.getVideoUrl(videoPath);
+        res.redirect(videoUrl);
+    } catch (error) {
+        console.error('Error getting video URL:', error);
+        res.status(404).json({
+            success: false,
+            message: 'Video not found'
+        });
+    }
+});
+
 // Diagnostic endpoint to check environment and database status
 app.get('/api/debug/status', requireAuth, async (req, res) => {
     try {
         const status = {
             environment: process.env.NODE_ENV || 'development',
             database: {
-                type: process.env.MYSQL_HOST ? 'MySQL' : 'SQLite',
-                mysqlConfigured: !!process.env.MYSQL_HOST,
-                mysqlHost: process.env.MYSQL_HOST ? '***configured***' : 'not set',
-            },
-            uploads: {
-                directory: process.env.RAILWAY_VOLUME_MOUNT_PATH
-                    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'uploads')
-                    : path.join(__dirname, 'uploads'),
-                volumeMountPath: process.env.RAILWAY_VOLUME_MOUNT_PATH || 'not set',
+                type: 'Supabase',
+                supabaseUrl: process.env.SUPABASE_URL ? '***configured***' : 'not set',
+                storageBucket: process.env.SUPABASE_STORAGE_BUCKET || 'intro-videos',
             },
             timestamp: new Date().toISOString()
         };

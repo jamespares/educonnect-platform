@@ -9,14 +9,16 @@
     "test": "node run-tests.js",
     "test:navigation": "node run-tests.js --type navigation",
     "test:forms": "node run-tests.js --type forms",
-    "test:database": "node run-tests.js --type database", 
+    "test:database": "node run-tests.js --type database",
     "test:ui": "node run-tests.js --type ui",
     "test:quick": "node run-tests.js --no-seed",
     "playwright:install": "npx playwright install",
     "playwright:install-deps": "npx playwright install-deps",
-    "setup-tests": "npm run playwright:install && npm run playwright:install-deps"
+    "setup-tests": "npm run playwright:install && npm run playwright:install-deps",
+    "migrate:supabase": "node migrate-to-supabase.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
