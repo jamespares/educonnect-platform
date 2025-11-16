@@ -1234,6 +1234,100 @@ textarea.form-input {
     margin-bottom: 2rem;
 }
 
+/* Flexible Requirements Callout - Prominent Highlight */
+.flexible-requirements-callout {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 3rem 0;
+    box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.3);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.flexible-requirements-callout::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.callout-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.flexible-requirements-callout h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    border: none;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.callout-message {
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.callout-message strong {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.callout-subtext {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.flexible-requirements-callout .cta-actions {
+    margin-top: 2rem;
+}
+
+.flexible-requirements-callout .btn-primary,
+.flexible-requirements-callout .btn-secondary {
+    background: white;
+    color: #2563eb;
+    border: 2px solid white;
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    font-size: 1.1rem;
+}
+
+.flexible-requirements-callout .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.flexible-requirements-callout .btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.flexible-requirements-callout .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
 .cta-actions {
     display: flex;
     gap: 1rem;
@@ -1250,6 +1344,37 @@ textarea.form-input {
     .cta-actions {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .flexible-requirements-callout {
+        padding: 2rem 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .flexible-requirements-callout h2 {
+        font-size: 1.5rem;
+    }
+    
+    .callout-message {
+        font-size: 1.2rem;
+    }
+    
+    .callout-message strong {
+        font-size: 1.3rem;
+    }
+    
+    .callout-subtext {
+        font-size: 1rem;
+    }
+    
+    .callout-icon {
+        font-size: 2.5rem;
+    }
+    
+    .flexible-requirements-callout .btn-primary,
+    .flexible-requirements-callout .btn-secondary {
+        width: 100%;
+        padding: 1rem;
     }
 }
 
