@@ -18,27 +18,33 @@ const PORT = process.env.PORT || 3000;
 // Trust proxy (needed for Cloudflare and Railway to correctly detect HTTPS)
 app.set('trust proxy', true);
 
-// Health check endpoint (must be first, before any middleware)
+// Initialize Supabase database
+// Don't exit on failure - let server start and handle errors gracefully
+let db;
+let dbInitialized = false;
+
+// Health check endpoint (must be early, before middleware)
 // This allows Railway/deployment healthchecks to work even if other parts fail
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 
         timestamp: new Date().toISOString(),
-        database: process.env.SUPABASE_URL ? 'configured' : 'not configured'
+        database: dbInitialized ? 'initialized' : (process.env.SUPABASE_URL ? 'configured but not initialized' : 'not configured')
     });
 });
 
-// Initialize Supabase database
-let db;
+// Try to initialize database (non-blocking)
 try {
     db = new SupabaseDatabase();
+    dbInitialized = true;
     console.log('🔍 Database Configuration:');
     console.log('  - Database Type: Supabase');
     console.log('  - Supabase URL:', process.env.SUPABASE_URL ? '✓ Set' : '✗ Not set');
 } catch (error) {
-    console.error('❌ Failed to initialize Supabase:', error.message);
+    console.error('⚠️  Failed to initialize Supabase:', error.message);
     console.error('   Make sure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in environment variables');
-    process.exit(1);
+    console.error('   Server will start but database operations will fail');
+    // Don't exit - let server start for healthchecks
 }
 
 // Helper function to sanitize HTML input
@@ -213,6 +219,14 @@ app.get('/api/debug/headers', requireAuth, (req, res) => {
 
 // API Routes
 app.post('/api/submit-application', upload, handleMulterError, async (req, res) => {
+    // Check if database is initialized
+    if (!db || !dbInitialized) {
+        return res.status(503).json({
+            success: false,
+            message: 'Database is not available. Please try again later.'
+        });
+    }
+    
     // Set a longer timeout for file uploads (5 minutes)
     req.setTimeout(300000);
     
@@ -767,11 +781,14 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server - this MUST happen even if database fails
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ EduConnect server running on port ${PORT}`);
-    console.log(`   Health check available at: http://localhost:${PORT}/health`);
-    console.log(`   Visit http://localhost:${PORT} to view the website`);
+    console.log(`   Health check available at: http://0.0.0.0:${PORT}/health`);
+    console.log(`   Database initialized: ${dbInitialized ? 'Yes' : 'No'}`);
+    if (!dbInitialized) {
+        console.warn('⚠️  Warning: Database not initialized. Some features will not work.');
+    }
 }).on('error', (err) => {
     console.error('❌ Failed to start server:', err);
     process.exit(1);
@@ -780,6 +797,8 @@ app.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGINT', () => {
     console.log('Shutting down server...');
-    db.close();
+    if (db && db.close) {
+        db.close();
+    }
     process.exit(0);
 });
