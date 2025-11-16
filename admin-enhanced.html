@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Staff Dashboard</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/browser_icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', sans-serif; }
+        
+        .admin-container {
+            min-height: 100vh;
+            background: #f8fafc;
+            padding: 8rem 0 4rem;
+        }
+        
+        .admin-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-subtitle {
+            color: #6b7280;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            color: #1f2937;
+            background: #f9fafb;
+        }
+        
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .table-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        th:hover {
+            background: #f3f4f6;
+        }
+        
+        th.sort-asc::after {
+            content: ' ▲';
+            font-size: 0.75rem;
+        }
+        
+        th.sort-desc::after {
+            content: ' ▼';
+            font-size: 0.75rem;
+        }
+        
+        td {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-employed { background: #d1fae5; color: #065f46; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+        .status-interviewing { background: #dbeafe; color: #1e40af; }
+        .status-matched { background: #ddd6fe; color: #5b21b6; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-small {
+            padding: 0.375rem 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.813rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .close {
+            color: #9ca3af;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        
+        .close:hover {
+            color: #374151;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-checkbox {
+            margin-right: 0.5rem;
+        }
+        
+        .match-score {
+            font-weight: 600;
+            color: #3b82f6;
+        }
+        
+        .match-reasons {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .match-reasons ul {
+            margin: 0.25rem 0 0 1.25rem;
+            padding: 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 6rem 0 2rem;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .table-controls {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <span class="logo-text">EduConnect</span><span class="logo-accent">中国</span>
+                </div>
+                <button class="nav-toggle" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link" onclick="closeNav()">Home</a>
+                    <button onclick="logout(); closeNav();" class="nav-link cta-button" style="border: none; cursor: pointer;">Logout</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-container">
+        <div class="container">
+            <div class="admin-header">
+                <h1 class="admin-title">Staff Dashboard</h1>
+                <p class="admin-subtitle">Manage teachers, schools, and matches</p>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('teachers')">Teachers</button>
+                <button class="tab" onclick="switchTab('schools')">Schools</button>
+                <button class="tab" onclick="switchTab('matches')">Matched Teachers</button>
+                <button class="tab" id="staffTab" onclick="switchTab('staff')" style="display: none;">Staff Management</button>
+            </div>
+            
+            <!-- Teachers Tab -->
+            <div id="teachersTab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalTeachers">0</span>
+                        <span class="stat-label">Total Teachers</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="pendingTeachers">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="matchedTeachers">0</span>
+                        <span class="stat-label">Matched</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="employedTeachers">0</span>
+                        <span class="stat-label">Employed</span>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Teacher Applications</h2>
+                        <div class="table-controls">
+                            <input type="text" id="teacherSearch" class="search-input" placeholder="Search teachers..." onkeyup="filterTeachers()">
+                            <select id="statusFilter" class="filter-select" onchange="filterTeachers()">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="interviewing">Interviewing</option>
+                                <option value="employed">Employed</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="loadTeachers()">Refresh</button>
+                            <button class="btn btn-success" onclick="runMatching()">Run Matching</button>
+                        </div>
+                    </div>
+                    <div id="teachersTableContent">
+                        <div class="loading">Loading teachers...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Schools Tab -->
+            <div id="schoolsTab" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Schools</h2>
+                        <div class="table-controls">
+                            <button class="btn btn-primary" onclick="showAddSchoolModal()">Add School</button>
+                            <button class="btn btn-secondary" onclick="loadSchools()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="schoolsTableContent">
+                        <div class="loading">Loading schools...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Matched Teachers Tab -->
+            <div id="matchesTab" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Matched Teachers</h2>
+                        <div class="table-controls">
+                            <select id="matchStatusFilter" class="filter-select" onchange="loadMatches()">
+                                <option value="">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="interviewed">Interviewed</option>
+                                <option value="placed">Placed</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="loadMatches()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="matchesTableContent">
+                        <div class="loading">Loading matches...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Staff Management Tab (Master Admin Only) -->
+            <div id="staffTab" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Staff Members</h2>
+                        <div class="table-controls">
+                            <button class="btn btn-primary" onclick="showAddStaffModal()">Add Staff Member</button>
+                            <button class="btn btn-secondary" onclick="loadStaff()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="staffTableContent">
+                        <div class="loading">Loading staff...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Details Modal -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Teacher Details</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body" id="teacherModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Staff Modal -->
+    <div id="staffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staffModalTitle">Add Staff Member</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="staffForm">
+                    <input type="hidden" id="staffId">
+                    <div class="form-group">
+                        <label class="form-label">Username *</label>
+                        <input type="text" id="staffUsername" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="staffPasswordLabel">Password *</label>
+                        <input type="password" id="staffPassword" class="form-input" required>
+                        <small id="staffPasswordHint" style="color: #6b7280; font-size: 0.875rem; display: none;">Leave blank when editing to keep current password</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="staffFullName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Active</label>
+                        <input type="checkbox" id="staffIsActive" class="form-checkbox" checked>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save Staff Member</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeStaffModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- School Modal -->
+    <div id="schoolModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="schoolModalTitle">Add School</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="schoolForm">
+                    <input type="hidden" id="schoolId">
+                    <div class="form-group">
+                        <label class="form-label">School Name *</label>
+                        <input type="text" id="schoolName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">School Name (Chinese)</label>
+                        <input type="text" id="schoolNameChinese" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location *</label>
+                        <input type="text" id="schoolLocation" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" id="schoolCity" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Province</label>
+                        <input type="text" id="schoolProvince" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">School Type</label>
+                        <select id="schoolType" class="form-input">
+                            <option value="">Select type</option>
+                            <option value="International">International</option>
+                            <option value="Bilingual">Bilingual</option>
+                            <option value="Public">Public</option>
+                            <option value="Private">Private</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Age Groups (comma-separated)</label>
+                        <input type="text" id="schoolAgeGroups" class="form-input" placeholder="e.g., Elementary, Middle School, High School">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subjects Needed (comma-separated)</label>
+                        <input type="text" id="schoolSubjects" class="form-input" placeholder="e.g., English, Math, Science">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Experience Required</label>
+                        <input type="text" id="schoolExperience" class="form-input" placeholder="e.g., 1-3 years">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chinese Required</label>
+                        <input type="checkbox" id="schoolChineseRequired" class="form-checkbox">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salary Range</label>
+                        <input type="text" id="schoolSalary" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contract Type</label>
+                        <input type="text" id="schoolContractType" class="form-input" placeholder="e.g., Full Time">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Benefits</label>
+                        <textarea id="schoolBenefits" class="form-textarea"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="schoolDescription" class="form-textarea"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Name</label>
+                        <input type="text" id="schoolContactName" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Email</label>
+                        <input type="email" id="schoolContactEmail" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="text" id="schoolContactPhone" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Active</label>
+                        <input type="checkbox" id="schoolIsActive" class="form-checkbox" checked>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save School</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeSchoolModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-enhanced.js"></script>
+</body>
+</html>
+

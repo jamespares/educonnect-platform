@@ -442,6 +442,561 @@ class SupabaseDatabase {
         };
     }
 
+    // Staff authentication methods
+    async getStaffByUsername(username) {
+        const { data, error } = await this.supabase
+            .from('staff')
+            .select('*')
+            .eq('username', username)
+            .eq('is_active', true)
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                return null; // Not found
+            }
+            throw new Error(`Failed to get staff: ${error.message}`);
+        }
+
+        return {
+            id: data.id,
+            username: data.username,
+            passwordHash: data.password_hash,
+            fullName: data.full_name,
+            role: data.role,
+            isActive: data.is_active,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at
+        };
+    }
+
+    async getAllStaff() {
+        const { data, error } = await this.supabase
+            .from('staff')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            throw new Error(`Failed to get staff: ${error.message}`);
+        }
+
+        return data.map(staff => ({
+            id: staff.id,
+            username: staff.username,
+            fullName: staff.full_name,
+            role: staff.role,
+            isActive: staff.is_active,
+            createdAt: staff.created_at,
+            updatedAt: staff.updated_at
+        }));
+    }
+
+    async addStaff(staffData) {
+        const { data, error } = await this.supabase
+            .from('staff')
+            .insert({
+                username: staffData.username,
+                password_hash: staffData.passwordHash,
+                full_name: staffData.fullName,
+                role: staffData.role || 'staff',
+                is_active: staffData.isActive !== undefined ? staffData.isActive : true
+            })
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(`Failed to add staff: ${error.message}`);
+        }
+
+        return {
+            id: data.id,
+            username: data.username,
+            fullName: data.full_name,
+            role: data.role,
+            isActive: data.is_active,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at
+        };
+    }
+
+    async updateStaff(id, updateData) {
+        const updateFields = {};
+        
+        if (updateData.passwordHash) {
+            updateFields.password_hash = updateData.passwordHash;
+        }
+        if (updateData.fullName !== undefined) {
+            updateFields.full_name = updateData.fullName;
+        }
+        if (updateData.isActive !== undefined) {
+            updateFields.is_active = updateData.isActive;
+        }
+
+        const { error } = await this.supabase
+            .from('staff')
+            .update(updateFields)
+            .eq('id', id);
+
+        if (error) {
+            throw new Error(`Failed to update staff: ${error.message}`);
+        }
+
+        return { id, changes: 1 };
+    }
+
+    async deleteStaff(id) {
+        const { error } = await this.supabase
+            .from('staff')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            throw new Error(`Failed to delete staff: ${error.message}`);
+        }
+
+        return { id, changes: 1 };
+    }
+
+    // School methods
+    async addSchool(schoolData) {
+        const { data, error } = await this.supabase
+            .from('schools')
+            .insert({
+                name: schoolData.name,
+                name_chinese: schoolData.nameChinese,
+                location: schoolData.location,
+                location_chinese: schoolData.locationChinese,
+                city: schoolData.city,
+                province: schoolData.province,
+                school_type: schoolData.schoolType,
+                age_groups: schoolData.ageGroups || [],
+                subjects_needed: schoolData.subjectsNeeded || [],
+                experience_required: schoolData.experienceRequired,
+                chinese_required: schoolData.chineseRequired || false,
+                salary_range: schoolData.salaryRange,
+                contract_type: schoolData.contractType,
+                benefits: schoolData.benefits,
+                description: schoolData.description,
+                contact_name: schoolData.contactName,
+                contact_email: schoolData.contactEmail,
+                contact_phone: schoolData.contactPhone,
+                is_active: schoolData.isActive !== undefined ? schoolData.isActive : true
+            })
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(`Failed to add school: ${error.message}`);
+        }
+
+        return this.mapSchoolToCamelCase(data);
+    }
+
+    async getAllSchools(activeOnly = false) {
+        let query = this.supabase
+            .from('schools')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (activeOnly) {
+            query = query.eq('is_active', true);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            throw new Error(`Failed to get schools: ${error.message}`);
+        }
+
+        return data.map(school => this.mapSchoolToCamelCase(school));
+    }
+
+    async getSchoolById(id) {
+        const { data, error } = await this.supabase
+            .from('schools')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                return null; // Not found
+            }
+            throw new Error(`Failed to get school: ${error.message}`);
+        }
+
+        return this.mapSchoolToCamelCase(data);
+    }
+
+    async updateSchool(id, schoolData) {
+        const updateData = {
+            name: schoolData.name,
+            name_chinese: schoolData.nameChinese,
+            location: schoolData.location,
+            location_chinese: schoolData.locationChinese,
+            city: schoolData.city,
+            province: schoolData.province,
+            school_type: schoolData.schoolType,
+            age_groups: schoolData.ageGroups || [],
+            subjects_needed: schoolData.subjectsNeeded || [],
+            experience_required: schoolData.experienceRequired,
+            chinese_required: schoolData.chineseRequired,
+            salary_range: schoolData.salaryRange,
+            contract_type: schoolData.contractType,
+            benefits: schoolData.benefits,
+            description: schoolData.description,
+            contact_name: schoolData.contactName,
+            contact_email: schoolData.contactEmail,
+            contact_phone: schoolData.contactPhone,
+            is_active: schoolData.isActive
+        };
+
+        const { error } = await this.supabase
+            .from('schools')
+            .update(updateData)
+            .eq('id', id);
+
+        if (error) {
+            throw new Error(`Failed to update school: ${error.message}`);
+        }
+
+        return { id, changes: 1 };
+    }
+
+    async deleteSchool(id) {
+        const { error } = await this.supabase
+            .from('schools')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            throw new Error(`Failed to delete school: ${error.message}`);
+        }
+
+        return { id, changes: 1 };
+    }
+
+    // Matching methods
+    async findMatchesForTeacher(teacherId) {
+        // Get teacher data
+        const teacher = await this.getTeacherById(teacherId);
+        if (!teacher) {
+            throw new Error('Teacher not found');
+        }
+
+        // Get all active schools
+        const schools = await this.getAllSchools(true);
+
+        // Calculate matches
+        const matches = [];
+        for (const school of schools) {
+            const matchResult = this.calculateMatchScore(teacher, school);
+            if (matchResult.score > 0) {
+                matches.push({
+                    schoolId: school.id,
+                    school: school,
+                    score: matchResult.score,
+                    reasons: matchResult.reasons
+                });
+            }
+        }
+
+        // Sort by score descending
+        matches.sort((a, b) => b.score - a.score);
+
+        return matches;
+    }
+
+    async findMatchesForSchool(schoolId) {
+        // Get school data
+        const school = await this.getSchoolById(schoolId);
+        if (!school) {
+            throw new Error('School not found');
+        }
+
+        // Get all teachers
+        const teachers = await this.getAllTeachers();
+
+        // Calculate matches
+        const matches = [];
+        for (const teacher of teachers) {
+            const matchResult = this.calculateMatchScore(teacher, school);
+            if (matchResult.score > 0) {
+                matches.push({
+                    teacherId: teacher.id,
+                    teacher: teacher,
+                    score: matchResult.score,
+                    reasons: matchResult.reasons
+                });
+            }
+        }
+
+        // Sort by score descending
+        matches.sort((a, b) => b.score - a.score);
+
+        return matches;
+    }
+
+    calculateMatchScore(teacher, school) {
+        let score = 0;
+        const reasons = [];
+
+        // Location matching (40 points)
+        if (teacher.preferredLocation && school.location) {
+            const teacherLoc = teacher.preferredLocation.toLowerCase();
+            const schoolLoc = school.location.toLowerCase();
+            const schoolCity = school.city ? school.city.toLowerCase() : '';
+            
+            if (teacherLoc === schoolLoc || teacherLoc === schoolCity) {
+                score += 40;
+                reasons.push('Location preference matches');
+            } else if (schoolCity && teacherLoc.includes(schoolCity)) {
+                score += 30;
+                reasons.push('Location preference partially matches');
+            } else if (teacherLoc === 'no preference' || !teacherLoc) {
+                score += 20;
+                reasons.push('No location preference');
+            }
+        } else {
+            score += 20; // No preference
+        }
+
+        // Age group matching (25 points)
+        if (teacher.preferred_age_group && school.ageGroups && school.ageGroups.length > 0) {
+            const teacherAgeGroup = teacher.preferred_age_group.toLowerCase();
+            const schoolAgeGroups = school.ageGroups.map(ag => ag.toLowerCase());
+            
+            if (schoolAgeGroups.some(ag => ag.includes(teacherAgeGroup) || teacherAgeGroup.includes(ag))) {
+                score += 25;
+                reasons.push('Age group preference matches');
+            } else {
+                score += 10;
+                reasons.push('Age group preference differs');
+            }
+        } else {
+            score += 15; // Partial match
+        }
+
+        // Subject matching (25 points)
+        if (teacher.subjectSpecialty && school.subjectsNeeded && school.subjectsNeeded.length > 0) {
+            const teacherSubject = teacher.subjectSpecialty.toLowerCase();
+            const schoolSubjects = school.subjectsNeeded.map(s => s.toLowerCase());
+            
+            if (schoolSubjects.some(s => s.includes(teacherSubject) || teacherSubject.includes(s))) {
+                score += 25;
+                reasons.push('Subject specialty matches');
+            } else {
+                score += 5;
+                reasons.push('Subject specialty differs');
+            }
+        } else {
+            score += 10; // Partial match
+        }
+
+        // Experience matching (10 points)
+        if (teacher.yearsExperience && school.experienceRequired) {
+            const teacherExp = teacher.yearsExperience.toLowerCase();
+            const schoolExp = school.experienceRequired.toLowerCase();
+            
+            // Simple matching logic - can be improved
+            if (teacherExp.includes(schoolExp) || schoolExp.includes(teacherExp)) {
+                score += 10;
+                reasons.push('Experience level matches');
+            } else {
+                score += 5;
+            }
+        } else {
+            score += 5;
+        }
+
+        return { score: Math.min(score, 100), reasons };
+    }
+
+    async saveMatch(teacherId, schoolId, matchScore, matchReasons, status = 'pending') {
+        const { data, error } = await this.supabase
+            .from('teacher_school_matches')
+            .insert({
+                teacher_id: teacherId,
+                school_id: schoolId,
+                match_score: matchScore,
+                match_reasons: matchReasons,
+                status: status
+            })
+            .select()
+            .single();
+
+        if (error) {
+            // If match already exists, update it
+            if (error.code === '23505') { // Unique violation
+                const { data: updateData, error: updateError } = await this.supabase
+                    .from('teacher_school_matches')
+                    .update({
+                        match_score: matchScore,
+                        match_reasons: matchReasons,
+                        status: status,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('teacher_id', teacherId)
+                    .eq('school_id', schoolId)
+                    .select()
+                    .single();
+
+                if (updateError) {
+                    throw new Error(`Failed to update match: ${updateError.message}`);
+                }
+                return this.mapMatchToCamelCase(updateData);
+            }
+            throw new Error(`Failed to save match: ${error.message}`);
+        }
+
+        // Update teacher's is_matched status
+        await this.supabase
+            .from('teachers')
+            .update({ is_matched: true })
+            .eq('id', teacherId);
+
+        return this.mapMatchToCamelCase(data);
+    }
+
+    async getAllMatches(teacherId = null, schoolId = null, status = null) {
+        // First get the matches
+        let query = this.supabase
+            .from('teacher_school_matches')
+            .select('*')
+            .order('match_score', { ascending: false });
+
+        if (teacherId) {
+            query = query.eq('teacher_id', teacherId);
+        }
+        if (schoolId) {
+            query = query.eq('school_id', schoolId);
+        }
+        if (status) {
+            query = query.eq('status', status);
+        }
+
+        const { data: matches, error } = await query;
+
+        if (error) {
+            throw new Error(`Failed to get matches: ${error.message}`);
+        }
+
+        // Then fetch related teachers and schools
+        const result = [];
+        for (const match of matches) {
+            let teacher = null;
+            let school = null;
+            
+            try {
+                teacher = await this.getTeacherById(match.teacher_id);
+            } catch (err) {
+                console.error(`Error fetching teacher ${match.teacher_id}:`, err);
+            }
+            
+            try {
+                school = await this.getSchoolById(match.school_id);
+            } catch (err) {
+                console.error(`Error fetching school ${match.school_id}:`, err);
+            }
+            
+            result.push({
+                ...this.mapMatchToCamelCase(match),
+                teacher: teacher,
+                school: school
+            });
+        }
+
+        return result;
+    }
+
+    async updateMatchStatus(matchId, status, notes = null) {
+        const updateData = { status };
+        if (notes !== null) {
+            updateData.notes = notes;
+        }
+
+        const { error } = await this.supabase
+            .from('teacher_school_matches')
+            .update(updateData)
+            .eq('id', matchId);
+
+        if (error) {
+            throw new Error(`Failed to update match status: ${error.message}`);
+        }
+
+        return { id: matchId, status, changes: 1 };
+    }
+
+    async runMatchingForAllTeachers() {
+        const teachers = await this.getAllTeachers();
+        let matchesCreated = 0;
+
+        for (const teacher of teachers) {
+            const matches = await this.findMatchesForTeacher(teacher.id);
+            
+            for (const match of matches) {
+                if (match.score >= 50) { // Only save matches with score >= 50
+                    try {
+                        await this.saveMatch(
+                            teacher.id,
+                            match.schoolId,
+                            match.score,
+                            match.reasons
+                        );
+                        matchesCreated++;
+                    } catch (error) {
+                        console.error(`Error saving match for teacher ${teacher.id} and school ${match.schoolId}:`, error);
+                    }
+                }
+            }
+        }
+
+        return { matchesCreated, teachersProcessed: teachers.length };
+    }
+
+    // Helper methods for mapping
+    mapSchoolToCamelCase(school) {
+        return {
+            id: school.id,
+            name: school.name,
+            nameChinese: school.name_chinese,
+            location: school.location,
+            locationChinese: school.location_chinese,
+            city: school.city,
+            province: school.province,
+            schoolType: school.school_type,
+            ageGroups: school.age_groups || [],
+            subjectsNeeded: school.subjects_needed || [],
+            experienceRequired: school.experience_required,
+            chineseRequired: school.chinese_required,
+            salaryRange: school.salary_range,
+            contractType: school.contract_type,
+            benefits: school.benefits,
+            description: school.description,
+            contactName: school.contact_name,
+            contactEmail: school.contact_email,
+            contactPhone: school.contact_phone,
+            isActive: school.is_active,
+            createdAt: school.created_at,
+            updatedAt: school.updated_at
+        };
+    }
+
+    mapMatchToCamelCase(match) {
+        return {
+            id: match.id,
+            teacherId: match.teacher_id,
+            schoolId: match.school_id,
+            matchScore: match.match_score,
+            matchReasons: match.match_reasons || [],
+            status: match.status,
+            notes: match.notes,
+            matchedAt: match.matched_at,
+            createdAt: match.created_at,
+            updatedAt: match.updated_at
+        };
+    }
+
     // Close method for compatibility (Supabase doesn't need explicit closing)
     close() {
         console.log('Supabase connection closed (no-op)');

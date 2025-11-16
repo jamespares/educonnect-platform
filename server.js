@@ -184,6 +184,18 @@ function requireAuth(req, res, next) {
     }
 }
 
+// Middleware to require master admin role
+function requireMasterAdmin(req, res, next) {
+    if (req.session && req.session.authenticated && req.session.role === 'master_admin') {
+        next();
+    } else {
+        res.status(403).json({
+            success: false,
+            message: 'Access denied. Master admin privileges required.'
+        });
+    }
+}
+
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -198,7 +210,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/admin', requireAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
+    res.sendFile(path.join(__dirname, 'admin-enhanced.html'));
 });
 
 // Check authentication status API endpoint
@@ -423,19 +435,48 @@ app.post('/api/admin/login', async (req, res) => {
             });
         }
 
-        // Check username and compare hashed password
+        // Try staff login first (from database)
+        if (db && dbInitialized) {
+            try {
+                const staff = await db.getStaffByUsername(username);
+                if (staff) {
+                    const passwordMatch = await bcrypt.compare(password, staff.passwordHash);
+                    if (passwordMatch) {
+                        req.session.authenticated = true;
+                        req.session.username = username;
+                        req.session.role = staff.role;
+                        req.session.staffId = staff.id;
+
+                        console.log('Staff login successful for:', username);
+
+                        return res.json({
+                            success: true,
+                            message: 'Login successful',
+                            role: staff.role
+                        });
+                    }
+                }
+            } catch (dbError) {
+                console.error('Database login error:', dbError);
+                // Fall through to legacy admin login
+            }
+        }
+
+        // Legacy admin login (fallback)
         const usernameMatch = username === ADMIN_USERNAME;
         const passwordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
 
         if (usernameMatch && passwordMatch) {
             req.session.authenticated = true;
             req.session.username = username;
+            req.session.role = 'admin';
 
-            console.log('Login successful for:', username);
+            console.log('Legacy admin login successful for:', username);
 
             res.json({
                 success: true,
-                message: 'Login successful'
+                message: 'Login successful',
+                role: 'admin'
             });
         } else {
             console.log('Login failed for username:', username);
@@ -703,6 +744,358 @@ app.delete('/api/teachers/:id', requireAuth, async (req, res) => {
             message: 'Error deleting teacher: ' + error.message
         });
     }
+});
+
+// School management API routes
+app.get('/api/schools', requireAuth, async (req, res) => {
+    try {
+        const activeOnly = req.query.activeOnly === 'true';
+        const schools = await db.getAllSchools(activeOnly);
+        res.json({
+            success: true,
+            data: schools
+        });
+    } catch (error) {
+        console.error('Error fetching schools:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching schools: ' + error.message
+        });
+    }
+});
+
+app.get('/api/schools/:id', requireAuth, async (req, res) => {
+    try {
+        const school = await db.getSchoolById(req.params.id);
+        if (school) {
+            res.json({
+                success: true,
+                data: school
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'School not found'
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching school:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching school: ' + error.message
+        });
+    }
+});
+
+app.post('/api/schools', requireAuth, async (req, res) => {
+    try {
+        const schoolData = {
+            name: req.body.name?.trim(),
+            nameChinese: req.body.nameChinese?.trim(),
+            location: req.body.location?.trim(),
+            locationChinese: req.body.locationChinese?.trim(),
+            city: req.body.city?.trim(),
+            province: req.body.province?.trim(),
+            schoolType: req.body.schoolType?.trim(),
+            ageGroups: Array.isArray(req.body.ageGroups) ? req.body.ageGroups : [],
+            subjectsNeeded: Array.isArray(req.body.subjectsNeeded) ? req.body.subjectsNeeded : [],
+            experienceRequired: req.body.experienceRequired?.trim(),
+            chineseRequired: req.body.chineseRequired === true || req.body.chineseRequired === 'true',
+            salaryRange: req.body.salaryRange?.trim(),
+            contractType: req.body.contractType?.trim(),
+            benefits: req.body.benefits?.trim(),
+            description: req.body.description?.trim(),
+            contactName: req.body.contactName?.trim(),
+            contactEmail: req.body.contactEmail?.trim(),
+            contactPhone: req.body.contactPhone?.trim(),
+            isActive: req.body.isActive !== undefined ? req.body.isActive : true
+        };
+
+        // Basic validation
+        if (!schoolData.name || !schoolData.location) {
+            return res.status(400).json({
+                success: false,
+                message: 'School name and location are required'
+            });
+        }
+
+        const result = await db.addSchool(schoolData);
+        res.json({
+            success: true,
+            message: 'School added successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error adding school:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding school: ' + error.message
+        });
+    }
+});
+
+app.put('/api/schools/:id', requireAuth, async (req, res) => {
+    try {
+        const schoolData = {
+            name: req.body.name?.trim(),
+            nameChinese: req.body.nameChinese?.trim(),
+            location: req.body.location?.trim(),
+            locationChinese: req.body.locationChinese?.trim(),
+            city: req.body.city?.trim(),
+            province: req.body.province?.trim(),
+            schoolType: req.body.schoolType?.trim(),
+            ageGroups: Array.isArray(req.body.ageGroups) ? req.body.ageGroups : [],
+            subjectsNeeded: Array.isArray(req.body.subjectsNeeded) ? req.body.subjectsNeeded : [],
+            experienceRequired: req.body.experienceRequired?.trim(),
+            chineseRequired: req.body.chineseRequired === true || req.body.chineseRequired === 'true',
+            salaryRange: req.body.salaryRange?.trim(),
+            contractType: req.body.contractType?.trim(),
+            benefits: req.body.benefits?.trim(),
+            description: req.body.description?.trim(),
+            contactName: req.body.contactName?.trim(),
+            contactEmail: req.body.contactEmail?.trim(),
+            contactPhone: req.body.contactPhone?.trim(),
+            isActive: req.body.isActive !== undefined ? req.body.isActive : true
+        };
+
+        const result = await db.updateSchool(req.params.id, schoolData);
+        res.json({
+            success: true,
+            message: 'School updated successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error updating school:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating school: ' + error.message
+        });
+    }
+});
+
+app.delete('/api/schools/:id', requireAuth, async (req, res) => {
+    try {
+        const result = await db.deleteSchool(req.params.id);
+        res.json({
+            success: true,
+            message: 'School deleted successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error deleting school:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting school: ' + error.message
+        });
+    }
+});
+
+// Matching API routes
+app.post('/api/matching/run-for-all', requireAuth, async (req, res) => {
+    try {
+        const result = await db.runMatchingForAllTeachers();
+        res.json({
+            success: true,
+            message: `Matching completed. ${result.matchesCreated} matches created for ${result.teachersProcessed} teachers.`,
+            data: result
+        });
+    } catch (error) {
+        console.error('Error running matching:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error running matching: ' + error.message
+        });
+    }
+});
+
+app.get('/api/matching/teacher/:teacherId', requireAuth, async (req, res) => {
+    try {
+        const matches = await db.findMatchesForTeacher(req.params.teacherId);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error finding matches for teacher:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error finding matches: ' + error.message
+        });
+    }
+});
+
+app.get('/api/matching/school/:schoolId', requireAuth, async (req, res) => {
+    try {
+        const matches = await db.findMatchesForSchool(req.params.schoolId);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error finding matches for school:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error finding matches: ' + error.message
+        });
+    }
+});
+
+app.get('/api/matching', requireAuth, async (req, res) => {
+    try {
+        const teacherId = req.query.teacherId || null;
+        const schoolId = req.query.schoolId || null;
+        const status = req.query.status || null;
+        
+        const matches = await db.getAllMatches(teacherId, schoolId, status);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error fetching matches:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching matches: ' + error.message
+        });
+    }
+});
+
+app.put('/api/matching/:id/status', requireAuth, async (req, res) => {
+    try {
+        const { status, notes } = req.body;
+        const result = await db.updateMatchStatus(req.params.id, status, notes);
+        res.json({
+            success: true,
+            message: 'Match status updated successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error updating match status:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating match status: ' + error.message
+        });
+    }
+});
+
+// Staff management API routes (master admin only)
+app.get('/api/admin/staff', requireAuth, requireMasterAdmin, async (req, res) => {
+    try {
+        const staffList = await db.getAllStaff();
+        res.json({
+            success: true,
+            data: staffList
+        });
+    } catch (error) {
+        console.error('Error fetching staff:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching staff: ' + error.message
+        });
+    }
+});
+
+app.post('/api/admin/staff', requireAuth, requireMasterAdmin, async (req, res) => {
+    try {
+        const { username, password, fullName, role } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Username and password are required'
+            });
+        }
+
+        // Hash password
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const staffData = {
+            username: username.trim(),
+            passwordHash: passwordHash,
+            fullName: fullName ? fullName.trim() : null,
+            role: role === 'master_admin' ? 'master_admin' : 'staff' // Prevent creating master_admin via API
+        };
+
+        const result = await db.addStaff(staffData);
+        res.json({
+            success: true,
+            message: 'Staff member added successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error adding staff:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding staff: ' + error.message
+        });
+    }
+});
+
+app.put('/api/admin/staff/:id', requireAuth, requireMasterAdmin, async (req, res) => {
+    try {
+        const { password, fullName, isActive } = req.body;
+        const updateData = {};
+
+        if (password) {
+            updateData.passwordHash = await bcrypt.hash(password, 10);
+        }
+        if (fullName !== undefined) {
+            updateData.fullName = fullName ? fullName.trim() : null;
+        }
+        if (isActive !== undefined) {
+            updateData.isActive = isActive;
+        }
+
+        const result = await db.updateStaff(req.params.id, updateData);
+        res.json({
+            success: true,
+            message: 'Staff member updated successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error updating staff:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating staff: ' + error.message
+        });
+    }
+});
+
+app.delete('/api/admin/staff/:id', requireAuth, requireMasterAdmin, async (req, res) => {
+    try {
+        // Prevent deleting yourself
+        if (req.session.staffId && parseInt(req.params.id) === req.session.staffId) {
+            return res.status(400).json({
+                success: false,
+                message: 'You cannot delete your own account'
+            });
+        }
+
+        const result = await db.deleteStaff(req.params.id);
+        res.json({
+            success: true,
+            message: 'Staff member deleted successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error deleting staff:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting staff: ' + error.message
+        });
+    }
+});
+
+// Get current user info
+app.get('/api/admin/me', requireAuth, async (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            username: req.session.username,
+            role: req.session.role,
+            staffId: req.session.staffId
+        }
+    });
 });
 
 // Serve video files from Supabase Storage
