@@ -289,60 +289,88 @@ class SupabaseDatabase {
 
     // Storage methods for video uploads
     async uploadVideo(file, fileName) {
-        // file is a multer file object with buffer property
-        const fileBuffer = file.buffer || file;
-        const contentType = file.mimetype || 'video/mp4';
+        try {
+            // file is a multer file object with buffer property
+            const fileBuffer = file.buffer || file;
+            const contentType = file.mimetype || 'video/mp4';
+            const fileSize = fileBuffer.length || file.size || 0;
+            
+            console.log(`📤 Uploading video to Supabase Storage: ${fileName}`);
+            console.log(`   - Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB`);
+            console.log(`   - Content type: ${contentType}`);
+            console.log(`   - Bucket: ${this.storageBucket}`);
 
-        const { data, error } = await this.supabase.storage
-            .from(this.storageBucket)
-            .upload(fileName, fileBuffer, {
-                contentType: contentType,
-                upsert: false,
-                cacheControl: '3600'
-            });
+            const { data, error } = await this.supabase.storage
+                .from(this.storageBucket)
+                .upload(fileName, fileBuffer, {
+                    contentType: contentType,
+                    upsert: false,
+                    cacheControl: '3600'
+                });
 
-        if (error) {
-            throw new Error(`Failed to upload video: ${error.message}`);
+            if (error) {
+                console.error('❌ Supabase storage upload error:', error);
+                throw new Error(`Failed to upload video to Supabase: ${error.message} (Code: ${error.statusCode || 'unknown'})`);
+            }
+
+            console.log(`✅ Video uploaded successfully: ${data.path}`);
+
+            // Get public URL
+            const { data: urlData } = this.supabase.storage
+                .from(this.storageBucket)
+                .getPublicUrl(data.path);
+
+            return {
+                path: data.path,
+                url: urlData.publicUrl
+            };
+        } catch (error) {
+            console.error('❌ Error in uploadVideo:', error);
+            throw error;
         }
-
-        // Get public URL
-        const { data: urlData } = this.supabase.storage
-            .from(this.storageBucket)
-            .getPublicUrl(data.path);
-
-        return {
-            path: data.path,
-            url: urlData.publicUrl
-        };
     }
 
     // Storage methods for photo uploads
     async uploadPhoto(file, fileName) {
-        // file is a multer file object with buffer property
-        const fileBuffer = file.buffer || file;
-        const contentType = file.mimetype || 'image/jpeg';
+        try {
+            // file is a multer file object with buffer property
+            const fileBuffer = file.buffer || file;
+            const contentType = file.mimetype || 'image/jpeg';
+            const fileSize = fileBuffer.length || file.size || 0;
+            
+            console.log(`📤 Uploading photo to Supabase Storage: ${fileName}`);
+            console.log(`   - Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB`);
+            console.log(`   - Content type: ${contentType}`);
+            console.log(`   - Bucket: ${this.storageBucket}`);
 
-        const { data, error } = await this.supabase.storage
-            .from(this.storageBucket)
-            .upload(fileName, fileBuffer, {
-                contentType: contentType,
-                upsert: false,
-                cacheControl: '3600'
-            });
+            const { data, error } = await this.supabase.storage
+                .from(this.storageBucket)
+                .upload(fileName, fileBuffer, {
+                    contentType: contentType,
+                    upsert: false,
+                    cacheControl: '3600'
+                });
 
-        if (error) {
-            throw new Error(`Failed to upload photo: ${error.message}`);
+            if (error) {
+                console.error('❌ Supabase storage upload error:', error);
+                throw new Error(`Failed to upload photo to Supabase: ${error.message} (Code: ${error.statusCode || 'unknown'})`);
+            }
+
+            console.log(`✅ Photo uploaded successfully: ${data.path}`);
+
+            // Get public URL
+            const { data: urlData } = this.supabase.storage
+                .from(this.storageBucket)
+                .getPublicUrl(data.path);
+
+            return {
+                path: data.path,
+                url: urlData.publicUrl
+            };
+        } catch (error) {
+            console.error('❌ Error in uploadPhoto:', error);
+            throw error;
         }
-
-        // Get public URL
-        const { data: urlData } = this.supabase.storage
-            .from(this.storageBucket)
-            .getPublicUrl(data.path);
-
-        return {
-            path: data.path,
-            url: urlData.publicUrl
-        };
     }
 
     async getVideoUrl(filePath) {

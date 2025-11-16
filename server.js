@@ -213,7 +213,14 @@ app.get('/api/debug/headers', requireAuth, (req, res) => {
 
 // API Routes
 app.post('/api/submit-application', upload, handleMulterError, async (req, res) => {
+    // Set a longer timeout for file uploads (5 minutes)
+    req.setTimeout(300000);
+    
     try {
+        console.log('📝 New application submission received');
+        console.log('   - Email:', req.body.email);
+        console.log('   - Has video:', !!(req.files && req.files['introVideo']));
+        console.log('   - Has photo:', !!(req.files && req.files['headshotPhoto']));
         // Basic validation
         if (!req.body.firstName || req.body.firstName.trim().length < 2) {
             return res.status(400).json({ success: false, message: 'First name must be at least 2 characters' });
@@ -310,7 +317,9 @@ app.post('/api/submit-application', upload, handleMulterError, async (req, res) 
             additionalInfo: req.body.additionalInfo ? req.body.additionalInfo.trim() : null
         };
 
+        console.log('💾 Saving teacher data to database...');
         const result = await db.addTeacher(teacherData);
+        console.log('✅ Teacher data saved successfully, ID:', result.id);
 
         // Send email notification for new application
         try {
@@ -354,16 +363,24 @@ app.post('/api/submit-application', upload, handleMulterError, async (req, res) 
             // Don't fail the application if email fails
         }
         
+        console.log('✅ Application submitted successfully');
         res.json({
             success: true,
             message: 'Application submitted successfully!',
             data: result
         });
     } catch (error) {
-        console.error('Error submitting application:', error);
+        console.error('❌ Error submitting application:', error);
+        console.error('   Error stack:', error.stack);
+        
+        // Don't expose internal error details in production
+        const errorMessage = process.env.NODE_ENV === 'production' 
+            ? 'An error occurred while submitting your application. Please try again or contact support.'
+            : error.message;
+            
         res.status(500).json({
             success: false,
-            message: 'Error submitting application: ' + error.message
+            message: errorMessage
         });
     }
 });
