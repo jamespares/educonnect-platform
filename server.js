@@ -18,34 +18,32 @@ const PORT = process.env.PORT || 3000;
 // Trust proxy (needed for Cloudflare and Railway to correctly detect HTTPS)
 app.set('trust proxy', true);
 
-// Initialize Supabase database
+// Health check endpoint - MUST be first, absolutely minimal, no dependencies
+// Railway healthchecks need instant response
+app.get('/health', (req, res) => {
+    res.status(200).send('ok');
+});
+
+// Initialize Supabase database (async, non-blocking)
 // Don't exit on failure - let server start and handle errors gracefully
 let db;
 let dbInitialized = false;
 
-// Health check endpoint (must be early, before middleware)
-// This allows Railway/deployment healthchecks to work even if other parts fail
-app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
-        timestamp: new Date().toISOString(),
-        database: dbInitialized ? 'initialized' : (process.env.SUPABASE_URL ? 'configured but not initialized' : 'not configured')
-    });
+// Initialize database asynchronously so it doesn't block server startup
+setImmediate(() => {
+    try {
+        db = new SupabaseDatabase();
+        dbInitialized = true;
+        console.log('🔍 Database Configuration:');
+        console.log('  - Database Type: Supabase');
+        console.log('  - Supabase URL:', process.env.SUPABASE_URL ? '✓ Set' : '✗ Not set');
+    } catch (error) {
+        console.error('⚠️  Failed to initialize Supabase:', error.message);
+        console.error('   Make sure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in environment variables');
+        console.error('   Server will start but database operations will fail');
+        // Don't exit - let server start for healthchecks
+    }
 });
-
-// Try to initialize database (non-blocking)
-try {
-    db = new SupabaseDatabase();
-    dbInitialized = true;
-    console.log('🔍 Database Configuration:');
-    console.log('  - Database Type: Supabase');
-    console.log('  - Supabase URL:', process.env.SUPABASE_URL ? '✓ Set' : '✗ Not set');
-} catch (error) {
-    console.error('⚠️  Failed to initialize Supabase:', error.message);
-    console.error('   Make sure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in environment variables');
-    console.error('   Server will start but database operations will fail');
-    // Don't exit - let server start for healthchecks
-}
 
 // Helper function to sanitize HTML input
 function sanitizeHtml(text) {
