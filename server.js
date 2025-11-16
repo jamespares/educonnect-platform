@@ -52,15 +52,19 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(p
 // This middleware handles Cloudflare proxy headers correctly
 // With 'trust proxy' enabled, Express automatically reads X-Forwarded-* headers
 app.use((req, res, next) => {
+    // Get host from forwarded header (Cloudflare) or direct host header
+    // With trust proxy enabled, req.get('host') already reads from X-Forwarded-Host
     const host = req.get('host') || req.get('x-forwarded-host');
     
     // Check if host starts with www.
     if (host && host.startsWith('www.')) {
         const nonWwwHost = host.replace(/^www\./, '');
         // req.protocol will be 'https' when behind Cloudflare proxy (thanks to trust proxy)
-        const redirectUrl = `${req.protocol}://${nonWwwHost}${req.originalUrl}`;
+        // Force HTTPS in production (Cloudflare always uses HTTPS)
+        const protocol = process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
+        const redirectUrl = `${protocol}://${nonWwwHost}${req.originalUrl}`;
         
-        console.log(`[Redirect] www -> non-www: ${host} -> ${nonWwwHost} (${req.protocol})`);
+        console.log(`[Redirect] www -> non-www: ${host} -> ${nonWwwHost} (${protocol})`);
         return res.redirect(301, redirectUrl);
     }
     next();
