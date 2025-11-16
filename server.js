@@ -15,6 +15,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy (needed for Cloudflare and Railway to correctly detect HTTPS)
+app.set('trust proxy', true);
+
 // Initialize Supabase database
 let db;
 try {
@@ -46,10 +49,19 @@ const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'password', 10);
 
 // Redirect www to non-www (or vice versa)
+// This middleware handles Cloudflare proxy headers correctly
+// With 'trust proxy' enabled, Express automatically reads X-Forwarded-* headers
 app.use((req, res, next) => {
-    const host = req.get('host');
+    const host = req.get('host') || req.get('x-forwarded-host');
+    
+    // Check if host starts with www.
     if (host && host.startsWith('www.')) {
-        return res.redirect(301, `${req.protocol}://${host.replace(/^www\./, '')}${req.originalUrl}`);
+        const nonWwwHost = host.replace(/^www\./, '');
+        // req.protocol will be 'https' when behind Cloudflare proxy (thanks to trust proxy)
+        const redirectUrl = `${req.protocol}://${nonWwwHost}${req.originalUrl}`;
+        
+        console.log(`[Redirect] www -> non-www: ${host} -> ${nonWwwHost} (${req.protocol})`);
+        return res.redirect(301, redirectUrl);
     }
     next();
 });
