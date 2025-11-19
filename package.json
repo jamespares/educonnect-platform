@@ -15,9 +15,11 @@
     "playwright:install": "npx playwright install",
     "playwright:install-deps": "npx playwright install-deps",
     "setup-tests": "npm run playwright:install && npm run playwright:install-deps",
-    "migrate:supabase": "node migrate-to-supabase.js"
+    "migrate:supabase": "node migrate-to-supabase.js",
+    "crawl-schools": "node crawl-schools.js"
   },
   "dependencies": {
+    "@mendable/firecrawl-js": "^4.5.0",
     "@supabase/supabase-js": "^2.81.1",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.2",

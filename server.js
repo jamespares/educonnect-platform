@@ -72,9 +72,11 @@ function sanitizeHtml(text) {
 
 // Admin credentials - password will be hashed
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-// Hash the default password if no env var is set (for development only)
+// Use a pre-generated hash for the default password 'password' to ensure consistency
+// Hash: $2b$10$DXo5gdo52QXVkfKOV6jVpunbvxWXcx8Og.RB7qVkUqGPFjnn8903S
 // In production, set ADMIN_PASSWORD_HASH in environment variables
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'password', 10);
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || 
+    (process.env.ADMIN_PASSWORD ? bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10) : '$2b$10$DXo5gdo52QXVkfKOV6jVpunbvxWXcx8Og.RB7qVkUqGPFjnn8903S');
 
 // Redirect www to non-www (or vice versa)
 // This middleware handles Cloudflare proxy headers correctly
@@ -189,9 +191,10 @@ function requireMasterAdmin(req, res, next) {
     if (req.session && req.session.authenticated && req.session.role === 'master_admin') {
         next();
     } else {
+        console.log('Access denied to master admin endpoint. Session role:', req.session?.role);
         res.status(403).json({
             success: false,
-            message: 'Access denied. Master admin privileges required.'
+            message: 'Access denied. Master admin privileges required. Please log out and log back in to refresh your session.'
         });
     }
 }
@@ -440,7 +443,9 @@ app.post('/api/admin/login', async (req, res) => {
             try {
                 const staff = await db.getStaffByUsername(username);
                 if (staff) {
+                    console.log(`Found staff account for username: ${username}`);
                     const passwordMatch = await bcrypt.compare(password, staff.passwordHash);
+                    console.log(`Password match result: ${passwordMatch}`);
                     if (passwordMatch) {
                         req.session.authenticated = true;
                         req.session.username = username;
@@ -454,17 +459,29 @@ app.post('/api/admin/login', async (req, res) => {
                             message: 'Login successful',
                             role: staff.role
                         });
+                    } else {
+                        console.log(`Password mismatch for staff account: ${username}`);
                     }
+                } else {
+                    console.log(`No staff account found for username: ${username}`);
                 }
             } catch (dbError) {
                 console.error('Database login error:', dbError);
                 // Fall through to legacy admin login
             }
+        } else {
+            console.log('Database not initialized, skipping staff login check');
         }
 
         // Legacy admin login (fallback)
+        console.log(`Attempting legacy admin login for username: ${username}`);
+        console.log(`ADMIN_USERNAME: ${ADMIN_USERNAME}`);
         const usernameMatch = username === ADMIN_USERNAME;
+        console.log(`Username match: ${usernameMatch}`);
+        
         const passwordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+        console.log(`Password match (legacy): ${passwordMatch}`);
+        console.log(`ADMIN_PASSWORD_HASH (first 20 chars): ${ADMIN_PASSWORD_HASH.substring(0, 20)}...`);
 
         if (usernameMatch && passwordMatch) {
             req.session.authenticated = true;
@@ -480,6 +497,8 @@ app.post('/api/admin/login', async (req, res) => {
             });
         } else {
             console.log('Login failed for username:', username);
+            console.log(`  - Username match: ${usernameMatch}`);
+            console.log(`  - Password match: ${passwordMatch}`);
 
             res.status(401).json({
                 success: false,

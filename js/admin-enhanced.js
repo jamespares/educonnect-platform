@@ -30,14 +30,25 @@ async function checkUserRole() {
         const response = await fetch('/api/admin/me');
         const result = await response.json();
         
+        console.log('User role check result:', result);
+        
         if (result.success) {
             currentUser = result.data;
+            console.log('Current user:', currentUser);
             
             // Show staff management tab only for master_admin
             if (currentUser.role === 'master_admin') {
-                document.getElementById('staffTab').style.display = 'block';
+                console.log('User is master_admin, showing staff tab');
+                const staffTabButton = document.getElementById('staffTabButton');
+                if (staffTabButton) {
+                    staffTabButton.style.display = 'block';
+                }
                 loadStaff();
+            } else {
+                console.log('User role is:', currentUser.role, '- Staff tab will be hidden');
             }
+        } else {
+            console.error('Failed to get user info:', result);
         }
     } catch (error) {
         console.error('Error checking user role:', error);
@@ -46,17 +57,27 @@ async function checkUserRole() {
 
 // Tab switching
 function switchTab(tabName) {
+    console.log('Switching to tab:', tabName);
     // Update tab buttons
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     
     // Update tab content
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
-    document.getElementById(tabName + 'Tab').classList.add('active');
+    // Handle tab content ID (staff tab content is 'staffTab', button is 'staffTabButton')
+    const tabContentId = tabName === 'staff' ? 'staffTab' : tabName + 'Tab';
+    const tabContent = document.getElementById(tabContentId);
+    if (tabContent) {
+        tabContent.classList.add('active');
+    } else {
+        console.error('Tab content not found:', tabContentId);
+    }
     
     // Load data for the tab
     if (tabName === 'teachers') {
@@ -66,6 +87,7 @@ function switchTab(tabName) {
     } else if (tabName === 'matches') {
         loadMatches();
     } else if (tabName === 'staff') {
+        console.log('Loading staff tab...');
         loadStaff();
     }
 }
@@ -644,21 +666,30 @@ async function updateMatchStatus(matchId) {
 // ========== STAFF MANAGEMENT ==========
 
 async function loadStaff() {
+    console.log('Loading staff...');
     try {
         const response = await fetch('/api/admin/staff');
+        console.log('Staff API response status:', response.status);
         const result = await response.json();
+        console.log('Staff API result:', result);
         
         if (result.success) {
             staff = result.data;
+            console.log('Staff data loaded:', staff);
             renderStaffTable(staff);
         } else {
+            console.error('Error loading staff:', result);
+            let errorMessage = result.message || 'Unknown error';
+            if (response.status === 403) {
+                errorMessage = 'Access denied. You need to log out and log back in to refresh your permissions.';
+            }
             document.getElementById('staffTableContent').innerHTML = 
-                '<div class="empty-state">Error loading staff: ' + result.message + '</div>';
+                '<div class="empty-state"><h3>Error loading staff</h3><p>' + escapeHtml(errorMessage) + '</p><p>Check browser console (F12) for details.</p></div>';
         }
     } catch (error) {
         console.error('Error loading staff:', error);
         document.getElementById('staffTableContent').innerHTML = 
-            '<div class="empty-state">Error loading staff. Please try again.</div>';
+            '<div class="empty-state"><h3>Error loading staff</h3><p>Please check the browser console (F12) for details and try again.</p></div>';
     }
 }
 
@@ -809,7 +840,12 @@ async function handleStaffSubmit(e) {
             
             const result = await response.json();
             if (result.success) {
-                alert('Staff member added successfully');
+                // Show credentials to admin so they can share with the new staff member
+                const credentialsMessage = `Staff member added successfully!\n\n` +
+                    `Username: ${username}\n` +
+                    `Password: ${password}\n\n` +
+                    `Please save these credentials and share them with the new staff member.`;
+                alert(credentialsMessage);
                 closeStaffModal();
                 loadStaff();
             } else {
