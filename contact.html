@@ -75,6 +75,12 @@
                             <textarea id="message" name="message" rows="6" class="form-input" placeholder="Tell us how we can help you..." required></textarea>
                         </div>
                         
+                        <!-- Honeypot field - hidden from users but visible to bots -->
+                        <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                            <label for="website">Website (leave blank)</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        
                         <button type="submit" class="contact-submit-btn">Send Message</button>
                     </form>
                 </div>

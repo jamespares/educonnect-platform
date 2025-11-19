@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const rateLimit = require('express-rate-limit');
 const { Resend } = require('resend');
 const SupabaseDatabase = require('./supabase-database');
 
@@ -69,6 +70,30 @@ function sanitizeHtml(text) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#x27;');
 }
+
+// Helper function to detect URLs in text
+function containsUrl(text) {
+    if (!text) return false;
+    // Match http://, https://, www., or domain patterns
+    const urlPattern = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}[^\s]*)/gi;
+    return urlPattern.test(text);
+}
+
+// Rate limiting for contact form - 5 requests per 15 minutes per IP
+const contactFormLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 requests per windowMs
+    message: {
+        success: false,
+        message: 'Too many requests. Please try again later.'
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    // Use IP from proxy headers if available (for Cloudflare/Railway)
+    keyGenerator: (req) => {
+        return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    }
+});
 
 // Admin credentials - password will be hashed
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
@@ -531,16 +556,51 @@ app.post('/api/admin/logout', (req, res) => {
     });
 });
 
-// Contact form route
-app.post('/send-message', async (req, res) => {
+// Contact form route with rate limiting and bot protection
+app.post('/send-message', contactFormLimiter, async (req, res) => {
     try {
-        const { name, email, subject, message } = req.body;
+        const { name, email, subject, message, website } = req.body;
+
+        // Honeypot check - if website field is filled, it's a bot
+        if (website && website.trim()) {
+            console.warn('Bot detected: honeypot field filled', { ip: req.ip, email });
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid request'
+            });
+        }
 
         // Basic validation
         if (!name || !email || !subject || !message) {
             return res.status(400).json({
                 success: false,
                 message: 'All fields are required'
+            });
+        }
+
+        // Check for URLs in message, name, or subject (common spam pattern)
+        const fieldsToCheck = [message, name, subject].join(' ');
+        if (containsUrl(fieldsToCheck)) {
+            console.warn('Bot detected: URL found in message', { ip: req.ip, email });
+            return res.status(400).json({
+                success: false,
+                message: 'Messages containing URLs are not allowed. Please contact us directly via email if you need to share a link.'
+            });
+        }
+
+        // Additional spam detection: check for suspicious patterns
+        const suspiciousPatterns = [
+            /click here/i,
+            /visit (our )?website/i,
+            /check out/i,
+            /bit\.ly|tinyurl|short\.link|t\.co/i, // Common URL shorteners
+        ];
+        
+        if (suspiciousPatterns.some(pattern => pattern.test(fieldsToCheck))) {
+            console.warn('Bot detected: suspicious pattern found', { ip: req.ip, email });
+            return res.status(400).json({
+                success: false,
+                message: 'Your message contains suspicious content. Please contact us directly via email.'
             });
         }
 

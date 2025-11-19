@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = document.getElementById('email').value.trim();
         const subject = document.getElementById('subject').value;
         const message = document.getElementById('message').value.trim();
+        const honeypot = document.getElementById('website').value.trim();
+        
+        // Honeypot check - if filled, it's a bot
+        if (honeypot) {
+            console.warn('Bot detected: honeypot field filled');
+            showMessage('Spam detected. Your message was not sent.', 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send Message';
+            return;
+        }
         
         if (!name || !email || !subject || !message) {
             showMessage('Please fill in all fields.', 'error');
@@ -32,6 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!isValidEmail(email)) {
             showMessage('Please enter a valid email address.', 'error');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send Message';
+            return;
+        }
+        
+        // Check for URLs in message (common spam pattern)
+        if (containsUrl(message)) {
+            showMessage('Messages containing URLs are not allowed. Please contact us directly via email if you need to share a link.', 'error');
             submitButton.disabled = false;
             submitButton.textContent = 'Send Message';
             return;
@@ -48,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     name,
                     email,
                     subject,
-                    message
+                    message,
+                    website: honeypot // Include honeypot field for server-side validation
                 })
             });
             
@@ -72,6 +91,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
+    }
+    
+    // Detect URLs in text (http://, https://, www., or common TLDs)
+    function containsUrl(text) {
+        if (!text) return false;
+        const urlPattern = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}[^\s]*)/gi;
+        return urlPattern.test(text);
     }
     
     function showMessage(message, type) {
