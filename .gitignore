@@ -1,6 +1,9 @@
 # Environment variables
 .env
 
+# CSV files
+*.csv
+
 # Database
 teachers.db
 
@@ -18,3 +21,6 @@ node_modules/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Test artifacts
+playwright-report/

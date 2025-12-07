@@ -10,10 +10,13 @@ class SupabaseDatabase {
         }
 
         this.supabase = createClient(supabaseUrl, supabaseKey);
-        this.storageBucket = process.env.SUPABASE_STORAGE_BUCKET || 'intro-videos';
+        // Default buckets for different file types
+        this.storageBucket = process.env.SUPABASE_STORAGE_BUCKET || 'intro-videos'; // For videos/photos
+        this.cvBucket = process.env.SUPABASE_CV_BUCKET || 'cvs'; // For CV/resume uploads
         
         console.log('✅ Supabase client initialized');
-        console.log('   - Storage bucket:', this.storageBucket);
+        console.log('   - Storage bucket (videos/photos):', this.storageBucket);
+        console.log('   - CV bucket:', this.cvBucket);
     }
 
     // Teacher methods
@@ -384,10 +387,10 @@ class SupabaseDatabase {
             console.log(`📤 Uploading CV to Supabase Storage: ${fileName}`);
             console.log(`   - Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB`);
             console.log(`   - Content type: ${contentType}`);
-            console.log(`   - Bucket: ${this.storageBucket}`);
+            console.log(`   - Bucket: ${this.cvBucket}`);
 
             const { data, error } = await this.supabase.storage
-                .from(this.storageBucket)
+                .from(this.cvBucket)
                 .upload(fileName, fileBuffer, {
                     contentType: contentType,
                     upsert: false,
@@ -401,14 +404,21 @@ class SupabaseDatabase {
 
             console.log(`✅ CV uploaded successfully: ${data.path}`);
 
-            // Get public URL
-            const { data: urlData } = this.supabase.storage
-                .from(this.storageBucket)
-                .getPublicUrl(data.path);
+            // Get signed URL (CVs should be private, not public)
+            // Note: Signed URLs work for both public and private buckets
+            // For private buckets, signed URLs are required for access
+            const { data: urlData, error: urlError } = await this.supabase.storage
+                .from(this.cvBucket)
+                .createSignedUrl(data.path, 31536000); // 1 year expiry
+
+            if (urlError) {
+                console.warn('⚠️ Could not create signed URL for CV:', urlError);
+                // If signed URL fails, we can still store the path and generate URL when needed
+            }
 
             return {
                 path: data.path,
-                url: urlData.publicUrl
+                url: urlData?.signedUrl || null // Use signed URL for secure access
             };
         } catch (error) {
             console.error('❌ Error in uploadCV:', error);

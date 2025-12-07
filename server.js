@@ -445,12 +445,13 @@ app.post('/api/submit-application-simple', signupFormLimiter, uploadCV, handleMu
         // User-provided fields take precedence over AI-extracted ones
         if (parsedData) {
             // Only use parsed data for fields not provided by user
-            teacherData.phone = teacherData.phone || parsedData.phone || null;
-            teacherData.nationality = teacherData.nationality || parsedData.nationality || null;
-            teacherData.yearsExperience = teacherData.yearsExperience || parsedData.yearsExperience || null;
-            teacherData.education = teacherData.education || parsedData.education || null;
-            teacherData.teachingExperience = teacherData.teachingExperience || parsedData.teachingExperience || null;
-            teacherData.professionalExperience = teacherData.professionalExperience || parsedData.professionalExperience || null;
+            // Note: These will get defaults later if still empty
+            teacherData.phone = teacherData.phone || parsedData.phone;
+            teacherData.nationality = teacherData.nationality || parsedData.nationality;
+            teacherData.yearsExperience = teacherData.yearsExperience || parsedData.yearsExperience;
+            teacherData.education = teacherData.education || parsedData.education;
+            teacherData.teachingExperience = teacherData.teachingExperience || parsedData.teachingExperience;
+            teacherData.professionalExperience = teacherData.professionalExperience || parsedData.professionalExperience;
             
             // Additional info from CV parsing
             if (parsedData.additionalInfo) {
@@ -458,14 +459,15 @@ app.post('/api/submit-application-simple', signupFormLimiter, uploadCV, handleMu
             }
         }
 
-        // Set defaults for any missing fields
-        teacherData.phone = teacherData.phone || null;
-        teacherData.nationality = teacherData.nationality || null;
-        teacherData.yearsExperience = teacherData.yearsExperience || null;
-        teacherData.education = teacherData.education || null;
-        teacherData.teachingExperience = teacherData.teachingExperience || null;
-        teacherData.professionalExperience = teacherData.professionalExperience || null;
-        teacherData.additionalInfo = teacherData.additionalInfo || null;
+        // Set defaults for any missing fields (database has NOT NULL constraints)
+        // Use empty strings or "Not provided" instead of null to satisfy NOT NULL constraints
+        teacherData.phone = teacherData.phone || 'Not provided';
+        teacherData.nationality = teacherData.nationality || 'Not provided';
+        teacherData.yearsExperience = teacherData.yearsExperience || 'Not provided';
+        teacherData.education = teacherData.education || 'Not provided';
+        teacherData.teachingExperience = teacherData.teachingExperience || 'Not provided';
+        teacherData.professionalExperience = teacherData.professionalExperience || null; // This one is nullable
+        teacherData.additionalInfo = teacherData.additionalInfo || null; // This one is nullable
 
         // Save to database
         console.log('💾 Saving teacher data to database...');

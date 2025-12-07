@@ -199,7 +199,13 @@
                     body: JSON.stringify({ username, password })
                 });
 
-                const result = await response.json();
+                // Parse JSON response with error handling
+                let result;
+                try {
+                    result = await response.json();
+                } catch (e) {
+                    throw new Error('Invalid response from server. Please try again.');
+                }
 
                 if (result.success) {
                     // Redirect to admin on successful login
@@ -211,7 +217,7 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                errorDiv.textContent = 'Login failed. Please try again.';
+                errorDiv.textContent = error.message || 'Login failed. Please try again.';
                 errorDiv.style.display = 'block';
             } finally {
                 // Restore button state

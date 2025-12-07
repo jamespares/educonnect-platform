@@ -71,13 +71,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
             
-            const result = await response.json();
+            // Parse JSON response with error handling
+            let result;
+            try {
+                result = await response.json();
+            } catch (e) {
+                // Handle rate limiting or non-JSON responses
+                if (response.status === 429) {
+                    showMessage('Too many requests. Please wait a few minutes before trying again.', 'error');
+                } else {
+                    showMessage('Invalid response from server. Please try again.', 'error');
+                }
+                return;
+            }
             
-            if (response.ok) {
+            if (response.ok && result.success) {
                 showMessage('Message sent successfully! We will get back to you within 24 hours.', 'success');
                 contactForm.reset();
             } else {
-                showMessage('Failed to send message. Please try again.', 'error');
+                showMessage(result.message || 'Failed to send message. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Contact form error:', error);

@@ -1,59 +1,7 @@
 // Simple form handling and UI interactions
 
-// Handle application form submission
-if (window.location.pathname.includes('signup')) {
-    const form = document.querySelector('#applicationForm');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            
-            // Show loading state
-            submitButton.textContent = 'Submitting...';
-            submitButton.disabled = true;
-            
-            try {
-                const formData = new FormData(form);
-                // Convert FormData to JSON for serverless functions
-                const data = {};
-                for (let [key, value] of formData.entries()) {
-                    data[key] = value;
-                }
-                
-                // For GitHub Pages, use Formspree for form handling
-                const response = await fetch('https://formspree.io/f/xrbgwodg', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ...data,
-                        _subject: 'New EduConnect Teacher Application',
-                        _cc: 'team@educonnectchina.com'
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    alert('Application submitted successfully! We will contact you within 24-48 hours.');
-                    form.reset();
-                } else {
-                    const result = await response.json();
-                    alert('Error: ' + (result.error || 'Failed to submit application'));
-                }
-            } catch (error) {
-                alert('Network error. Please try again.');
-            } finally {
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
-        });
-    }
-}
+// Note: Application form submission is handled inline in signup.html
+// to properly support file uploads via FormData
 
 // Handle admin login
 if (window.location.pathname.includes('login')) {
@@ -76,14 +24,26 @@ if (window.location.pathname.includes('login')) {
                 });
 
                 if (response.ok) {
-                    const result = await response.json();
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (e) {
+                        alert('Invalid response from server. Please try again.');
+                        return;
+                    }
                     if (result.success) {
-                        window.location.href = '/admin.html';
+                        window.location.href = '/admin';
                     } else {
                         alert(result.message || 'Invalid credentials');
                     }
                 } else {
-                    const result = await response.json().catch(() => ({}));
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (e) {
+                        alert('Login failed. Please try again.');
+                        return;
+                    }
                     alert(result.message || 'Invalid credentials');
                 }
             } catch (error) {
