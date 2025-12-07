@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 const { Resend } = require('resend');
 const SupabaseDatabase = require('./supabase-database');
+const CVParser = require('./cv-parser');
 
 // Initialize Resend (non-blocking, will fail gracefully if no key)
 let resend;
@@ -79,6 +80,11 @@ function containsUrl(text) {
     return urlPattern.test(text);
 }
 
+// Helper function for rate limiter IP detection
+function getClientIP(req) {
+    return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+}
+
 // Rate limiting for contact form - 5 requests per 15 minutes per IP
 const contactFormLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -87,12 +93,36 @@ const contactFormLimiter = rateLimit({
         success: false,
         message: 'Too many requests. Please try again later.'
     },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    // Use IP from proxy headers if available (for Cloudflare/Railway)
-    keyGenerator: (req) => {
-        return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
-    }
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: getClientIP
+});
+
+// Rate limiting for signup form - 3 submissions per hour per IP
+const signupFormLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3, // Limit each IP to 3 submissions per hour
+    message: {
+        success: false,
+        message: 'Too many applications submitted. Please try again later.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: getClientIP
+});
+
+// Rate limiting for login - 5 attempts per 15 minutes per IP (prevent brute force)
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 login attempts per 15 minutes
+    message: {
+        success: false,
+        message: 'Too many login attempts. Please try again later.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: getClientIP,
+    skipSuccessfulRequests: true // Don't count successful logins
 });
 
 // Admin credentials - password will be hashed
@@ -178,6 +208,34 @@ const upload = multer({
     { name: 'introVideo', maxCount: 1 },
     { name: 'headshotPhoto', maxCount: 1 }
 ]);
+
+// Configure multer for CV uploads (simplified signup)
+const uploadCV = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit for CVs
+    },
+    fileFilter: (req, file, cb) => {
+        // Allow PDF, Word docs, text files, and images
+        const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'image/jpeg',
+            'image/png',
+            'image/jpg'
+        ];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error(`Invalid file type. Please upload PDF, Word document, or image.`), false);
+        }
+    }
+}).single('cvFile');
+
+// Initialize CV Parser
+const cvParser = new CVParser();
 
 // Multer error handling middleware
 const handleMulterError = (err, req, res, next) => {
@@ -269,8 +327,211 @@ app.get('/api/debug/headers', requireAuth, (req, res) => {
     });
 });
 
+// Simplified signup API route with CV parsing
+app.post('/api/submit-application-simple', signupFormLimiter, uploadCV, handleMulterError, async (req, res) => {
+    // Check if database is initialized
+    if (!db || !dbInitialized) {
+        return res.status(503).json({
+            success: false,
+            message: 'Database is not available. Please try again later.'
+        });
+    }
+    
+    try {
+        const name = req.body.name?.trim();
+        const email = req.body.email?.trim();
+        const linkedin = req.body.linkedin?.trim();
+        const preferredCities = req.body.preferredCities ? JSON.parse(req.body.preferredCities) : [];
+        const preferredAgeGroup = req.body.preferredAgeGroup?.trim();
+        const subjectSpecialty = req.body.subjectSpecialty?.trim();
+        const cvFile = req.file;
+
+        // Validation
+        if (!name || name.length < 2) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please enter your full name' 
+            });
+        }
+
+        if (!email || !email.includes('@')) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Valid email is required' 
+            });
+        }
+
+        if (!cvFile) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please upload your CV' 
+            });
+        }
+
+        if (!preferredCities || preferredCities.length === 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please select at least one preferred city' 
+            });
+        }
+
+        if (!preferredAgeGroup) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please select your preferred age group' 
+            });
+        }
+
+        if (!subjectSpecialty) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Please select the subject you teach' 
+            });
+        }
+
+        // Split name into first and last name
+        const nameParts = name.split(' ');
+        const firstName = nameParts[0] || name;
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        // Prepare teacher data object
+        let teacherData = {
+            firstName: firstName,
+            lastName: lastName || firstName, // Use firstName if no last name provided
+            email: email.toLowerCase(),
+            preferredLocation: preferredCities.join(', '), // Store as comma-separated string
+            preferred_age_group: preferredAgeGroup,
+            subjectSpecialty: subjectSpecialty,
+            linkedin: linkedin || null
+        };
+
+        // Parse CV if uploaded
+        let cvPath = null;
+        let parsedData = null;
+        
+        if (cvFile) {
+            try {
+                // Upload CV to storage first
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const fileName = `cv-${uniqueSuffix}${path.extname(cvFile.originalname)}`;
+                
+                const uploadResult = await db.uploadCV(cvFile, fileName);
+                cvPath = uploadResult.path;
+                console.log('✅ CV uploaded to Supabase Storage:', uploadResult.path);
+
+                // Parse CV with AI
+                console.log('🤖 Parsing CV with AI...');
+                parsedData = await cvParser.parseCV(cvFile.buffer, cvFile.mimetype);
+                
+                console.log('✅ CV parsed successfully. Extracted:', {
+                    firstName: parsedData.firstName,
+                    lastName: parsedData.lastName,
+                    email: parsedData.email,
+                    phone: parsedData.phone,
+                    nationality: parsedData.nationality,
+                    yearsExperience: parsedData.yearsExperience
+                });
+            } catch (parseError) {
+                console.error('Error parsing CV:', parseError);
+                // Continue with just the CV file uploaded, but log the error
+                parsedData = null;
+            }
+        }
+        
+        // Store CV path
+        teacherData.cvPath = cvPath;
+
+        // Merge parsed data, but prioritize user-provided fields
+        // User-provided fields take precedence over AI-extracted ones
+        if (parsedData) {
+            // Only use parsed data for fields not provided by user
+            teacherData.phone = teacherData.phone || parsedData.phone || null;
+            teacherData.nationality = teacherData.nationality || parsedData.nationality || null;
+            teacherData.yearsExperience = teacherData.yearsExperience || parsedData.yearsExperience || null;
+            teacherData.education = teacherData.education || parsedData.education || null;
+            teacherData.teachingExperience = teacherData.teachingExperience || parsedData.teachingExperience || null;
+            teacherData.professionalExperience = teacherData.professionalExperience || parsedData.professionalExperience || null;
+            
+            // Additional info from CV parsing
+            if (parsedData.additionalInfo) {
+                teacherData.additionalInfo = (teacherData.additionalInfo || '') + '\n\n' + parsedData.additionalInfo;
+            }
+        }
+
+        // Set defaults for any missing fields
+        teacherData.phone = teacherData.phone || null;
+        teacherData.nationality = teacherData.nationality || null;
+        teacherData.yearsExperience = teacherData.yearsExperience || null;
+        teacherData.education = teacherData.education || null;
+        teacherData.teachingExperience = teacherData.teachingExperience || null;
+        teacherData.professionalExperience = teacherData.professionalExperience || null;
+        teacherData.additionalInfo = teacherData.additionalInfo || null;
+
+        // Save to database
+        console.log('💾 Saving teacher data to database...');
+        const result = await db.addTeacher(teacherData);
+        console.log('✅ Teacher data saved successfully, ID:', result.id);
+
+        // Send email notification
+        try {
+            await resend.emails.send({
+                from: 'EduConnect <team@educonnectchina.com>',
+                to: [process.env.EMAIL_TO || 'team@educonnectchina.com'],
+                subject: `New Teacher Application: ${sanitizeHtml(teacherData.firstName)} ${sanitizeHtml(teacherData.lastName)}`,
+                html: `
+                    <h2>New Teacher Application Received (Simplified Form)</h2>
+                    <p><strong>Name:</strong> ${sanitizeHtml(teacherData.firstName)} ${sanitizeHtml(teacherData.lastName)}</p>
+                    <p><strong>Email:</strong> ${sanitizeHtml(teacherData.email)}</p>
+                    <p><strong>Phone:</strong> ${teacherData.phone ? sanitizeHtml(teacherData.phone) : 'Not provided'}</p>
+                    <p><strong>Nationality:</strong> ${teacherData.nationality ? sanitizeHtml(teacherData.nationality) : 'Not provided'}</p>
+                    <p><strong>Experience:</strong> ${teacherData.yearsExperience ? sanitizeHtml(teacherData.yearsExperience) : 'Not provided'}</p>
+                    <p><strong>Subject:</strong> ${teacherData.subjectSpecialty ? sanitizeHtml(teacherData.subjectSpecialty) : 'Not provided'}</p>
+                    <p><strong>Preferred Cities:</strong> ${sanitizeHtml(teacherData.preferredLocation)}</p>
+                    <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group ? sanitizeHtml(teacherData.preferred_age_group) : 'Not provided'}</p>
+                    <p><strong>Preferred Age Group:</strong> ${teacherData.preferred_age_group ? sanitizeHtml(teacherData.preferred_age_group) : 'Not provided'}</p>
+                    <p><strong>Subject Specialty:</strong> ${teacherData.subjectSpecialty ? sanitizeHtml(teacherData.subjectSpecialty) : 'Not provided'}</p>
+
+                    ${teacherData.education ? `<h3>Education Background:</h3><p>${sanitizeHtml(teacherData.education)}</p>` : ''}
+                    ${teacherData.teachingExperience ? `<h3>Teaching Experience:</h3><p>${sanitizeHtml(teacherData.teachingExperience)}</p>` : ''}
+                    ${teacherData.professionalExperience ? `<h3>Professional Experience:</h3><p>${sanitizeHtml(teacherData.professionalExperience)}</p>` : ''}
+                    ${teacherData.additionalInfo ? `<h3>Additional Information:</h3><p>${sanitizeHtml(teacherData.additionalInfo)}</p>` : ''}
+
+                    <h3>Media & Profiles:</h3>
+                    <p><strong>CV:</strong> ${teacherData.cvPath ? 'Uploaded' : 'Not provided'}</p>
+                    <p><strong>LinkedIn:</strong> ${teacherData.linkedin ? `<a href="${sanitizeHtml(teacherData.linkedin)}">${sanitizeHtml(teacherData.linkedin)}</a>` : 'Not provided'}</p>
+
+                    <p><em>View full details in the admin dashboard.</em></p>
+                    <p><em>Note: This application was submitted via the simplified form with AI CV parsing.</em></p>
+                `
+            });
+        } catch (emailError) {
+            console.error('Error sending application notification email:', emailError);
+            // Don't fail the application if email fails
+        }
+        
+        console.log('✅ Simplified application submitted successfully');
+        res.json({
+            success: true,
+            message: 'Application submitted successfully!',
+            data: result
+        });
+    } catch (error) {
+        console.error('❌ Error submitting simplified application:', error);
+        console.error('   Error stack:', error.stack);
+        
+        const errorMessage = process.env.NODE_ENV === 'production' 
+            ? 'An error occurred while submitting your application. Please try again or contact support.'
+            : error.message;
+            
+        res.status(500).json({
+            success: false,
+            message: errorMessage
+        });
+    }
+});
+
 // API Routes
-app.post('/api/submit-application', upload, handleMulterError, async (req, res) => {
+app.post('/api/submit-application', signupFormLimiter, upload, handleMulterError, async (req, res) => {
     // Check if database is initialized
     if (!db || !dbInitialized) {
         return res.status(503).json({
@@ -283,10 +544,14 @@ app.post('/api/submit-application', upload, handleMulterError, async (req, res) 
     req.setTimeout(300000);
     
     try {
-        console.log('📝 New application submission received');
-        console.log('   - Email:', req.body.email);
-        console.log('   - Has video:', !!(req.files && req.files['introVideo']));
-        console.log('   - Has photo:', !!(req.files && req.files['headshotPhoto']));
+        // Log submission (sanitize sensitive data in production)
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('📝 New application submission received');
+            console.log('   - Has video:', !!(req.files && req.files['introVideo']));
+            console.log('   - Has photo:', !!(req.files && req.files['headshotPhoto']));
+        } else {
+            console.log('📝 New application submission received');
+        }
         // Basic validation
         if (!req.body.firstName || req.body.firstName.trim().length < 2) {
             return res.status(400).json({ success: false, message: 'First name must be at least 2 characters' });
@@ -383,9 +648,13 @@ app.post('/api/submit-application', upload, handleMulterError, async (req, res) 
             additionalInfo: req.body.additionalInfo ? req.body.additionalInfo.trim() : null
         };
 
-        console.log('💾 Saving teacher data to database...');
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('💾 Saving teacher data to database...');
+        }
         const result = await db.addTeacher(teacherData);
-        console.log('✅ Teacher data saved successfully, ID:', result.id);
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('✅ Teacher data saved successfully, ID:', result.id);
+        }
 
         // Send email notification for new application
         try {
@@ -452,7 +721,7 @@ app.post('/api/submit-application', upload, handleMulterError, async (req, res) 
 });
 
 // Authentication API routes
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', loginLimiter, async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -468,52 +737,44 @@ app.post('/api/admin/login', async (req, res) => {
             try {
                 const staff = await db.getStaffByUsername(username);
                 if (staff) {
-                    console.log(`Found staff account for username: ${username}`);
                     const passwordMatch = await bcrypt.compare(password, staff.passwordHash);
-                    console.log(`Password match result: ${passwordMatch}`);
                     if (passwordMatch) {
                         req.session.authenticated = true;
                         req.session.username = username;
                         req.session.role = staff.role;
                         req.session.staffId = staff.id;
 
-                        console.log('Staff login successful for:', username);
+                        // Log successful login (without sensitive data)
+                        if (process.env.NODE_ENV !== 'production') {
+                            console.log('✅ Staff login successful');
+                        }
 
                         return res.json({
                             success: true,
                             message: 'Login successful',
                             role: staff.role
                         });
-                    } else {
-                        console.log(`Password mismatch for staff account: ${username}`);
                     }
-                } else {
-                    console.log(`No staff account found for username: ${username}`);
+                    // Don't log failed attempts in production to prevent username enumeration
                 }
             } catch (dbError) {
-                console.error('Database login error:', dbError);
+                console.error('Database login error:', dbError.message);
                 // Fall through to legacy admin login
             }
-        } else {
-            console.log('Database not initialized, skipping staff login check');
         }
 
         // Legacy admin login (fallback)
-        console.log(`Attempting legacy admin login for username: ${username}`);
-        console.log(`ADMIN_USERNAME: ${ADMIN_USERNAME}`);
         const usernameMatch = username === ADMIN_USERNAME;
-        console.log(`Username match: ${usernameMatch}`);
-        
         const passwordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-        console.log(`Password match (legacy): ${passwordMatch}`);
-        console.log(`ADMIN_PASSWORD_HASH (first 20 chars): ${ADMIN_PASSWORD_HASH.substring(0, 20)}...`);
 
         if (usernameMatch && passwordMatch) {
             req.session.authenticated = true;
             req.session.username = username;
             req.session.role = 'admin';
 
-            console.log('Legacy admin login successful for:', username);
+            if (process.env.NODE_ENV !== 'production') {
+                console.log('✅ Legacy admin login successful');
+            }
 
             res.json({
                 success: true,
@@ -521,10 +782,7 @@ app.post('/api/admin/login', async (req, res) => {
                 role: 'admin'
             });
         } else {
-            console.log('Login failed for username:', username);
-            console.log(`  - Username match: ${usernameMatch}`);
-            console.log(`  - Password match: ${passwordMatch}`);
-
+            // Generic error message to prevent username enumeration
             res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
@@ -563,7 +821,9 @@ app.post('/send-message', contactFormLimiter, async (req, res) => {
 
         // Honeypot check - if website field is filled, it's a bot
         if (website && website.trim()) {
-            console.warn('Bot detected: honeypot field filled', { ip: req.ip, email });
+            // Log bot detection without sensitive data
+            const clientIP = getClientIP(req);
+            console.warn('Bot detected: honeypot field filled', { ip: clientIP });
             return res.status(400).json({
                 success: false,
                 message: 'Invalid request'
@@ -581,7 +841,8 @@ app.post('/send-message', contactFormLimiter, async (req, res) => {
         // Check for URLs in message, name, or subject (common spam pattern)
         const fieldsToCheck = [message, name, subject].join(' ');
         if (containsUrl(fieldsToCheck)) {
-            console.warn('Bot detected: URL found in message', { ip: req.ip, email });
+            const clientIP = getClientIP(req);
+            console.warn('Bot detected: URL found in message', { ip: clientIP });
             return res.status(400).json({
                 success: false,
                 message: 'Messages containing URLs are not allowed. Please contact us directly via email if you need to share a link.'
@@ -597,7 +858,8 @@ app.post('/send-message', contactFormLimiter, async (req, res) => {
         ];
         
         if (suspiciousPatterns.some(pattern => pattern.test(fieldsToCheck))) {
-            console.warn('Bot detected: suspicious pattern found', { ip: req.ip, email });
+            const clientIP = getClientIP(req);
+            console.warn('Bot detected: suspicious pattern found', { ip: clientIP });
             return res.status(400).json({
                 success: false,
                 message: 'Your message contains suspicious content. Please contact us directly via email.'

@@ -18,7 +18,7 @@
         }
         
         .signup-form-wrapper {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 0 2rem;
         }
@@ -47,20 +47,10 @@
             color: #6b7280;
         }
         
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
         .form-group {
             display: flex;
             flex-direction: column;
-        }
-        
-        .form-group.full-width {
-            grid-column: span 2;
+            margin-bottom: 1.5rem;
         }
         
         .form-label {
@@ -70,37 +60,41 @@
             font-size: 0.875rem;
         }
         
-        .form-input, .form-select, .form-textarea {
+        .form-input, .form-select {
             padding: 1rem;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             font-size: 1rem;
+            background: #ffffff;
+            color: #1f2937;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: inherit;
         }
         
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
+        .form-input:focus, .form-select:focus {
             outline: none;
             border-color: #1f2937;
             box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
         }
         
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        
         .form-file-input {
-            padding: 0.75rem;
+            padding: 2rem;
             border: 2px dashed #d1d5db;
             border-radius: 8px;
             text-align: center;
             background: #f9fafb;
             cursor: pointer;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .form-file-input:hover {
             border-color: #1f2937;
+            background: #f3f4f6;
+        }
+        
+        .form-file-input.dragover {
+            border-color: #1f2937;
+            background: #e5e7eb;
         }
         
         .form-file-input input {
@@ -110,6 +104,51 @@
         .file-upload-text {
             color: #6b7280;
             font-size: 0.875rem;
+        }
+        
+        .file-upload-text strong {
+            display: block;
+            color: #1f2937;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-selected {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #9ca3af;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .cities-select {
+            min-height: 120px;
+            padding: 0.75rem;
+            background: #ffffff;
+            color: #1f2937;
+        }
+        
+        .cities-select option {
+            padding: 0.5rem;
+            background: #ffffff;
+            color: #1f2937;
         }
         
         .submit-button {
@@ -126,38 +165,52 @@
             margin-top: 1rem;
         }
         
-        .submit-button:hover {
+        .submit-button:hover:not(:disabled) {
             background: #111827;
             transform: translateY(-2px);
         }
         
-        .form-note {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            color: #0c4a6e;
-            font-size: 0.875rem;
+        .submit-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
         }
         
-        @media (max-width: 1024px) {
-            .signup-form-wrapper {
-                padding: 0 1.5rem;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .form-group.full-width {
-                grid-column: span 1;
-            }
-            
-            .signup-form {
-                padding: 2.5rem 2rem;
-            }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top-color: #1f2937;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.125rem;
         }
         
         @media (max-width: 768px) {
@@ -181,7 +234,7 @@
                 font-size: 1rem;
             }
             
-            .form-input, .form-select, .form-textarea {
+            .form-input, .form-select {
                 padding: 0.875rem;
                 font-size: 16px; /* Prevents zoom on iOS */
             }
@@ -189,29 +242,6 @@
             .submit-button {
                 padding: 1rem;
                 font-size: 1rem;
-                margin-top: 1.5rem;
-            }
-            
-            .form-file-input {
-                padding: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .signup-form {
-                padding: 1.5rem 1rem;
-            }
-            
-            .form-title {
-                font-size: 1.75rem;
-            }
-            
-            .form-grid {
-                gap: 0.75rem;
-            }
-            
-            .form-input, .form-select, .form-textarea {
-                padding: 0.75rem;
             }
         }
     </style>
@@ -248,172 +278,124 @@
             <form class="signup-form" id="applicationForm">
                 <div class="form-header">
                     <h1 class="form-title">Join Our Teaching Community</h1>
-                    <p class="form-subtitle">Start your journey to teaching in China</p>
+                    <p class="form-subtitle">Let's get you started! This will only take a minute 🚀</p>
                 </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="firstName" class="form-label">First Name *</label>
-                        <input type="text" id="firstName" name="firstName" class="form-input" required minlength="2">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="lastName" class="form-label">Last Name *</label>
-                        <input type="text" id="lastName" name="lastName" class="form-input" required minlength="2">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address *</label>
-                        <input type="email" id="email" name="email" class="form-input" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" class="form-input" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="nationality" class="form-label">Nationality *</label>
-                        <select id="nationality" name="nationality" class="form-select" required>
-                            <option value="">Select your nationality</option>
-                            <option value="UK">United Kingdom</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="AU">Australia</option>
-                            <option value="NZ">New Zealand</option>
-                            <option value="IE">Ireland</option>
-                            <option value="ZA">South Africa</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="yearsExperience" class="form-label">Years of Teaching Experience *</label>
-                        <select id="yearsExperience" name="yearsExperience" class="form-select" required>
-                            <option value="">Select experience level</option>
-                            <option value="0-1">0-1 years</option>
-                            <option value="2-5">2-5 years</option>
-                            <option value="6-10">6-10 years</option>
-                            <option value="11-15">11-15 years</option>
-                            <option value="16+">16+ years</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width" id="professionalExperienceGroup" style="display: none;">
-                        <label for="professionalExperience" class="form-label">Professional Experience & Fit</label>
-                        <textarea id="professionalExperience" name="professionalExperience" class="form-textarea" 
-                                  placeholder="If you don't have teaching experience but have relevant professional experience, please describe your background, transferable skills, and why you believe you would be a good fit for teaching in China. Highlight your communication abilities, adaptability, and passion for education."></textarea>
-                        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">This field is for candidates without formal teaching experience who have other relevant professional experience.</p>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="education" class="form-label">Educational Background *</label>
-                        <textarea id="education" name="education" class="form-textarea" 
-                                  placeholder="Please describe your educational qualifications, degrees, and certifications..." required></textarea>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="teachingExperience" class="form-label">Teaching Experience Details *</label>
-                        <textarea id="teachingExperience" name="teachingExperience" class="form-textarea" 
-                                  placeholder="Please describe your teaching experience, subjects taught, grade levels, and locations..." required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="subjectSpecialty" class="form-label">Subject Specialty *</label>
-                        <select id="subjectSpecialty" name="subjectSpecialty" class="form-select" required>
-                            <option value="">Select your specialty</option>
-                            <option value="English">English Language Arts</option>
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="Science">Science</option>
-                            <option value="History">History/Social Studies</option>
-                            <option value="Art">Art</option>
-                            <option value="Music">Music</option>
-                            <option value="Physical Education">Physical Education</option>
-                            <option value="ESL">ESL/TESOL</option>
-                            <option value="Special Education">Special Education</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="preferredLocation" class="form-label">Preferred Location in China</label>
-                        <select id="preferredLocation" name="preferredLocation" class="form-select">
-                            <option value="">No preference</option>
-                            <option value="Beijing">Beijing</option>
-                            <option value="Shanghai">Shanghai</option>
-                            <option value="Guangzhou">Guangzhou</option>
-                            <option value="Shenzhen">Shenzhen</option>
-                            <option value="Chengdu">Chengdu</option>
-                            <option value="Hangzhou">Hangzhou</option>
-                            <option value="Nanjing">Nanjing</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="preferredAgeGroup" class="form-label">Preferred Age Group *</label>
-                        <select id="preferredAgeGroup" name="preferredAgeGroup" class="form-select" required>
-                            <option value="">Select preferred age group</option>
-                            <option value="Early Years/Kindergarten">Early Years/Kindergarten</option>
-                            <option value="Primary">Primary</option>
-                            <option value="Middle School">Middle School</option>
-                            <option value="High School">High School</option>
-                            <option value="University">University</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="introVideo" class="form-label">Introduction Video</label>
-                        <div class="form-file-input" onclick="document.getElementById('videoFile').click()">
-                            <input type="file" id="videoFile" name="introVideo" accept="video/*">
-                            <div class="file-upload-text" id="videoUploadText">
-                                <strong>Click to upload your introduction video</strong><br>
-                                Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
-                            </div>
+                
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name" class="form-label">What's your name? *</label>
+                    <input type="text" id="name" name="name" class="form-input" required 
+                           placeholder="John Smith" minlength="2">
+                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                        Your full name, please
+                    </small>
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-input" required 
+                           placeholder="your.email@example.com">
+                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                        We'll use this to contact you about amazing opportunities
+                    </small>
+                </div>
+                
+                <!-- LinkedIn -->
+                <div class="form-group">
+                    <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                    <input type="url" id="linkedin" name="linkedin" class="form-input" 
+                           placeholder="https://linkedin.com/in/yourprofile">
+                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                        Optional, but it helps us get to know you better
+                    </small>
+                </div>
+                
+                <!-- CV Upload -->
+                <div class="form-group">
+                    <label class="form-label">Upload Your CV/Resume *</label>
+                    <div class="form-file-input" id="cvUploadArea" onclick="document.getElementById('cvFile').click()">
+                        <input type="file" id="cvFile" name="cvFile" accept=".pdf,.doc,.docx,.txt,image/*" required>
+                        <div class="file-upload-text" id="cvUploadText">
+                            <strong>📄 Drop your CV here or click to browse</strong>
+                            <span>We'll extract all the details automatically</span><br>
+                            <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
                         </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="headshotPhoto" class="form-label">Headshot Photo</label>
-                        <div class="form-file-input" onclick="document.getElementById('photoFile').click()">
-                            <input type="file" id="photoFile" name="headshotPhoto" accept="image/*">
-                            <div class="file-upload-text" id="photoUploadText">
-                                <strong>Click to upload your professional headshot</strong><br>
-                                Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="linkedin" class="form-label">LinkedIn Profile URL</label>
-                        <input type="url" id="linkedin" name="linkedin" class="form-input" 
-                               placeholder="https://linkedin.com/in/yourprofile">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="instagram" class="form-label">Instagram Username</label>
-                        <input type="text" id="instagram" name="instagram" class="form-input" 
-                               placeholder="@yourusername">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="wechatId" class="form-label">WeChat ID</label>
-                        <input type="text" id="wechatId" name="wechatId" class="form-input" 
-                               placeholder="Your WeChat ID">
-                    </div>
-                    
-                    <div class="form-note" id="mediaRequirementNote" style="display: none; background: #fef3c7; border-color: #f59e0b; color: #92400e;">
-                        <strong>Required:</strong> Please provide at least one of the following: Introduction Video, Headshot Photo, LinkedIn Profile, or Instagram Username. This helps us assess your professional presentation and suitability for teaching positions.
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label for="additionalInfo" class="form-label">Additional Information</label>
-                        <textarea id="additionalInfo" name="additionalInfo" class="form-textarea" 
-                                  placeholder="Any additional information you'd like to share, including language skills, hobbies, or special qualifications..."></textarea>
                     </div>
                 </div>
                 
-                <button type="submit" class="submit-button">Submit Application</button>
+                <!-- Preferred Cities -->
+                <div class="form-group">
+                    <label for="preferredCities" class="form-label">Which cities in China interest you? *</label>
+                    <select id="preferredCities" name="preferredCities" class="form-select cities-select" 
+                            multiple required size="8">
+                        <option value="Beijing">Beijing (北京)</option>
+                        <option value="Shanghai">Shanghai (上海)</option>
+                        <option value="Guangzhou">Guangzhou (广州)</option>
+                        <option value="Shenzhen">Shenzhen (深圳)</option>
+                        <option value="Chengdu">Chengdu (成都)</option>
+                        <option value="Hangzhou">Hangzhou (杭州)</option>
+                        <option value="Nanjing">Nanjing (南京)</option>
+                        <option value="Suzhou">Suzhou (苏州)</option>
+                        <option value="Wuhan">Wuhan (武汉)</option>
+                        <option value="Xi'an">Xi'an (西安)</option>
+                        <option value="Qingdao">Qingdao (青岛)</option>
+                        <option value="Dalian">Dalian (大连)</option>
+                        <option value="Xiamen">Xiamen (厦门)</option>
+                        <option value="Tianjin">Tianjin (天津)</option>
+                        <option value="Chongqing">Chongqing (重庆)</option>
+                        <option value="Any">Any City - I'm flexible!</option>
+                    </select>
+                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                        Hold Ctrl (Windows) or Cmd (Mac) to select multiple cities
+                    </small>
+                </div>
+                
+                <!-- Preferred Age Group -->
+                <div class="form-group">
+                    <label for="preferredAgeGroup" class="form-label">What age group do you prefer to teach? *</label>
+                    <select id="preferredAgeGroup" name="preferredAgeGroup" class="form-select" required>
+                        <option value="">Select your preference</option>
+                        <option value="Early Years/Kindergarten">Early Years/Kindergarten (Ages 3-6)</option>
+                        <option value="Primary">Primary School (Ages 6-12)</option>
+                        <option value="Middle School">Middle School (Ages 12-15)</option>
+                        <option value="High School">High School (Ages 15-18)</option>
+                        <option value="University">University/Adult (18+)</option>
+                        <option value="Any">Any age group - I'm flexible!</option>
+                    </select>
+                </div>
+                
+                <!-- Subject Specialty -->
+                <div class="form-group">
+                    <label for="subjectSpecialty" class="form-label">What subject do you teach? *</label>
+                    <select id="subjectSpecialty" name="subjectSpecialty" class="form-select" required>
+                        <option value="">Select your subject</option>
+                        <option value="English">English Language Arts</option>
+                        <option value="ESL/TESOL">ESL/TESOL (English as a Second Language)</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="History">History</option>
+                        <option value="Business">Business</option>
+                        <option value="Economics">Economics</option>
+                        <option value="Art">Art</option>
+                        <option value="Music">Music</option>
+                        <option value="Physical Education">Physical Education</option>
+                        <option value="Special Education">Special Education</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-button" id="submitButton">
+                    Submit Application
+                </button>
             </form>
         </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Processing your application...</div>
     </div>
 
     <!-- Footer -->
@@ -456,157 +438,178 @@
 
     <script src="js/script.js"></script>
     <script>
-        // Show/hide professional experience field based on teaching experience
-        document.getElementById('yearsExperience').addEventListener('change', function(e) {
-            const professionalExperienceGroup = document.getElementById('professionalExperienceGroup');
-            const selectedValue = e.target.value;
-            
-            // Show if 0-1 years (no experience or minimal experience)
-            if (selectedValue === '0-1' || selectedValue === '') {
-                professionalExperienceGroup.style.display = 'block';
-            } else {
-                professionalExperienceGroup.style.display = 'none';
-            }
-        });
-
+        const cvFileInput = document.getElementById('cvFile');
+        const cvUploadArea = document.getElementById('cvUploadArea');
+        const cvUploadText = document.getElementById('cvUploadText');
+        const form = document.getElementById('applicationForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const submitButton = document.getElementById('submitButton');
+        
         // File upload handlers
-        document.getElementById('videoFile').addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('videoUploadText').innerHTML = `<strong>Selected:</strong> ${fileName}`;
+        cvFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file size (10MB limit)
+                const maxSize = 10 * 1024 * 1024; // 10MB
+                if (file.size > maxSize) {
+                    alert('File is too large. Please upload a file smaller than 10MB.');
+                    cvFileInput.value = '';
+                    cvUploadText.innerHTML = `
+                        <strong>📄 Drop your CV here or click to browse</strong>
+                        <span>We'll extract all the details automatically</span><br>
+                        <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
+                    `;
+                    return;
+                }
+                cvUploadText.innerHTML = `<span class="file-selected">✓ ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>`;
             } else {
-                document.getElementById('videoUploadText').innerHTML = `
-                    <strong>Click to upload your introduction video</strong><br>
-                    Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
+                cvUploadText.innerHTML = `
+                    <strong>📄 Drop your CV here or click to browse</strong>
+                    <span>We'll extract all the details automatically</span><br>
+                    <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
                 `;
             }
-            checkMediaRequirement();
+            validateForm();
         });
-
-        document.getElementById('photoFile').addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('photoUploadText').innerHTML = `<strong>Selected:</strong> ${fileName}`;
-            } else {
-                document.getElementById('photoUploadText').innerHTML = `
-                    <strong>Click to upload your professional headshot</strong><br>
-                    Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
-                `;
-            }
-            checkMediaRequirement();
+        
+        // Drag and drop handlers
+        cvUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            cvUploadArea.classList.add('dragover');
         });
-
-        // Check if at least one media option is provided
-        function checkMediaRequirement() {
-            const videoFile = document.getElementById('videoFile').files[0];
-            const photoFile = document.getElementById('photoFile').files[0];
-            const linkedin = document.getElementById('linkedin').value.trim();
-            const instagram = document.getElementById('instagram').value.trim();
-            
-            const hasMedia = videoFile || photoFile || linkedin || instagram;
-            const note = document.getElementById('mediaRequirementNote');
-            
-            if (!hasMedia) {
-                note.style.display = 'block';
-            } else {
-                note.style.display = 'none';
+        
+        cvUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            cvUploadArea.classList.remove('dragover');
+        });
+        
+        cvUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            cvUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                cvFileInput.files = files;
+                cvFileInput.dispatchEvent(new Event('change'));
             }
+        });
+        
+        // Validate form
+        function validateForm() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const cvFile = cvFileInput.files.length > 0;
+            const cities = document.getElementById('preferredCities').selectedOptions.length > 0;
+            const ageGroup = document.getElementById('preferredAgeGroup').value;
+            const subject = document.getElementById('subjectSpecialty').value;
+            
+            submitButton.disabled = !(name && email && cvFile && cities && ageGroup && subject);
         }
-
-        // Add event listeners for LinkedIn and Instagram fields
-        document.getElementById('linkedin').addEventListener('input', checkMediaRequirement);
-        document.getElementById('instagram').addEventListener('input', checkMediaRequirement);
-
-        // Form submission handler
-        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+        
+        // Validate on all field changes
+        document.getElementById('name').addEventListener('input', validateForm);
+        document.getElementById('email').addEventListener('input', validateForm);
+        document.getElementById('preferredCities').addEventListener('change', validateForm);
+        document.getElementById('preferredAgeGroup').addEventListener('change', validateForm);
+        document.getElementById('subjectSpecialty').addEventListener('change', validateForm);
+        
+        // Form submission
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validate media requirement
-            const videoFile = document.getElementById('videoFile').files[0];
-            const photoFile = document.getElementById('photoFile').files[0];
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
             const linkedin = document.getElementById('linkedin').value.trim();
-            const instagram = document.getElementById('instagram').value.trim();
+            const cvFile = cvFileInput.files[0];
+            const preferredCities = Array.from(document.getElementById('preferredCities').selectedOptions)
+                .map(option => option.value);
+            const preferredAgeGroup = document.getElementById('preferredAgeGroup').value;
+            const subjectSpecialty = document.getElementById('subjectSpecialty').value;
             
-            const hasMedia = videoFile || photoFile || linkedin || instagram;
-            
-            if (!hasMedia) {
-                alert('Please provide at least one of the following: Introduction Video, Headshot Photo, LinkedIn Profile, or Instagram Username.');
-                document.getElementById('mediaRequirementNote').style.display = 'block';
+            // Validation
+            if (!name || name.length < 2) {
+                alert('Please enter your full name');
                 return;
             }
             
-            // Show loading state
-            const submitButton = this.querySelector('.submit-button');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Submitting...';
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            if (!cvFile) {
+                alert('Please upload your CV');
+                return;
+            }
+            
+            if (preferredCities.length === 0) {
+                alert('Please select at least one preferred city');
+                return;
+            }
+            
+            if (!preferredAgeGroup) {
+                alert('Please select your preferred age group');
+                return;
+            }
+            
+            if (!subjectSpecialty) {
+                alert('Please select the subject you teach');
+                return;
+            }
+            
+            // Show loading overlay
+            loadingOverlay.classList.add('active');
+            loadingText.textContent = 'Uploading your CV...';
             submitButton.disabled = true;
             
             try {
-                // Collect form data
-                const formData = new FormData(this);
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('email', email);
+                formData.append('preferredCities', JSON.stringify(preferredCities));
+                formData.append('preferredAgeGroup', preferredAgeGroup);
+                formData.append('subjectSpecialty', subjectSpecialty);
+                formData.append('cvFile', cvFile);
                 
-                // Create AbortController for timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout for video uploads
-                
-                // Submit to API
-                const response = await fetch('/api/submit-application', {
-                    method: 'POST',
-                    body: formData,
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                // Check if response is ok
-                if (!response.ok) {
-                    let errorMessage = 'Network error occurred';
-                    try {
-                        const errorData = await response.json();
-                        errorMessage = errorData.message || `Server error (${response.status})`;
-                    } catch (e) {
-                        errorMessage = `Server error (${response.status}): ${response.statusText}`;
-                    }
-                    throw new Error(errorMessage);
+                if (linkedin) {
+                    formData.append('linkedin', linkedin);
                 }
+                
+                loadingText.textContent = 'Extracting information from your CV...';
+                
+                const response = await fetch('/api/submit-application-simple', {
+                    method: 'POST',
+                    body: formData
+                });
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('Thank you for your application! We will review it and get back to you soon.');
-                    
-                    // Reset form
-                    this.reset();
-                    document.getElementById('videoUploadText').innerHTML = `
-                        <strong>Click to upload your introduction video</strong><br>
-                        Maximum file size: 100MB | Accepted formats: MP4, MOV, AVI
-                    `;
-                    document.getElementById('photoUploadText').innerHTML = `
-                        <strong>Click to upload your professional headshot</strong><br>
-                        Maximum file size: 10MB | Accepted formats: JPG, PNG, WEBP
-                    `;
-                    document.getElementById('professionalExperienceGroup').style.display = 'none';
-                    document.getElementById('mediaRequirementNote').style.display = 'none';
+                    loadingText.textContent = 'Success! 🎉';
+                    setTimeout(() => {
+                        alert(`Thank you ${name}! We've received your application and will review it soon. We'll contact you at ${email} with exciting opportunities!`);
+                        form.reset();
+                        cvUploadText.innerHTML = `
+                            <strong>📄 Drop your CV here or click to browse</strong>
+                            <span>We'll extract all the details automatically</span><br>
+                            <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
+                        `;
+                        loadingOverlay.classList.remove('active');
+                        validateForm();
+                    }, 1000);
                 } else {
-                    alert('Error submitting application: ' + (result.message || 'Unknown error'));
+                    throw new Error(result.message || 'Failed to submit application');
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
-                let errorMessage = 'Error submitting application. ';
-                if (error.name === 'AbortError') {
-                    errorMessage += 'The upload timed out. Please try again with a smaller file or check your connection.';
-                } else if (error.message) {
-                    errorMessage += error.message;
-                } else {
-                    errorMessage += 'Please try again.';
-                }
-                alert(errorMessage);
-            } finally {
-                // Restore button state
-                submitButton.textContent = originalText;
+                loadingOverlay.classList.remove('active');
+                alert('Oops! Something went wrong: ' + error.message + '\n\nPlease try again or contact us if the problem persists.');
                 submitButton.disabled = false;
             }
         });
+        
+        // Initial validation
+        validateForm();
     </script>
 </body>
 </html>

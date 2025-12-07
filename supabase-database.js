@@ -38,7 +38,8 @@ class SupabaseDatabase {
                 instagram: teacherData.instagram,
                 wechat_id: teacherData.wechatId,
                 professional_experience: teacherData.professionalExperience,
-                additional_info: teacherData.additionalInfo
+                additional_info: teacherData.additionalInfo,
+                cv_path: teacherData.cvPath || null
             })
             .select()
             .single();
@@ -373,6 +374,48 @@ class SupabaseDatabase {
         }
     }
 
+    // Upload CV/resume file
+    async uploadCV(file, fileName) {
+        try {
+            const fileBuffer = file.buffer || file;
+            const contentType = file.mimetype || 'application/pdf';
+            const fileSize = fileBuffer.length || file.size || 0;
+            
+            console.log(`📤 Uploading CV to Supabase Storage: ${fileName}`);
+            console.log(`   - Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB`);
+            console.log(`   - Content type: ${contentType}`);
+            console.log(`   - Bucket: ${this.storageBucket}`);
+
+            const { data, error } = await this.supabase.storage
+                .from(this.storageBucket)
+                .upload(fileName, fileBuffer, {
+                    contentType: contentType,
+                    upsert: false,
+                    cacheControl: '3600'
+                });
+
+            if (error) {
+                console.error('❌ Supabase storage upload error:', error);
+                throw new Error(`Failed to upload CV to Supabase: ${error.message} (Code: ${error.statusCode || 'unknown'})`);
+            }
+
+            console.log(`✅ CV uploaded successfully: ${data.path}`);
+
+            // Get public URL
+            const { data: urlData } = this.supabase.storage
+                .from(this.storageBucket)
+                .getPublicUrl(data.path);
+
+            return {
+                path: data.path,
+                url: urlData.publicUrl
+            };
+        } catch (error) {
+            console.error('❌ Error in uploadCV:', error);
+            throw error;
+        }
+    }
+
     async getVideoUrl(filePath) {
         const { data } = this.supabase.storage
             .from(this.storageBucket)
@@ -411,6 +454,7 @@ class SupabaseDatabase {
             wechatId: teacher.wechat_id,
             professionalExperience: teacher.professional_experience,
             additionalInfo: teacher.additional_info,
+            cvPath: teacher.cv_path,
             status: teacher.status,
             createdAt: teacher.created_at,
             updatedAt: teacher.updated_at
