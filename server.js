@@ -1233,7 +1233,215 @@ app.delete('/api/schools/:id', requireAuth, async (req, res) => {
     }
 });
 
-// Matching API routes
+// Admin Jobs API routes (protected, for admin panel)
+app.get('/api/admin/jobs', requireAuth, async (req, res) => {
+    try {
+        const jobs = await db.getAllJobs(false); // Get ALL jobs (including inactive)
+        res.json({
+            success: true,
+            data: jobs
+        });
+    } catch (error) {
+        console.error('Error fetching jobs:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching jobs: ' + error.message
+        });
+    }
+});
+
+app.post('/api/admin/jobs', requireAuth, async (req, res) => {
+    try {
+        const jobData = {
+            title: req.body.title?.trim(),
+            company: req.body.company?.trim(),
+            location: req.body.location?.trim(),
+            locationChinese: req.body.locationChinese?.trim(),
+            city: req.body.city?.trim(),
+            province: req.body.province?.trim(),
+            salary: req.body.salary?.trim(),
+            experience: req.body.experience?.trim(),
+            chineseRequired: req.body.chineseRequired || 'No',
+            qualification: req.body.qualification?.trim(),
+            contractType: req.body.contractType || 'Full Time',
+            jobFunctions: req.body.jobFunctions || req.body.subjects?.join(', ') || '',
+            ageGroups: Array.isArray(req.body.ageGroups) ? req.body.ageGroups : [],
+            subjects: Array.isArray(req.body.subjects) ? req.body.subjects : [],
+            schoolId: req.body.schoolId || null,
+            description: req.body.description?.trim(),
+            requirements: req.body.requirements?.trim(),
+            benefits: req.body.benefits?.trim(),
+            isActive: req.body.isActive !== undefined ? req.body.isActive : true
+        };
+
+        // Basic validation
+        if (!jobData.title || !jobData.company || !jobData.location) {
+            return res.status(400).json({
+                success: false,
+                message: 'Job title, company, and location are required'
+            });
+        }
+
+        const result = await db.addJob(jobData);
+        res.json({
+            success: true,
+            message: 'Job added successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error adding job:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding job: ' + error.message
+        });
+    }
+});
+
+app.put('/api/admin/jobs/:id', requireAuth, async (req, res) => {
+    try {
+        const jobData = {
+            title: req.body.title?.trim(),
+            company: req.body.company?.trim(),
+            location: req.body.location?.trim(),
+            locationChinese: req.body.locationChinese?.trim(),
+            city: req.body.city?.trim(),
+            province: req.body.province?.trim(),
+            salary: req.body.salary?.trim(),
+            experience: req.body.experience?.trim(),
+            chineseRequired: req.body.chineseRequired || 'No',
+            qualification: req.body.qualification?.trim(),
+            contractType: req.body.contractType || 'Full Time',
+            jobFunctions: req.body.jobFunctions || req.body.subjects?.join(', ') || '',
+            ageGroups: Array.isArray(req.body.ageGroups) ? req.body.ageGroups : [],
+            subjects: Array.isArray(req.body.subjects) ? req.body.subjects : [],
+            schoolId: req.body.schoolId || null,
+            description: req.body.description?.trim(),
+            requirements: req.body.requirements?.trim(),
+            benefits: req.body.benefits?.trim(),
+            isActive: req.body.isActive !== undefined ? req.body.isActive : true
+        };
+
+        const result = await db.updateJob(req.params.id, jobData);
+        res.json({
+            success: true,
+            message: 'Job updated successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error updating job:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating job: ' + error.message
+        });
+    }
+});
+
+app.delete('/api/admin/jobs/:id', requireAuth, async (req, res) => {
+    try {
+        const result = await db.deleteJob(req.params.id);
+        res.json({
+            success: true,
+            message: 'Job deleted successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error deleting job:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting job: ' + error.message
+        });
+    }
+});
+
+// Job Matching API routes
+app.post('/api/job-matching/run-for-all', requireAuth, async (req, res) => {
+    try {
+        const result = await db.runJobMatchingForAllTeachers();
+        res.json({
+            success: true,
+            message: `Job matching completed. ${result.matchesCreated} matches created for ${result.teachersProcessed} teachers.`,
+            data: result
+        });
+    } catch (error) {
+        console.error('Error running job matching:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error running job matching: ' + error.message
+        });
+    }
+});
+
+app.get('/api/job-matching/teacher/:teacherId', requireAuth, async (req, res) => {
+    try {
+        const matches = await db.findJobMatchesForTeacher(req.params.teacherId);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error finding job matches for teacher:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error finding job matches: ' + error.message
+        });
+    }
+});
+
+app.get('/api/job-matching/job/:jobId', requireAuth, async (req, res) => {
+    try {
+        const matches = await db.findTeacherMatchesForJob(req.params.jobId);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error finding teacher matches for job:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error finding teacher matches: ' + error.message
+        });
+    }
+});
+
+app.get('/api/job-matching', requireAuth, async (req, res) => {
+    try {
+        const teacherId = req.query.teacherId || null;
+        const jobId = req.query.jobId || null;
+        const status = req.query.status || null;
+        
+        const matches = await db.getAllJobMatches(teacherId, jobId, status);
+        res.json({
+            success: true,
+            data: matches
+        });
+    } catch (error) {
+        console.error('Error fetching job matches:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching job matches: ' + error.message
+        });
+    }
+});
+
+app.put('/api/job-matching/:id/status', requireAuth, async (req, res) => {
+    try {
+        const { status, notes } = req.body;
+        const result = await db.updateJobMatchStatus(req.params.id, status, notes);
+        res.json({
+            success: true,
+            message: 'Job match status updated successfully',
+            data: result
+        });
+    } catch (error) {
+        console.error('Error updating job match status:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating job match status: ' + error.message
+        });
+    }
+});
+
+// School-based Matching API routes (legacy)
 app.post('/api/matching/run-for-all', requireAuth, async (req, res) => {
     try {
         const result = await db.runMatchingForAllTeachers();

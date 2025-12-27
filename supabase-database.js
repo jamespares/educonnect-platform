@@ -138,6 +138,8 @@ class SupabaseDatabase {
                 company: jobData.company,
                 location: jobData.location,
                 location_chinese: jobData.locationChinese,
+                city: jobData.city,
+                province: jobData.province,
                 salary: jobData.salary,
                 experience: jobData.experience,
                 chinese_required: jobData.chineseRequired,
@@ -146,6 +148,9 @@ class SupabaseDatabase {
                 job_functions: typeof jobData.jobFunctions === 'string' 
                     ? jobData.jobFunctions 
                     : JSON.stringify(jobData.jobFunctions),
+                age_groups: jobData.ageGroups || [],
+                subjects: jobData.subjects || [],
+                school_id: jobData.schoolId || null,
                 description: jobData.description,
                 requirements: jobData.requirements,
                 benefits: jobData.benefits
@@ -202,6 +207,8 @@ class SupabaseDatabase {
             company: jobData.company,
             location: jobData.location,
             location_chinese: jobData.locationChinese,
+            city: jobData.city,
+            province: jobData.province,
             salary: jobData.salary,
             experience: jobData.experience,
             chinese_required: jobData.chineseRequired,
@@ -210,6 +217,9 @@ class SupabaseDatabase {
             job_functions: typeof jobData.jobFunctions === 'string' 
                 ? jobData.jobFunctions 
                 : JSON.stringify(jobData.jobFunctions),
+            age_groups: jobData.ageGroups || [],
+            subjects: jobData.subjects || [],
+            school_id: jobData.schoolId || null,
             description: jobData.description,
             requirements: jobData.requirements,
             benefits: jobData.benefits,
@@ -478,6 +488,8 @@ class SupabaseDatabase {
             company: job.company,
             location: job.location,
             locationChinese: job.location_chinese,
+            city: job.city,
+            province: job.province,
             salary: job.salary,
             experience: job.experience,
             chineseRequired: job.chinese_required,
@@ -486,6 +498,9 @@ class SupabaseDatabase {
             jobFunctions: typeof job.job_functions === 'string' 
                 ? JSON.parse(job.job_functions) 
                 : job.job_functions,
+            ageGroups: job.age_groups || [],
+            subjects: job.subjects || [],
+            schoolId: job.school_id,
             description: job.description,
             requirements: job.requirements,
             benefits: job.benefits,
@@ -1006,6 +1021,325 @@ class SupabaseDatabase {
         }
 
         return { matchesCreated, teachersProcessed: teachers.length };
+    }
+
+    // ========== TEACHER-JOB MATCHING METHODS ==========
+
+    // Find job matches for a teacher based on location, age group, and subject preferences
+    async findJobMatchesForTeacher(teacherId) {
+        const teacher = await this.getTeacherById(teacherId);
+        if (!teacher) {
+            throw new Error('Teacher not found');
+        }
+
+        // Get all active jobs
+        const jobs = await this.getAllJobs(true);
+
+        // Calculate matches
+        const matches = [];
+        for (const job of jobs) {
+            const matchResult = this.calculateJobMatchScore(teacher, job);
+            if (matchResult.score > 0) {
+                matches.push({
+                    jobId: job.id,
+                    job: job,
+                    score: matchResult.score,
+                    reasons: matchResult.reasons
+                });
+            }
+        }
+
+        // Sort by score descending
+        matches.sort((a, b) => b.score - a.score);
+
+        return matches;
+    }
+
+    // Find teacher matches for a job
+    async findTeacherMatchesForJob(jobId) {
+        const job = await this.getJobById(jobId);
+        if (!job) {
+            throw new Error('Job not found');
+        }
+
+        // Get all teachers (could filter by status if needed)
+        const teachers = await this.getAllTeachers();
+
+        // Calculate matches
+        const matches = [];
+        for (const teacher of teachers) {
+            if (teacher.status === 'inactive') continue; // Skip inactive teachers
+            
+            const matchResult = this.calculateJobMatchScore(teacher, job);
+            if (matchResult.score > 0) {
+                matches.push({
+                    teacherId: teacher.id,
+                    teacher: teacher,
+                    score: matchResult.score,
+                    reasons: matchResult.reasons
+                });
+            }
+        }
+
+        // Sort by score descending
+        matches.sort((a, b) => b.score - a.score);
+
+        return matches;
+    }
+
+    // Calculate match score between a teacher and a job
+    calculateJobMatchScore(teacher, job) {
+        let score = 0;
+        const reasons = [];
+
+        // Location matching (40 points)
+        if (teacher.preferredLocation && job.location) {
+            const teacherLocs = teacher.preferredLocation.toLowerCase().split(',').map(l => l.trim());
+            const jobLoc = job.location.toLowerCase();
+            const jobCity = job.city ? job.city.toLowerCase() : '';
+            
+            const hasLocationMatch = teacherLocs.some(loc => 
+                loc === jobLoc || 
+                loc === jobCity ||
+                jobLoc.includes(loc) ||
+                loc.includes(jobCity) ||
+                loc === 'any' ||
+                loc === 'no preference'
+            );
+            
+            if (hasLocationMatch) {
+                if (teacherLocs.some(loc => loc === 'any' || loc === 'no preference')) {
+                    score += 20;
+                    reasons.push('Open to any location');
+                } else {
+                    score += 40;
+                    reasons.push('Location preference matches');
+                }
+            }
+        } else {
+            score += 20; // No preference specified
+            reasons.push('No location preference specified');
+        }
+
+        // Age group matching (30 points)
+        if (teacher.preferred_age_group && job.ageGroups && job.ageGroups.length > 0) {
+            const teacherAgeGroup = teacher.preferred_age_group.toLowerCase();
+            const jobAgeGroups = job.ageGroups.map(ag => ag.toLowerCase());
+            
+            const hasAgeGroupMatch = jobAgeGroups.some(ag => 
+                ag.includes(teacherAgeGroup) || 
+                teacherAgeGroup.includes(ag) ||
+                teacherAgeGroup === 'any' ||
+                teacherAgeGroup.includes('flexible')
+            );
+            
+            if (hasAgeGroupMatch) {
+                if (teacherAgeGroup === 'any' || teacherAgeGroup.includes('flexible')) {
+                    score += 20;
+                    reasons.push('Flexible on age groups');
+                } else {
+                    score += 30;
+                    reasons.push('Age group preference matches');
+                }
+            } else {
+                score += 10;
+                reasons.push('Age group preference differs');
+            }
+        } else {
+            score += 15; // Partial match if not specified
+        }
+
+        // Subject matching (30 points)
+        // Check both job.subjects array and job.jobFunctions
+        const jobSubjects = [];
+        if (job.subjects && job.subjects.length > 0) {
+            jobSubjects.push(...job.subjects.map(s => s.toLowerCase()));
+        }
+        if (job.jobFunctions) {
+            // jobFunctions might be a string or array
+            const funcs = typeof job.jobFunctions === 'string' 
+                ? job.jobFunctions.toLowerCase() 
+                : job.jobFunctions.map(f => f.toLowerCase()).join(' ');
+            jobSubjects.push(funcs);
+        }
+        
+        if (teacher.subjectSpecialty && jobSubjects.length > 0) {
+            const teacherSubject = teacher.subjectSpecialty.toLowerCase();
+            
+            const hasSubjectMatch = jobSubjects.some(s => 
+                s.includes(teacherSubject) || 
+                teacherSubject.includes(s)
+            );
+            
+            if (hasSubjectMatch) {
+                score += 30;
+                reasons.push('Subject specialty matches');
+            } else {
+                score += 5;
+                reasons.push('Subject specialty differs');
+            }
+        } else {
+            score += 10; // Partial match if not specified
+        }
+
+        return { score: Math.min(score, 100), reasons };
+    }
+
+    // Save a teacher-job match
+    async saveJobMatch(teacherId, jobId, matchScore, matchReasons, status = 'pending') {
+        const { data, error } = await this.supabase
+            .from('teacher_job_matches')
+            .insert({
+                teacher_id: teacherId,
+                job_id: jobId,
+                match_score: matchScore,
+                match_reasons: matchReasons,
+                status: status
+            })
+            .select()
+            .single();
+
+        if (error) {
+            // If match already exists, update it
+            if (error.code === '23505') { // Unique violation
+                const { data: updateData, error: updateError } = await this.supabase
+                    .from('teacher_job_matches')
+                    .update({
+                        match_score: matchScore,
+                        match_reasons: matchReasons,
+                        status: status,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('teacher_id', teacherId)
+                    .eq('job_id', jobId)
+                    .select()
+                    .single();
+
+                if (updateError) {
+                    throw new Error(`Failed to update job match: ${updateError.message}`);
+                }
+                return this.mapJobMatchToCamelCase(updateData);
+            }
+            throw new Error(`Failed to save job match: ${error.message}`);
+        }
+
+        return this.mapJobMatchToCamelCase(data);
+    }
+
+    // Get all teacher-job matches with optional filters
+    async getAllJobMatches(teacherId = null, jobId = null, status = null) {
+        let query = this.supabase
+            .from('teacher_job_matches')
+            .select('*')
+            .order('match_score', { ascending: false });
+
+        if (teacherId) {
+            query = query.eq('teacher_id', teacherId);
+        }
+        if (jobId) {
+            query = query.eq('job_id', jobId);
+        }
+        if (status) {
+            query = query.eq('status', status);
+        }
+
+        const { data: matches, error } = await query;
+
+        if (error) {
+            throw new Error(`Failed to get job matches: ${error.message}`);
+        }
+
+        // Fetch related teachers and jobs
+        const result = [];
+        for (const match of matches) {
+            let teacher = null;
+            let job = null;
+            
+            try {
+                teacher = await this.getTeacherById(match.teacher_id);
+            } catch (err) {
+                console.error(`Error fetching teacher ${match.teacher_id}:`, err);
+            }
+            
+            try {
+                job = await this.getJobById(match.job_id);
+            } catch (err) {
+                console.error(`Error fetching job ${match.job_id}:`, err);
+            }
+            
+            result.push({
+                ...this.mapJobMatchToCamelCase(match),
+                teacher: teacher,
+                job: job
+            });
+        }
+
+        return result;
+    }
+
+    // Update job match status
+    async updateJobMatchStatus(matchId, status, notes = null) {
+        const updateData = { status };
+        if (notes !== null) {
+            updateData.notes = notes;
+        }
+
+        const { error } = await this.supabase
+            .from('teacher_job_matches')
+            .update(updateData)
+            .eq('id', matchId);
+
+        if (error) {
+            throw new Error(`Failed to update job match status: ${error.message}`);
+        }
+
+        return { id: matchId, status, changes: 1 };
+    }
+
+    // Run job matching for all teachers
+    async runJobMatchingForAllTeachers() {
+        const teachers = await this.getAllTeachers();
+        let matchesCreated = 0;
+
+        for (const teacher of teachers) {
+            if (teacher.status === 'inactive') continue; // Skip inactive teachers
+            
+            const matches = await this.findJobMatchesForTeacher(teacher.id);
+            
+            for (const match of matches) {
+                if (match.score >= 40) { // Save matches with score >= 40
+                    try {
+                        await this.saveJobMatch(
+                            teacher.id,
+                            match.jobId,
+                            match.score,
+                            match.reasons
+                        );
+                        matchesCreated++;
+                    } catch (error) {
+                        console.error(`Error saving job match for teacher ${teacher.id} and job ${match.jobId}:`, error);
+                    }
+                }
+            }
+        }
+
+        return { matchesCreated, teachersProcessed: teachers.length };
+    }
+
+    // Map job match to camelCase
+    mapJobMatchToCamelCase(match) {
+        return {
+            id: match.id,
+            teacherId: match.teacher_id,
+            jobId: match.job_id,
+            matchScore: match.match_score,
+            matchReasons: match.match_reasons || [],
+            status: match.status,
+            notes: match.notes,
+            matchedAt: match.matched_at,
+            createdAt: match.created_at,
+            updatedAt: match.updated_at
+        };
     }
 
     // Helper methods for mapping

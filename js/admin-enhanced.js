@@ -2,7 +2,9 @@
 
 let teachers = [];
 let schools = [];
+let jobs = [];
 let matches = [];
+let jobMatches = [];
 let staff = [];
 let currentUser = null;
 let currentSort = { column: null, direction: 'asc' };
@@ -14,7 +16,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     loadTeachers();
     loadSchools();
-    loadMatches();
+    loadJobs();
+    loadJobMatches();
     
     // Setup modal close handlers
     setupModals();
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Setup form handlers
     document.getElementById('schoolForm').addEventListener('submit', handleSchoolSubmit);
     document.getElementById('staffForm').addEventListener('submit', handleStaffSubmit);
+    document.getElementById('jobForm').addEventListener('submit', handleJobSubmit);
 });
 
 // Check user role and show staff management tab if master admin
@@ -84,8 +88,10 @@ function switchTab(tabName) {
         loadTeachers();
     } else if (tabName === 'schools') {
         loadSchools();
-    } else if (tabName === 'matches') {
-        loadMatches();
+    } else if (tabName === 'jobs') {
+        loadJobs();
+    } else if (tabName === 'jobMatches') {
+        loadJobMatches();
     } else if (tabName === 'staff') {
         console.log('Loading staff tab...');
         loadStaff();
@@ -300,20 +306,24 @@ async function viewTeacher(id) {
 
 async function viewMatches(teacherId) {
     try {
-        const response = await fetch(`/api/matching/teacher/${teacherId}`);
+        // First try job matches
+        const response = await fetch(`/api/job-matching/teacher/${teacherId}`);
         const result = await response.json();
         
         if (result.success && result.data.length > 0) {
             const matches = result.data;
-            let matchesHtml = '<h3>Matching Schools:</h3><ul>';
-            matches.forEach(match => {
-                matchesHtml += `<li><strong>${escapeHtml(match.school.name)}</strong> - Score: ${match.score}%<br>`;
-                matchesHtml += `<small>${match.reasons.join(', ')}</small></li>`;
+            let matchesHtml = 'Matching Jobs:\n\n';
+            matches.slice(0, 10).forEach((match, idx) => {
+                matchesHtml += `${idx + 1}. ${match.job.title} at ${match.job.company} - Score: ${match.score}%\n`;
+                matchesHtml += `   Location: ${match.job.location}\n`;
+                matchesHtml += `   Reasons: ${match.reasons.join(', ')}\n\n`;
             });
-            matchesHtml += '</ul>';
-            alert(matchesHtml.replace(/<[^>]*>/g, '')); // Simple alert, could be improved with modal
+            if (matches.length > 10) {
+                matchesHtml += `... and ${matches.length - 10} more matches`;
+            }
+            alert(matchesHtml);
         } else {
-            alert('No matches found for this teacher');
+            alert('No job matches found for this teacher. Try running Job Matching from the Jobs tab first.');
         }
     } catch (error) {
         console.error('Error loading matches:', error);
@@ -346,12 +356,12 @@ async function changeStatus(id) {
 }
 
 async function runMatching() {
-    if (!confirm('This will run matching for all teachers. This may take a while. Continue?')) {
+    if (!confirm('This will run job matching for all teachers. This may take a while. Continue?')) {
         return;
     }
     
     try {
-        const response = await fetch('/api/matching/run-for-all', {
+        const response = await fetch('/api/job-matching/run-for-all', {
             method: 'POST'
         });
         
@@ -359,13 +369,13 @@ async function runMatching() {
         if (result.success) {
             alert(result.message);
             loadTeachers();
-            loadMatches();
+            loadJobMatches();
         } else {
-            alert('Error running matching: ' + result.message);
+            alert('Error running job matching: ' + result.message);
         }
     } catch (error) {
-        console.error('Error running matching:', error);
-        alert('Error running matching');
+        console.error('Error running job matching:', error);
+        alert('Error running job matching');
     }
 }
 
@@ -555,7 +565,360 @@ async function deleteSchool(id) {
     }
 }
 
-// ========== MATCHES ==========
+// ========== JOBS ==========
+
+async function loadJobs() {
+    try {
+        const response = await fetch('/api/admin/jobs'); // Use admin endpoint to get all jobs
+        const result = await response.json();
+        
+        if (result.success) {
+            jobs = result.data;
+            renderJobsTable(jobs);
+            updateJobStats(jobs);
+        } else {
+            document.getElementById('jobsTableContent').innerHTML = 
+                '<div class="empty-state">Error loading jobs: ' + result.message + '</div>';
+        }
+    } catch (error) {
+        console.error('Error loading jobs:', error);
+        document.getElementById('jobsTableContent').innerHTML = 
+            '<div class="empty-state">Error loading jobs. Please try again.</div>';
+    }
+}
+
+function updateJobStats(jobs) {
+    const total = jobs.length;
+    const active = jobs.filter(j => j.isActive).length;
+    const inactive = jobs.filter(j => !j.isActive).length;
+    
+    document.getElementById('totalJobs').textContent = total;
+    document.getElementById('activeJobs').textContent = active;
+    document.getElementById('inactiveJobs').textContent = inactive;
+}
+
+function renderJobsTable(jobsToRender) {
+    if (jobsToRender.length === 0) {
+        document.getElementById('jobsTableContent').innerHTML = 
+            '<div class="empty-state"><h3>No jobs found</h3><p>Click "Add Job" to create a new job listing.</p></div>';
+        return;
+    }
+    
+    const table = document.createElement('table');
+    
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Age Groups</th>
+            <th>Subjects</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+    
+    const tbody = document.createElement('tbody');
+    jobsToRender.forEach(job => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${escapeHtml(job.title)}</td>
+            <td>${escapeHtml(job.company)}</td>
+            <td>${escapeHtml(job.location)}${job.city ? ' (' + escapeHtml(job.city) + ')' : ''}</td>
+            <td>${(job.ageGroups || []).join(', ') || 'Not specified'}</td>
+            <td>${(job.subjects || []).join(', ') || 'Not specified'}</td>
+            <td>${escapeHtml(job.salary)}</td>
+            <td><span class="status-badge ${job.isActive ? 'status-employed' : 'status-inactive'}">${job.isActive ? 'Active' : 'Inactive'}</span></td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-small btn-primary" onclick="editJob(${job.id})">Edit</button>
+                    <button class="btn-small btn-success" onclick="viewJobMatches(${job.id})">Matches</button>
+                    <button class="btn-small btn-danger" onclick="deleteJob(${job.id})">Delete</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrapper';
+    wrapper.appendChild(table);
+    
+    document.getElementById('jobsTableContent').innerHTML = '';
+    document.getElementById('jobsTableContent').appendChild(wrapper);
+}
+
+function showAddJobModal() {
+    document.getElementById('jobId').value = '';
+    document.getElementById('jobForm').reset();
+    document.getElementById('jobIsActive').checked = true;
+    document.getElementById('jobModalTitle').textContent = 'Add Job';
+    document.getElementById('jobModal').style.display = 'block';
+}
+
+function editJob(id) {
+    const job = jobs.find(j => j.id === id);
+    if (!job) return;
+    
+    document.getElementById('jobId').value = job.id;
+    document.getElementById('jobTitle').value = job.title || '';
+    document.getElementById('jobCompany').value = job.company || '';
+    document.getElementById('jobLocation').value = job.location || '';
+    document.getElementById('jobCity').value = job.city || '';
+    document.getElementById('jobProvince').value = job.province || '';
+    document.getElementById('jobSalary').value = job.salary || '';
+    document.getElementById('jobExperience').value = job.experience || '';
+    document.getElementById('jobQualification').value = job.qualification || '';
+    document.getElementById('jobAgeGroups').value = (job.ageGroups || []).join(', ');
+    document.getElementById('jobSubjects').value = (job.subjects || []).join(', ');
+    document.getElementById('jobContractType').value = job.contractType || 'Full Time';
+    document.getElementById('jobChineseRequired').value = job.chineseRequired || 'No';
+    document.getElementById('jobDescription').value = job.description || '';
+    document.getElementById('jobRequirements').value = job.requirements || '';
+    document.getElementById('jobBenefits').value = job.benefits || '';
+    document.getElementById('jobIsActive').checked = job.isActive !== false;
+    
+    document.getElementById('jobModalTitle').textContent = 'Edit Job';
+    document.getElementById('jobModal').style.display = 'block';
+}
+
+function closeJobModal() {
+    document.getElementById('jobModal').style.display = 'none';
+}
+
+async function handleJobSubmit(e) {
+    e.preventDefault();
+    
+    const jobId = document.getElementById('jobId').value;
+    const jobData = {
+        title: document.getElementById('jobTitle').value.trim(),
+        company: document.getElementById('jobCompany').value.trim(),
+        location: document.getElementById('jobLocation').value.trim(),
+        city: document.getElementById('jobCity').value.trim(),
+        province: document.getElementById('jobProvince').value.trim(),
+        salary: document.getElementById('jobSalary').value.trim(),
+        experience: document.getElementById('jobExperience').value.trim(),
+        qualification: document.getElementById('jobQualification').value.trim(),
+        ageGroups: document.getElementById('jobAgeGroups').value.split(',').map(s => s.trim()).filter(s => s),
+        subjects: document.getElementById('jobSubjects').value.split(',').map(s => s.trim()).filter(s => s),
+        contractType: document.getElementById('jobContractType').value.trim(),
+        chineseRequired: document.getElementById('jobChineseRequired').value.trim(),
+        description: document.getElementById('jobDescription').value.trim(),
+        requirements: document.getElementById('jobRequirements').value.trim(),
+        benefits: document.getElementById('jobBenefits').value.trim(),
+        isActive: document.getElementById('jobIsActive').checked,
+        jobFunctions: document.getElementById('jobSubjects').value.trim() // Use subjects as job functions for compatibility
+    };
+    
+    try {
+        const url = jobId ? `/api/admin/jobs/${jobId}` : '/api/admin/jobs';
+        const method = jobId ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jobData)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert('Job saved successfully');
+            closeJobModal();
+            loadJobs();
+        } else {
+            alert('Error saving job: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error saving job:', error);
+        alert('Error saving job');
+    }
+}
+
+async function deleteJob(id) {
+    if (!confirm('Are you sure you want to delete this job?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/admin/jobs/${id}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert('Job deleted successfully');
+            loadJobs();
+        } else {
+            alert('Error deleting job: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error deleting job:', error);
+        alert('Error deleting job');
+    }
+}
+
+async function viewJobMatches(jobId) {
+    try {
+        const response = await fetch(`/api/job-matching/job/${jobId}`);
+        const result = await response.json();
+        
+        if (result.success && result.data.length > 0) {
+            const matches = result.data;
+            let matchesHtml = 'Matching Teachers:\n\n';
+            matches.slice(0, 10).forEach((match, idx) => {
+                matchesHtml += `${idx + 1}. ${match.teacher.firstName} ${match.teacher.lastName} - Score: ${match.score}%\n`;
+                matchesHtml += `   Reasons: ${match.reasons.join(', ')}\n\n`;
+            });
+            if (matches.length > 10) {
+                matchesHtml += `... and ${matches.length - 10} more matches`;
+            }
+            alert(matchesHtml);
+        } else {
+            alert('No matches found for this job. Try running Job Matching first.');
+        }
+    } catch (error) {
+        console.error('Error loading job matches:', error);
+        alert('Error loading job matches');
+    }
+}
+
+async function runJobMatching() {
+    if (!confirm('This will run matching for all active jobs and teachers. Continue?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/job-matching/run-for-all', {
+            method: 'POST'
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            loadJobs();
+            loadJobMatches();
+        } else {
+            alert('Error running job matching: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error running job matching:', error);
+        alert('Error running job matching');
+    }
+}
+
+// ========== JOB MATCHES ==========
+
+async function loadJobMatches() {
+    try {
+        const statusFilter = document.getElementById('jobMatchStatusFilter')?.value || '';
+        const url = statusFilter ? `/api/job-matching?status=${statusFilter}` : '/api/job-matching';
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.success) {
+            jobMatches = result.data;
+            renderJobMatchesTable(jobMatches);
+        } else {
+            document.getElementById('jobMatchesTableContent').innerHTML = 
+                '<div class="empty-state">Error loading job matches: ' + result.message + '</div>';
+        }
+    } catch (error) {
+        console.error('Error loading job matches:', error);
+        document.getElementById('jobMatchesTableContent').innerHTML = 
+            '<div class="empty-state">Error loading job matches. Please try again.</div>';
+    }
+}
+
+function renderJobMatchesTable(matchesToRender) {
+    if (matchesToRender.length === 0) {
+        document.getElementById('jobMatchesTableContent').innerHTML = 
+            '<div class="empty-state"><h3>No job matches found</h3><p>Click "Run Job Matching" from the Jobs tab to generate matches.</p></div>';
+        return;
+    }
+    
+    const table = document.createElement('table');
+    
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>Teacher</th>
+            <th>Job</th>
+            <th>Location</th>
+            <th>Match Score</th>
+            <th>Match Reasons</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+    
+    const tbody = document.createElement('tbody');
+    matchesToRender.forEach(match => {
+        const teacher = match.teacher;
+        const job = match.job;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${teacher ? `${escapeHtml(teacher.firstName)} ${escapeHtml(teacher.lastName)}<br><small>${escapeHtml(teacher.email)}</small>` : 'N/A'}</td>
+            <td>${job ? `${escapeHtml(job.title)}<br><small>${escapeHtml(job.company)}</small>` : 'N/A'}</td>
+            <td>${job ? escapeHtml(job.location) : 'N/A'}</td>
+            <td><span class="match-score">${match.matchScore || 0}%</span></td>
+            <td>
+                <div class="match-reasons">
+                    <ul>
+                        ${(match.matchReasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join('')}
+                    </ul>
+                </div>
+            </td>
+            <td><span class="status-badge status-${match.status}">${match.status}</span></td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-small btn-primary" onclick="updateJobMatchStatus(${match.id})">Update Status</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrapper';
+    wrapper.appendChild(table);
+    
+    document.getElementById('jobMatchesTableContent').innerHTML = '';
+    document.getElementById('jobMatchesTableContent').appendChild(wrapper);
+}
+
+async function updateJobMatchStatus(matchId) {
+    const newStatus = prompt('Enter new status (pending, contacted, interviewed, placed, rejected):');
+    if (newStatus && ['pending', 'contacted', 'interviewed', 'placed', 'rejected'].includes(newStatus)) {
+        try {
+            const response = await fetch(`/api/job-matching/${matchId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                loadJobMatches();
+                alert('Job match status updated successfully');
+            } else {
+                alert('Error updating job match status: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error updating job match status:', error);
+            alert('Error updating job match status');
+        }
+    }
+}
+
+// ========== MATCHES ========== (legacy school matches)
 
 async function loadMatches() {
     try {

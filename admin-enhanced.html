@@ -463,7 +463,8 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('teachers')">Teachers</button>
                 <button class="tab" onclick="switchTab('schools')">Schools</button>
-                <button class="tab" onclick="switchTab('matches')">Matched Teachers</button>
+                <button class="tab" onclick="switchTab('jobs')">Jobs</button>
+                <button class="tab" onclick="switchTab('jobMatches')">Job Matches</button>
                 <button class="tab" id="staffTabButton" onclick="switchTab('staff')" style="display: none;">Staff Management</button>
             </div>
             
@@ -501,7 +502,7 @@
                                 <option value="inactive">Inactive</option>
                             </select>
                             <button class="btn btn-primary" onclick="loadTeachers()">Refresh</button>
-                            <button class="btn btn-success" onclick="runMatching()">Run Matching</button>
+                            <button class="btn btn-success" onclick="runMatching()">Run Job Matching</button>
                         </div>
                     </div>
                     <div id="teachersTableContent">
@@ -526,13 +527,45 @@
                 </div>
             </div>
             
-            <!-- Matched Teachers Tab -->
-            <div id="matchesTab" class="tab-content">
+            <!-- Jobs Tab -->
+            <div id="jobsTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalJobs">0</span>
+                        <span class="stat-label">Total Jobs</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="activeJobs">0</span>
+                        <span class="stat-label">Active</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="inactiveJobs">0</span>
+                        <span class="stat-label">Inactive</span>
+                    </div>
+                </div>
+                
                 <div class="table-container">
                     <div class="table-header">
-                        <h2 class="table-title">Matched Teachers</h2>
+                        <h2 class="table-title">Job Listings</h2>
                         <div class="table-controls">
-                            <select id="matchStatusFilter" class="filter-select" onchange="loadMatches()">
+                            <button class="btn btn-primary" onclick="showAddJobModal()">Add Job</button>
+                            <button class="btn btn-success" onclick="runJobMatching()">Run Job Matching</button>
+                            <button class="btn btn-secondary" onclick="loadJobs()">Refresh</button>
+                        </div>
+                    </div>
+                    <div id="jobsTableContent">
+                        <div class="loading">Loading jobs...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Matches Tab -->
+            <div id="jobMatchesTab" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Teacher-Job Matches</h2>
+                        <div class="table-controls">
+                            <select id="jobMatchStatusFilter" class="filter-select" onchange="loadJobMatches()">
                                 <option value="">All Statuses</option>
                                 <option value="pending">Pending</option>
                                 <option value="contacted">Contacted</option>
@@ -540,11 +573,11 @@
                                 <option value="placed">Placed</option>
                                 <option value="rejected">Rejected</option>
                             </select>
-                            <button class="btn btn-secondary" onclick="loadMatches()">Refresh</button>
+                            <button class="btn btn-secondary" onclick="loadJobMatches()">Refresh</button>
                         </div>
                     </div>
-                    <div id="matchesTableContent">
-                        <div class="loading">Loading matches...</div>
+                    <div id="jobMatchesTableContent">
+                        <div class="loading">Loading job matches...</div>
                     </div>
                 </div>
             </div>
@@ -608,6 +641,108 @@
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">Save Staff Member</button>
                         <button type="button" class="btn btn-secondary" onclick="closeStaffModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="jobModalTitle">Add Job</h3>
+                <button class="close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="jobForm">
+                    <input type="hidden" id="jobId">
+                    <div class="form-group">
+                        <label class="form-label">Job Title *</label>
+                        <input type="text" id="jobTitle" class="form-input" required placeholder="e.g., English Teacher">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Company/School Name *</label>
+                        <input type="text" id="jobCompany" class="form-input" required placeholder="e.g., Beijing International School">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location *</label>
+                        <input type="text" id="jobLocation" class="form-input" required placeholder="e.g., Beijing">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" id="jobCity" class="form-input" placeholder="e.g., Beijing">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Province</label>
+                        <input type="text" id="jobProvince" class="form-input" placeholder="e.g., Beijing">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salary Range *</label>
+                        <input type="text" id="jobSalary" class="form-input" required placeholder="e.g., 20,000-30,000 RMB/month">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Experience Required *</label>
+                        <select id="jobExperience" class="form-input" required>
+                            <option value="">Select experience level</option>
+                            <option value="None required">None required</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="2-3 years">2-3 years</option>
+                            <option value="3-5 years">3-5 years</option>
+                            <option value="5+ years">5+ years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Qualification Required *</label>
+                        <input type="text" id="jobQualification" class="form-input" required placeholder="e.g., Bachelor's Degree, TEFL Certificate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Age Groups (comma-separated) *</label>
+                        <input type="text" id="jobAgeGroups" class="form-input" required placeholder="e.g., Primary, Middle School, High School">
+                        <small style="color: #6b7280;">Used for matching with teacher preferences</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subjects (comma-separated) *</label>
+                        <input type="text" id="jobSubjects" class="form-input" required placeholder="e.g., English, ESL, Mathematics">
+                        <small style="color: #6b7280;">Used for matching with teacher specialties</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contract Type</label>
+                        <select id="jobContractType" class="form-input">
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chinese Required</label>
+                        <select id="jobChineseRequired" class="form-input">
+                            <option value="No">No</option>
+                            <option value="Preferred">Preferred</option>
+                            <option value="Required">Required</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Job Description *</label>
+                        <textarea id="jobDescription" class="form-textarea" required placeholder="Describe the role and responsibilities..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Requirements</label>
+                        <textarea id="jobRequirements" class="form-textarea" placeholder="List specific requirements..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Benefits</label>
+                        <textarea id="jobBenefits" class="form-textarea" placeholder="List benefits (housing, flights, insurance, etc.)..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="jobIsActive" class="form-checkbox" checked>
+                            Active (visible to public)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save Job</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeJobModal()">Cancel</button>
                     </div>
                 </form>
             </div>
