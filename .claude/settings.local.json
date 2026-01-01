@@ -3,10 +3,9 @@
     "allow": [
       "Read(//Users/jamespares/Documents/Work Tools/Resource Generator/slides/input/**)",
       "Read(//Users/jamespares/Documents/Work Tools/Resource Generator/slides/**)",
-      "Bash(sqlite3 teachers.db \"SELECT COUNT(*) as teacher_count FROM teachers;\")",
-      "Bash(sqlite3 teachers.db \"SELECT COUNT(*) as job_count FROM jobs;\")",
-      "Bash(sqlite3 teachers.db \"SELECT COUNT(*) as interest_count FROM job_interests;\")",
-      "Read(//Users/jamespares/Documents/Work/**)"
+      "Bash(sqlite3 teachers.db:*)",
+      "Read(//Users/jamespares/Documents/Work/**)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

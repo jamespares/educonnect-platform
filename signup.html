@@ -17,35 +17,305 @@
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             padding: 8rem 0 4rem;
         }
-        
+
         .signup-form-wrapper {
-            max-width: 600px;
+            max-width: 1000px;
+            width: 100%;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         .signup-form {
-            background: white;
-            padding: 3rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: transparent;
+            padding: 3.5rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: visible;
+            width: 100%;
         }
         
         .form-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(243, 244, 246, 0.3);
         }
-        
+
         .form-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
         }
-        
+
         .form-subtitle {
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* Wizard Progress Stepper */
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        .wizard-progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+
+        .wizard-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .wizard-step-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .wizard-step.active .wizard-step-circle {
+            background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+        }
+
+        .wizard-step.completed .wizard-step-circle {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .wizard-step.completed .wizard-step-circle::before {
+            content: '✓';
+        }
+
+        .wizard-step-label {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+            text-align: center;
+        }
+
+        .wizard-step.active .wizard-step-label {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .wizard-step.completed .wizard-step-label {
+            color: #10b981;
+        }
+
+        /* Wizard Step Content */
+        .wizard-step-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wizard-step-content.active {
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* City Checkbox Grid */
+        .city-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .city-checkbox {
+            position: relative;
+        }
+
+        .city-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .city-checkbox-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 2px solid rgba(229, 231, 235, 0.6);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #4b5563;
+            text-align: center;
+            min-height: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .city-checkbox-label:hover {
+            border-color: rgba(209, 213, 219, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .city-checkbox input[type="checkbox"]:checked + .city-checkbox-label {
+            border-color: #1f2937;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+        }
+
+        .city-checkbox input[type="checkbox"]:checked + .city-checkbox-label::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Navigation Buttons */
+        .wizard-navigation {
+            display: flex !important;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            gap: 1rem;
+            position: relative;
+            z-index: 100;
+            background: lime !important; /* TEMP DEBUG */
+            border: 10px solid magenta !important; /* TEMP DEBUG */
+            padding: 2rem !important;
+            min-height: 100px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .wizard-btn {
+            padding: 1rem 2rem !important;
+            border-radius: 10px;
+            font-size: 1rem !important;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            visibility: visible !important;
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        .wizard-btn-prev {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .wizard-btn-prev:hover:not(:disabled) {
+            background: #e5e7eb;
+            transform: translateX(-3px);
+        }
+
+        .wizard-btn-next {
+            background: #ff0000 !important; /* TEMP DEBUG - bright red */
+            color: white !important;
+            margin-left: auto;
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+            position: relative !important;
+            z-index: 10000 !important;
+            opacity: 1 !important;
+            min-width: 150px !important;
+            min-height: 50px !important;
+            border: 5px solid yellow !important; /* TEMP DEBUG */
+        }
+
+        .wizard-btn-next:hover:not(:disabled) {
+            background: linear-gradient(135deg, #111827 0%, #000000 100%);
+            transform: translateX(3px);
+            box-shadow: 0 6px 16px rgba(31, 41, 55, 0.4);
+        }
+
+        .wizard-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-grid-full {
+            grid-column: 1 / -1;
         }
         
         .form-group {
@@ -56,46 +326,78 @@
         
         .form-label {
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-        
-        .form-input, .form-select {
-            padding: 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: #ffffff;
             color: #1f2937;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: inherit;
+            margin-bottom: 0.625rem;
+            font-size: 0.9375rem;
+            letter-spacing: 0.01em;
         }
-        
+
+        .form-input, .form-select {
+            padding: 0.875rem 1.125rem;
+            border: 2px solid rgba(229, 231, 235, 0.6);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            color: #1f2937;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:hover, .form-select:hover {
+            border-color: rgba(209, 213, 219, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
         .form-input:focus, .form-select:focus {
             outline: none;
             border-color: #1f2937;
-            box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.08);
+            transform: translateY(-1px);
         }
         
         .form-file-input {
-            padding: 2rem;
-            border: 2px dashed #d1d5db;
-            border-radius: 8px;
+            padding: 2.5rem;
+            border: 3px dashed rgba(209, 213, 219, 0.6);
+            border-radius: 12px;
             text-align: center;
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
-        
+
+        .form-file-input::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.03) 0%, rgba(31, 41, 55, 0.06) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-file-input:hover::before {
+            opacity: 1;
+        }
+
         .form-file-input:hover {
-            border-color: #1f2937;
-            background: #f3f4f6;
+            border-color: rgba(31, 41, 55, 0.8);
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        
+
         .form-file-input.dragover {
             border-color: #1f2937;
-            background: #e5e7eb;
+            background: rgba(229, 231, 235, 0.8);
+            transform: scale(1.02);
         }
         
         .form-file-input input {
@@ -119,13 +421,43 @@
             font-weight: 600;
         }
         
+        .form-section {
+            margin: 2.5rem 0;
+            padding-top: 2rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .form-section:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .form-section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+            border-radius: 2px;
+        }
+
         .divider {
             display: flex;
             align-items: center;
             margin: 2rem 0;
             color: #9ca3af;
         }
-        
+
         .divider::before,
         .divider::after {
             content: '';
@@ -133,7 +465,7 @@
             height: 1px;
             background: #e5e7eb;
         }
-        
+
         .divider span {
             padding: 0 1rem;
             font-size: 0.875rem;
@@ -154,27 +486,53 @@
         
         .submit-button {
             width: 100%;
-            background: #1f2937;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            padding: 1.25rem 2rem;
+            border-radius: 12px;
             font-size: 1.125rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            margin-top: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            box-shadow: 0 4px 14px rgba(31, 41, 55, 0.4);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.025em;
         }
-        
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
         .submit-button:hover:not(:disabled) {
-            background: #111827;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #111827 0%, #000000 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(31, 41, 55, 0.5);
         }
-        
+
+        .submit-button:active:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(31, 41, 55, 0.4);
+        }
+
         .submit-button:disabled {
-            background: #9ca3af;
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
         
         .loading-overlay {
@@ -218,31 +576,102 @@
             .signup-container {
                 padding: 6rem 0 2rem;
             }
-            
+
             .signup-form-wrapper {
+                max-width: 100%;
                 padding: 0 1rem;
             }
-            
+
             .signup-form {
                 padding: 2rem 1.5rem;
+                border-radius: 16px;
             }
-            
+
+            .form-header {
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+            }
+
             .form-title {
                 font-size: 2rem;
             }
-            
+
             .form-subtitle {
                 font-size: 1rem;
             }
-            
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-grid-full {
+                grid-column: 1;
+            }
+
             .form-input, .form-select {
-                padding: 0.875rem;
+                padding: 0.875rem 1rem;
                 font-size: 16px; /* Prevents zoom on iOS */
             }
-            
+
+            .form-file-input {
+                padding: 2rem 1rem;
+            }
+
             .submit-button {
-                padding: 1rem;
+                padding: 1.125rem 1.5rem;
                 font-size: 1rem;
+                margin-top: 1.5rem;
+            }
+
+            .city-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .wizard-step-label {
+                font-size: 0.75rem;
+            }
+
+            .wizard-step-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .wizard-navigation {
+                flex-direction: column;
+            }
+
+            .wizard-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .wizard-btn-next {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-form {
+                padding: 1.5rem 1rem;
+            }
+
+            .form-title {
+                font-size: 1.75rem;
+            }
+
+            .form-file-input {
+                padding: 1.5rem 0.75rem;
+            }
+
+            .wizard-progress::before {
+                display: none;
+            }
+
+            .wizard-step-label {
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -279,42 +708,66 @@
             <form class="signup-form" id="applicationForm">
                 <div class="form-header">
                     <h1 class="form-title">Join Our Teaching Community</h1>
-                    <p class="form-subtitle">Let's get you started! This will only take a minute 🚀</p>
+                    <p class="form-subtitle">Complete 3 quick steps to get started!</p>
                 </div>
-                
-                <!-- Name -->
-                <div class="form-group">
-                    <label for="name" class="form-label">What's your name? *</label>
-                    <input type="text" id="name" name="name" class="form-input" required 
-                           placeholder="John Smith" minlength="2">
-                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
-                        Your full name, please
-                    </small>
+
+                <!-- Wizard Progress Stepper -->
+                <div class="wizard-progress">
+                    <div class="wizard-progress-line" id="progressLine" style="width: 0%"></div>
+                    <div class="wizard-step active" data-step="1">
+                        <div class="wizard-step-circle">1</div>
+                        <div class="wizard-step-label">Personal Info</div>
+                    </div>
+                    <div class="wizard-step" data-step="2">
+                        <div class="wizard-step-circle">2</div>
+                        <div class="wizard-step-label">Documents</div>
+                    </div>
+                    <div class="wizard-step" data-step="3">
+                        <div class="wizard-step-circle">3</div>
+                        <div class="wizard-step-label">Preferences</div>
+                    </div>
                 </div>
-                
-                <!-- Email -->
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address *</label>
-                    <input type="email" id="email" name="email" class="form-input" required 
-                           placeholder="your.email@example.com">
-                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
-                        We'll use this to contact you about amazing opportunities
-                    </small>
+
+                <!-- Step 1: Personal Information -->
+                <div class="wizard-step-content active" data-step-content="1">
+                    <div class="form-grid">
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">What's your name? *</label>
+                            <input type="text" id="name" name="name" class="form-input" required
+                                   placeholder="John Smith" minlength="2">
+                            <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                                Your full name, please
+                            </small>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-input" required
+                                   placeholder="your.email@example.com">
+                            <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                                We'll use this to contact you about amazing opportunities
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn -->
+                    <div class="form-group">
+                        <label for="linkedin" class="form-label">LinkedIn Profile (Optional)</label>
+                        <input type="url" id="linkedin" name="linkedin" class="form-input"
+                               placeholder="https://linkedin.com/in/yourprofile">
+                        <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
+                            Optional, but it helps us get to know you better
+                        </small>
+                    </div>
                 </div>
-                
-                <!-- LinkedIn -->
-                <div class="form-group">
-                    <label for="linkedin" class="form-label">LinkedIn Profile</label>
-                    <input type="url" id="linkedin" name="linkedin" class="form-input" 
-                           placeholder="https://linkedin.com/in/yourprofile">
-                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
-                        Optional, but it helps us get to know you better
-                    </small>
-                </div>
-                
-                <!-- CV Upload -->
-                <div class="form-group">
-                    <label class="form-label">Upload Your CV/Resume *</label>
+
+                <!-- Step 2: Documents -->
+                <div class="wizard-step-content" data-step-content="2">
+                    <!-- CV Upload -->
+                    <div class="form-group">
+                        <label class="form-label">Upload Your CV/Resume *</label>
                     <div class="form-file-input" id="cvUploadArea" onclick="document.getElementById('cvFile').click()">
                         <input type="file" id="cvFile" name="cvFile" accept=".pdf,.doc,.docx,.txt,image/*" required>
                         <div class="file-upload-text" id="cvUploadText">
@@ -324,71 +777,113 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Step 3: Teaching Preferences -->
+                <div class="wizard-step-content" data-step-content="3">
+                    <!-- Preferred Cities -->
+                    <div class="form-group">
+                        <label class="form-label">Which cities in China interest you? * <small style="color: #6b7280; font-weight: 400;">(Select all that apply)</small></label>
+                        <div class="city-grid">
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-beijing" name="preferredCities" value="Beijing">
+                                <label for="city-beijing" class="city-checkbox-label">Beijing<br>北京</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-shanghai" name="preferredCities" value="Shanghai">
+                                <label for="city-shanghai" class="city-checkbox-label">Shanghai<br>上海</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-guangzhou" name="preferredCities" value="Guangzhou">
+                                <label for="city-guangzhou" class="city-checkbox-label">Guangzhou<br>广州</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-shenzhen" name="preferredCities" value="Shenzhen">
+                                <label for="city-shenzhen" class="city-checkbox-label">Shenzhen<br>深圳</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-chengdu" name="preferredCities" value="Chengdu">
+                                <label for="city-chengdu" class="city-checkbox-label">Chengdu<br>成都</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-hangzhou" name="preferredCities" value="Hangzhou">
+                                <label for="city-hangzhou" class="city-checkbox-label">Hangzhou<br>杭州</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-nanjing" name="preferredCities" value="Nanjing">
+                                <label for="city-nanjing" class="city-checkbox-label">Nanjing<br>南京</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-suzhou" name="preferredCities" value="Suzhou">
+                                <label for="city-suzhou" class="city-checkbox-label">Suzhou<br>苏州</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-wuhan" name="preferredCities" value="Wuhan">
+                                <label for="city-wuhan" class="city-checkbox-label">Wuhan<br>武汉</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-xian" name="preferredCities" value="Xi'an">
+                                <label for="city-xian" class="city-checkbox-label">Xi'an<br>西安</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-qingdao" name="preferredCities" value="Qingdao">
+                                <label for="city-qingdao" class="city-checkbox-label">Qingdao<br>青岛</label>
+                            </div>
+                            <div class="city-checkbox">
+                                <input type="checkbox" id="city-any" name="preferredCities" value="Any">
+                                <label for="city-any" class="city-checkbox-label">Any City<br>任何城市</label>
+                            </div>
+                        </div>
+                    </div>
                 
-                <!-- Preferred Cities -->
-                <div class="form-group">
-                    <label for="preferredCities" class="form-label">Which cities in China interest you? *</label>
-                    <select id="preferredCities" name="preferredCities" class="form-select cities-select" 
-                            multiple required size="8">
-                        <option value="Beijing">Beijing (北京)</option>
-                        <option value="Shanghai">Shanghai (上海)</option>
-                        <option value="Guangzhou">Guangzhou (广州)</option>
-                        <option value="Shenzhen">Shenzhen (深圳)</option>
-                        <option value="Chengdu">Chengdu (成都)</option>
-                        <option value="Hangzhou">Hangzhou (杭州)</option>
-                        <option value="Nanjing">Nanjing (南京)</option>
-                        <option value="Suzhou">Suzhou (苏州)</option>
-                        <option value="Wuhan">Wuhan (武汉)</option>
-                        <option value="Xi'an">Xi'an (西安)</option>
-                        <option value="Qingdao">Qingdao (青岛)</option>
-                        <option value="Dalian">Dalian (大连)</option>
-                        <option value="Xiamen">Xiamen (厦门)</option>
-                        <option value="Tianjin">Tianjin (天津)</option>
-                        <option value="Chongqing">Chongqing (重庆)</option>
-                        <option value="Any">Any City - I'm flexible!</option>
-                    </select>
-                    <small style="color: #6b7280; font-size: 0.75rem; margin-top: 0.25rem;">
-                        Hold Ctrl (Windows) or Cmd (Mac) to select multiple cities
-                    </small>
+                    <div class="form-grid">
+                        <!-- Preferred Age Group -->
+                        <div class="form-group">
+                            <label for="preferredAgeGroup" class="form-label">What age group do you prefer to teach? *</label>
+                            <select id="preferredAgeGroup" name="preferredAgeGroup" class="form-select" required>
+                                <option value="">Select your preference</option>
+                                <option value="Early Years/Kindergarten">Early Years/Kindergarten (Ages 3-6)</option>
+                                <option value="Primary">Primary School (Ages 6-12)</option>
+                                <option value="Middle School">Middle School (Ages 12-15)</option>
+                                <option value="High School">High School (Ages 15-18)</option>
+                                <option value="University">University/Adult (18+)</option>
+                                <option value="Any">Any age group - I'm flexible!</option>
+                            </select>
+                        </div>
+
+                        <!-- Subject Specialty -->
+                        <div class="form-group">
+                            <label for="subjectSpecialty" class="form-label">What subject do you teach? *</label>
+                            <select id="subjectSpecialty" name="subjectSpecialty" class="form-select" required>
+                                <option value="">Select your subject</option>
+                                <option value="English">English Language Arts</option>
+                                <option value="ESL/TESOL">ESL/TESOL (English as a Second Language)</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Science">Science</option>
+                                <option value="History">History</option>
+                                <option value="Business">Business</option>
+                                <option value="Economics">Economics</option>
+                                <option value="Art">Art</option>
+                                <option value="Music">Music</option>
+                                <option value="Physical Education">Physical Education</option>
+                                <option value="Special Education">Special Education</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Preferred Age Group -->
-                <div class="form-group">
-                    <label for="preferredAgeGroup" class="form-label">What age group do you prefer to teach? *</label>
-                    <select id="preferredAgeGroup" name="preferredAgeGroup" class="form-select" required>
-                        <option value="">Select your preference</option>
-                        <option value="Early Years/Kindergarten">Early Years/Kindergarten (Ages 3-6)</option>
-                        <option value="Primary">Primary School (Ages 6-12)</option>
-                        <option value="Middle School">Middle School (Ages 12-15)</option>
-                        <option value="High School">High School (Ages 15-18)</option>
-                        <option value="University">University/Adult (18+)</option>
-                        <option value="Any">Any age group - I'm flexible!</option>
-                    </select>
+
+                <!-- Wizard Navigation -->
+                <div class="wizard-navigation">
+                    <button type="button" class="wizard-btn wizard-btn-prev" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+                        ← Previous
+                    </button>
+                    <button type="button" class="wizard-btn wizard-btn-next" id="nextBtn" onclick="changeStep(1)">
+                        Next →
+                    </button>
+                    <button type="submit" class="wizard-btn wizard-btn-next" id="submitBtn" style="display: none;">
+                        Submit Application ✓
+                    </button>
                 </div>
-                
-                <!-- Subject Specialty -->
-                <div class="form-group">
-                    <label for="subjectSpecialty" class="form-label">What subject do you teach? *</label>
-                    <select id="subjectSpecialty" name="subjectSpecialty" class="form-select" required>
-                        <option value="">Select your subject</option>
-                        <option value="English">English Language Arts</option>
-                        <option value="ESL/TESOL">ESL/TESOL (English as a Second Language)</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Science">Science</option>
-                        <option value="History">History</option>
-                        <option value="Business">Business</option>
-                        <option value="Economics">Economics</option>
-                        <option value="Art">Art</option>
-                        <option value="Music">Music</option>
-                        <option value="Physical Education">Physical Education</option>
-                        <option value="Special Education">Special Education</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="submit-button" id="submitButton">
-                    Submit Application
-                </button>
             </form>
         </div>
     </div>
@@ -439,13 +934,21 @@
 
     <script src="js/script.js"></script>
     <script>
+        // Wizard state
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // DOM elements
         const cvFileInput = document.getElementById('cvFile');
         const cvUploadArea = document.getElementById('cvUploadArea');
         const cvUploadText = document.getElementById('cvUploadText');
         const form = document.getElementById('applicationForm');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingText = document.getElementById('loadingText');
-        const submitButton = document.getElementById('submitButton');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressLine = document.getElementById('progressLine');
         
         // File upload handlers
         cvFileInput.addEventListener('change', function(e) {
@@ -495,73 +998,143 @@
             }
         });
         
-        // Validate form
-        function validateForm() {
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const cvFile = cvFileInput.files.length > 0;
-            const cities = document.getElementById('preferredCities').selectedOptions.length > 0;
-            const ageGroup = document.getElementById('preferredAgeGroup').value;
-            const subject = document.getElementById('subjectSpecialty').value;
-            
-            submitButton.disabled = !(name && email && cvFile && cities && ageGroup && subject);
+        // Wizard navigation
+        function changeStep(direction) {
+            // Validate current step before moving forward
+            if (direction === 1 && !validateCurrentStep()) {
+                return;
+            }
+
+            // Update current step
+            currentStep += direction;
+
+            // Clamp to valid range
+            if (currentStep < 1) currentStep = 1;
+            if (currentStep > totalSteps) currentStep = totalSteps;
+
+            // Update UI
+            showStep(currentStep);
+            updateProgressBar();
+            updateButtons();
         }
-        
-        // Validate on all field changes
-        document.getElementById('name').addEventListener('input', validateForm);
-        document.getElementById('email').addEventListener('input', validateForm);
-        document.getElementById('preferredCities').addEventListener('change', validateForm);
-        document.getElementById('preferredAgeGroup').addEventListener('change', validateForm);
-        document.getElementById('subjectSpecialty').addEventListener('change', validateForm);
+
+        function showStep(step) {
+            // Hide all step contents
+            document.querySelectorAll('.wizard-step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show current step content
+            const currentContent = document.querySelector(`[data-step-content="${step}"]`);
+            if (currentContent) {
+                currentContent.classList.add('active');
+            }
+
+            // Update step indicators
+            document.querySelectorAll('.wizard-step').forEach((stepEl, index) => {
+                const stepNum = index + 1;
+                stepEl.classList.remove('active', 'completed');
+
+                if (stepNum < step) {
+                    stepEl.classList.add('completed');
+                } else if (stepNum === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progressLine.style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            // Show/hide previous button
+            prevBtn.style.display = currentStep === 1 ? 'none' : 'flex';
+
+            // Show/hide next and submit buttons
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                // Validate Personal Information
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+
+                if (!name || name.length < 2) {
+                    alert('Please enter your full name');
+                    return false;
+                }
+
+                if (!email || !email.includes('@')) {
+                    alert('Please enter a valid email address');
+                    return false;
+                }
+
+                return true;
+            } else if (currentStep === 2) {
+                // Validate Documents
+                if (cvFileInput.files.length === 0) {
+                    alert('Please upload your CV/Resume');
+                    return false;
+                }
+                return true;
+            } else if (currentStep === 3) {
+                // Validate Teaching Preferences
+                const selectedCities = document.querySelectorAll('input[name="preferredCities"]:checked');
+                const ageGroup = document.getElementById('preferredAgeGroup').value;
+                const subject = document.getElementById('subjectSpecialty').value;
+
+                if (selectedCities.length === 0) {
+                    alert('Please select at least one preferred city');
+                    return false;
+                }
+
+                if (!ageGroup) {
+                    alert('Please select your preferred age group');
+                    return false;
+                }
+
+                if (!subject) {
+                    alert('Please select the subject you teach');
+                    return false;
+                }
+
+                return true;
+            }
+
+            return true;
+        }
         
         // Form submission
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
+            // Final validation
+            if (!validateCurrentStep()) {
+                return;
+            }
+
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const linkedin = document.getElementById('linkedin').value.trim();
             const cvFile = cvFileInput.files[0];
-            const preferredCities = Array.from(document.getElementById('preferredCities').selectedOptions)
-                .map(option => option.value);
+            const preferredCities = Array.from(document.querySelectorAll('input[name="preferredCities"]:checked'))
+                .map(checkbox => checkbox.value);
             const preferredAgeGroup = document.getElementById('preferredAgeGroup').value;
             const subjectSpecialty = document.getElementById('subjectSpecialty').value;
-            
-            // Validation
-            if (!name || name.length < 2) {
-                alert('Please enter your full name');
-                return;
-            }
-            
-            if (!email) {
-                alert('Please enter your email address');
-                return;
-            }
-            
-            if (!cvFile) {
-                alert('Please upload your CV');
-                return;
-            }
-            
-            if (preferredCities.length === 0) {
-                alert('Please select at least one preferred city');
-                return;
-            }
-            
-            if (!preferredAgeGroup) {
-                alert('Please select your preferred age group');
-                return;
-            }
-            
-            if (!subjectSpecialty) {
-                alert('Please select the subject you teach');
-                return;
-            }
-            
+
             // Show loading overlay
             loadingOverlay.classList.add('active');
             loadingText.textContent = 'Uploading your CV...';
-            submitButton.disabled = true;
+            submitBtn.disabled = true;
             
             try {
                 const formData = new FormData();
@@ -598,14 +1171,23 @@
                     loadingText.textContent = 'Success! 🎉';
                     setTimeout(() => {
                         alert(`Thank you ${name}! We've received your application and will review it soon. We'll contact you at ${email} with exciting opportunities!`);
+
+                        // Reset form and go back to step 1
                         form.reset();
                         cvUploadText.innerHTML = `
                             <strong>📄 Drop your CV here or click to browse</strong>
                             <span>We'll extract all the details automatically</span><br>
                             <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
                         `;
+
+                        // Uncheck all city checkboxes
+                        document.querySelectorAll('input[name="preferredCities"]').forEach(cb => cb.checked = false);
+
                         loadingOverlay.classList.remove('active');
-                        validateForm();
+                        currentStep = 1;
+                        showStep(1);
+                        updateProgressBar();
+                        updateButtons();
                     }, 1000);
                 } else {
                     throw new Error(result.message || 'Failed to submit application');
@@ -614,12 +1196,41 @@
                 console.error('Error submitting form:', error);
                 loadingOverlay.classList.remove('active');
                 alert('Oops! Something went wrong: ' + error.message + '\n\nPlease try again or contact us if the problem persists.');
-                submitButton.disabled = false;
+                submitBtn.disabled = false;
             }
         });
-        
-        // Initial validation
-        validateForm();
+
+        // Initialize wizard on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Wizard initializing...');
+            console.log('Next button element:', nextBtn);
+            if (nextBtn) {
+                const rect = nextBtn.getBoundingClientRect();
+                const styles = window.getComputedStyle(nextBtn);
+                console.log('Next button position:', {
+                    top: rect.top,
+                    left: rect.left,
+                    width: rect.width,
+                    height: rect.height,
+                    display: styles.display,
+                    visibility: styles.visibility,
+                    opacity: styles.opacity,
+                    zIndex: styles.zIndex
+                });
+            }
+            showStep(1);
+            updateProgressBar();
+            updateButtons();
+            if (nextBtn) {
+                const rect = nextBtn.getBoundingClientRect();
+                console.log('After updateButtons - Next button position:', {
+                    top: rect.top,
+                    left: rect.left,
+                    width: rect.width,
+                    height: rect.height
+                });
+            }
+        });
     </script>
 </body>
 </html>

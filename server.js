@@ -80,9 +80,9 @@ function containsUrl(text) {
     return urlPattern.test(text);
 }
 
-// Helper function for rate limiter IP detection
+// Helper function to get client IP (trust proxy is enabled, so req.ip is already correct)
 function getClientIP(req) {
-    return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    return req.ip;
 }
 
 // Rate limiting for contact form - 5 requests per 15 minutes per IP
@@ -94,8 +94,8 @@ const contactFormLimiter = rateLimit({
         message: 'Too many requests. Please try again later.'
     },
     standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: getClientIP
+    legacyHeaders: false
+    // Using default keyGenerator which properly handles IPv6
 });
 
 // Rate limiting for signup form - 3 submissions per hour per IP
@@ -107,8 +107,8 @@ const signupFormLimiter = rateLimit({
         message: 'Too many applications submitted. Please try again later.'
     },
     standardHeaders: true,
-    legacyHeaders: false,
-    keyGenerator: getClientIP
+    legacyHeaders: false
+    // Using default keyGenerator which properly handles IPv6
 });
 
 // Rate limiting for login - 5 attempts per 15 minutes per IP (prevent brute force)
@@ -121,8 +121,8 @@ const loginLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: getClientIP,
     skipSuccessfulRequests: true // Don't count successful logins
+    // Using default keyGenerator which properly handles IPv6
 });
 
 // Admin credentials - password will be hashed
