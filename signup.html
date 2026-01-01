@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="images/browser_icon.png">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="49630fc9-4e30-426b-8a5c-17318c95d8a1"></script>
     <style>
         .signup-container {
             min-height: 100vh;
@@ -585,6 +586,15 @@
                 const result = await response.json();
                 
                 if (result.success) {
+                    // Track successful application submission
+                    if (typeof umami !== 'undefined') {
+                        umami.track('application_submitted', {
+                            subject: subjectSpecialty,
+                            ageGroup: preferredAgeGroup,
+                            location: preferredCities.join(',')
+                        });
+                    }
+                    
                     loadingText.textContent = 'Success! 🎉';
                     setTimeout(() => {
                         alert(`Thank you ${name}! We've received your application and will review it soon. We'll contact you at ${email} with exciting opportunities!`);

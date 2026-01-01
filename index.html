@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
     
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="49630fc9-4e30-426b-8a5c-17318c95d8a1"></script>
     <!-- Structured Data for Organization -->
     <script type="application/ld+json">
     {
@@ -92,8 +93,8 @@
                     </div>
                 </div>
                 <div class="hero-actions">
-                    <a href="signup.html" class="btn-primary">Start Your Journey</a>
-                    <a href="#opportunities" class="btn-secondary">Learn More</a>
+                    <a href="signup.html" class="btn-primary" onclick="if(typeof umami!=='undefined')umami.track('cta_click',{location:'hero',action:'start_journey'});">Start Your Journey</a>
+                    <a href="#opportunities" class="btn-secondary" onclick="if(typeof umami!=='undefined')umami.track('cta_click',{location:'hero',action:'learn_more'});">Learn More</a>
                 </div>
             </div>
             <div class="hero-image">

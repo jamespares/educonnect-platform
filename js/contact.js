@@ -86,6 +86,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (response.ok && result.success) {
+                // Track contact form submission
+                if (typeof umami !== 'undefined') {
+                    umami.track('contact_form_submitted', {
+                        subject: subject
+                    });
+                }
                 showMessage('Message sent successfully! We will get back to you within 24 hours.', 'success');
                 contactForm.reset();
             } else {
