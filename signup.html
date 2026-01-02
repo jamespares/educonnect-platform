@@ -872,17 +872,22 @@
                     </div>
                 </div>
 
-                <!-- Wizard Navigation -->
-                <div class="wizard-navigation">
-                    <button type="button" class="wizard-btn wizard-btn-prev" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
-                        ← Previous
-                    </button>
-                    <button type="button" class="wizard-btn wizard-btn-next" id="nextBtn" onclick="changeStep(1)">
-                        Next →
-                    </button>
-                    <button type="submit" class="wizard-btn wizard-btn-next" id="submitBtn" style="display: none;">
-                        Submit Application ✓
-                    </button>
+                <!-- Wizard Navigation - REBUILT SIMPLE VERSION -->
+                <div style="width: 100%; margin-top: 3rem; display: block;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                        <button type="button" id="prevBtn" onclick="changeStep(-1)"
+                                style="display: none; padding: 1rem 2rem; background: #e5e7eb; color: #4b5563; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                            ← Previous
+                        </button>
+                        <button type="button" id="nextBtn" onclick="changeStep(1)"
+                                style="padding: 1.25rem 2.5rem; background: #1f2937; color: white; border: none; border-radius: 10px; font-size: 1.125rem; font-weight: 700; cursor: pointer; margin-left: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                            Next →
+                        </button>
+                        <button type="submit" id="submitBtn"
+                                style="display: none; padding: 1.25rem 2.5rem; background: #1f2937; color: white; border: none; border-radius: 10px; font-size: 1.125rem; font-weight: 700; cursor: pointer; margin-left: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                            Submit Application ✓
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1050,15 +1055,17 @@
 
         function updateButtons() {
             // Show/hide previous button
-            prevBtn.style.display = currentStep === 1 ? 'none' : 'flex';
+            if (prevBtn) {
+                prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+            }
 
             // Show/hide next and submit buttons
             if (currentStep === totalSteps) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'flex';
+                if (nextBtn) nextBtn.style.display = 'none';
+                if (submitBtn) submitBtn.style.display = 'block';
             } else {
-                nextBtn.style.display = 'flex';
-                submitBtn.style.display = 'none';
+                if (nextBtn) nextBtn.style.display = 'block';
+                if (submitBtn) submitBtn.style.display = 'none';
             }
         }
 
