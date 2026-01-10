@@ -127,6 +127,13 @@ async function loadTeachers() {
         
         if (result.success) {
             teachers = result.data;
+            // Debug: Log CV data
+            console.log('Teachers loaded:', teachers.length);
+            const teachersWithCV = teachers.filter(t => t.cvPath);
+            console.log('Teachers with CV:', teachersWithCV.length);
+            if (teachersWithCV.length > 0) {
+                console.log('Sample teacher with CV:', teachersWithCV[0]);
+            }
             renderTeachersTable(teachers);
             updateTeacherStats(teachers);
         } else {
@@ -182,7 +189,12 @@ function renderTeachersTable(teachersToRender) {
     const tbody = document.createElement('tbody');
     teachersToRender.forEach(teacher => {
         const row = document.createElement('tr');
-        const hasCV = teacher.cvPath ? '📄' : '—';
+        // Check for CV path - handle both camelCase and snake_case
+        const cvPath = teacher.cvPath || teacher.cv_path || null;
+        // Debug log for first teacher
+        if (teachersToRender.indexOf(teacher) === 0) {
+            console.log('First teacher CV data:', { cvPath, teacher });
+        }
         row.innerHTML = `
             <td>${escapeHtml(teacher.firstName)} ${escapeHtml(teacher.lastName)}</td>
             <td>${escapeHtml(teacher.email)}</td>
@@ -194,7 +206,7 @@ function renderTeachersTable(teachersToRender) {
             <td><span class="status-badge status-${teacher.status}">${teacher.status}</span></td>
             <td>${new Date(teacher.createdAt).toLocaleDateString()}</td>
             <td>
-                ${teacher.cvPath ? 
+                ${cvPath ? 
                     `<button class="btn-small btn-primary" onclick="viewCV(${teacher.id})" title="View CV">📄 View CV</button>` : 
                     '<span style="color: #9ca3af;">No CV</span>'
                 }
@@ -286,8 +298,12 @@ async function viewTeacher(id) {
             const teacher = result.data;
             const modalBody = document.getElementById('teacherModalBody');
             
+            // Check for CV path - handle both camelCase and snake_case
+            const cvPath = teacher.cvPath || teacher.cv_path || null;
+            console.log('Teacher CV data in modal:', { cvPath, teacher });
+            
             // CV section - prominent at the top
-            const cvSection = teacher.cvPath ? 
+            const cvSection = cvPath ? 
                 `<div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
                     <h3 style="margin: 0 0 1rem 0; color: #1e40af; font-size: 1.25rem;">📄 CV Available</h3>
                     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">

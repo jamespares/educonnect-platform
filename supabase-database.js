@@ -65,6 +65,18 @@ class SupabaseDatabase {
             throw new Error(`Failed to get teachers: ${error.message}`);
         }
 
+        // Debug: Log CV path data
+        if (data && data.length > 0) {
+            const teachersWithCV = data.filter(t => t.cv_path);
+            console.log(`[DB] Loaded ${data.length} teachers from database, ${teachersWithCV.length} have cv_path`);
+            if (teachersWithCV.length > 0) {
+                console.log('[DB] Sample teacher cv_path:', {
+                    id: teachersWithCV[0].id,
+                    cv_path: teachersWithCV[0].cv_path
+                });
+            }
+        }
+
         return data.map(teacher => this.mapTeacherToCamelCase(teacher));
     }
 
@@ -455,28 +467,40 @@ class SupabaseDatabase {
     // Get signed URL for CV file (CVs are stored in private bucket)
     async getCVUrl(cvPath) {
         if (!cvPath) {
+            console.log('[getCVUrl] No CV path provided');
             return null;
         }
+        
+        // Normalize the path - remove leading slashes if present
+        const normalizedPath = cvPath.trim().replace(/^\//, '');
+        console.log(`[getCVUrl] Generating signed URL for CV path: "${normalizedPath}"`);
         
         try {
             const { data, error } = await this.supabase.storage
                 .from(this.cvBucket)
-                .createSignedUrl(cvPath, 3600); // 1 hour expiry for security
+                .createSignedUrl(normalizedPath, 3600); // 1 hour expiry for security
             
             if (error) {
-                console.error('Error creating signed URL for CV:', error);
+                console.error('[getCVUrl] Error creating signed URL:', error);
+                console.error('[getCVUrl] Path used:', normalizedPath);
+                console.error('[getCVUrl] Bucket:', this.cvBucket);
                 return null;
             }
             
+            console.log('[getCVUrl] Successfully generated signed URL');
             return data.signedUrl;
         } catch (error) {
-            console.error('Error getting CV URL:', error);
+            console.error('[getCVUrl] Exception getting CV URL:', error);
+            console.error('[getCVUrl] Path used:', normalizedPath);
             return null;
         }
     }
 
     // Helper methods to map between snake_case (Supabase) and camelCase (application)
     mapTeacherToCamelCase(teacher) {
+        // Normalize CV path - handle null, empty string, or whitespace-only strings
+        const cvPath = teacher.cv_path && teacher.cv_path.trim() ? teacher.cv_path.trim() : null;
+        
         return {
             id: teacher.id,
             firstName: teacher.first_name,
@@ -497,7 +521,7 @@ class SupabaseDatabase {
             wechatId: teacher.wechat_id,
             professionalExperience: teacher.professional_experience,
             additionalInfo: teacher.additional_info,
-            cvPath: teacher.cv_path,
+            cvPath: cvPath,
             status: teacher.status,
             createdAt: teacher.created_at,
             updatedAt: teacher.updated_at

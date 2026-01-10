@@ -1018,6 +1018,16 @@ app.post('/api/job-interest', async (req, res) => {
 app.get('/api/teachers', requireAuth, async (req, res) => {
     try {
         const teachers = await db.getAllTeachers();
+        // Debug: Log CV data
+        const teachersWithCV = teachers.filter(t => t.cvPath);
+        console.log(`[API] Loaded ${teachers.length} teachers, ${teachersWithCV.length} with CVs`);
+        if (teachersWithCV.length > 0) {
+            console.log('[API] Sample teacher with CV:', {
+                id: teachersWithCV[0].id,
+                name: `${teachersWithCV[0].firstName} ${teachersWithCV[0].lastName}`,
+                cvPath: teachersWithCV[0].cvPath
+            });
+        }
         res.json({
             success: true,
             data: teachers
@@ -1065,27 +1075,37 @@ app.get('/api/teachers/:id/cv', requireAuth, async (req, res) => {
             });
         }
         
-        if (!teacher.cvPath) {
+        console.log(`[CV API] Teacher ${req.params.id} CV data:`, {
+            cvPath: teacher.cvPath,
+            cv_path: teacher.cv_path,
+            hasCV: !!(teacher.cvPath || teacher.cv_path)
+        });
+        
+        const cvPath = teacher.cvPath || teacher.cv_path;
+        if (!cvPath) {
             return res.status(404).json({
                 success: false,
                 message: 'No CV found for this teacher'
             });
         }
         
-        const cvUrl = await db.getCVUrl(teacher.cvPath);
+        console.log(`[CV API] Generating signed URL for path: "${cvPath}"`);
+        const cvUrl = await db.getCVUrl(cvPath);
         if (cvUrl) {
+            console.log(`[CV API] Successfully generated CV URL`);
             res.json({
                 success: true,
                 data: { url: cvUrl }
             });
         } else {
+            console.error(`[CV API] Failed to generate CV URL for path: "${cvPath}"`);
             res.status(500).json({
                 success: false,
-                message: 'Error generating CV URL'
+                message: 'Error generating CV URL. Check server logs for details.'
             });
         }
     } catch (error) {
-        console.error('Error fetching CV URL:', error);
+        console.error('[CV API] Error fetching CV URL:', error);
         res.status(500).json({
             success: false,
             message: 'Error fetching CV URL: ' + error.message
