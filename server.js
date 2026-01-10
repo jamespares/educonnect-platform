@@ -1054,6 +1054,45 @@ app.get('/api/teachers/:id', requireAuth, async (req, res) => {
     }
 });
 
+// Get CV URL for a teacher
+app.get('/api/teachers/:id/cv', requireAuth, async (req, res) => {
+    try {
+        const teacher = await db.getTeacherById(req.params.id);
+        if (!teacher) {
+            return res.status(404).json({
+                success: false,
+                message: 'Teacher not found'
+            });
+        }
+        
+        if (!teacher.cvPath) {
+            return res.status(404).json({
+                success: false,
+                message: 'No CV found for this teacher'
+            });
+        }
+        
+        const cvUrl = await db.getCVUrl(teacher.cvPath);
+        if (cvUrl) {
+            res.json({
+                success: true,
+                data: { url: cvUrl }
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Error generating CV URL'
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching CV URL:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching CV URL: ' + error.message
+        });
+    }
+});
+
 app.put('/api/teachers/:id/status', requireAuth, async (req, res) => {
     try {
         const { status } = req.body;

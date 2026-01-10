@@ -173,6 +173,7 @@ function renderTeachersTable(teachersToRender) {
             <th onclick="sortTable('preferred_age_group')">Age Group</th>
             <th onclick="sortTable('status')">Status</th>
             <th onclick="sortTable('createdAt')">Applied</th>
+            <th>CV</th>
             <th>Actions</th>
         </tr>
     `;
@@ -181,6 +182,7 @@ function renderTeachersTable(teachersToRender) {
     const tbody = document.createElement('tbody');
     teachersToRender.forEach(teacher => {
         const row = document.createElement('tr');
+        const hasCV = teacher.cvPath ? '📄' : '—';
         row.innerHTML = `
             <td>${escapeHtml(teacher.firstName)} ${escapeHtml(teacher.lastName)}</td>
             <td>${escapeHtml(teacher.email)}</td>
@@ -191,6 +193,12 @@ function renderTeachersTable(teachersToRender) {
             <td>${escapeHtml(teacher.preferred_age_group || 'Not specified')}</td>
             <td><span class="status-badge status-${teacher.status}">${teacher.status}</span></td>
             <td>${new Date(teacher.createdAt).toLocaleDateString()}</td>
+            <td>
+                ${teacher.cvPath ? 
+                    `<button class="btn-small btn-primary" onclick="viewCV(${teacher.id})" title="View CV">📄 View CV</button>` : 
+                    '<span style="color: #9ca3af;">No CV</span>'
+                }
+            </td>
             <td>
                 <div class="action-buttons">
                     <button class="btn-small btn-primary" onclick="viewTeacher(${teacher.id})">View</button>
@@ -278,7 +286,24 @@ async function viewTeacher(id) {
             const teacher = result.data;
             const modalBody = document.getElementById('teacherModalBody');
             
-            modalBody.innerHTML = `
+            // CV section - prominent at the top
+            const cvSection = teacher.cvPath ? 
+                `<div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+                    <h3 style="margin: 0 0 1rem 0; color: #1e40af; font-size: 1.25rem;">📄 CV Available</h3>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="viewCV(${teacher.id})" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
+                            👁️ View CV
+                        </button>
+                        <button class="btn btn-success" onclick="downloadCV(${teacher.id})" style="font-size: 1rem; padding: 0.75rem 1.5rem;">
+                            ⬇️ Download CV
+                        </button>
+                    </div>
+                </div>` :
+                `<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 1rem; margin-bottom: 2rem; text-align: center; color: #92400e;">
+                    ⚠️ No CV uploaded for this teacher
+                </div>`;
+            
+            modalBody.innerHTML = cvSection + `
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                     <div><strong>First Name:</strong> ${escapeHtml(teacher.firstName)}</div>
                     <div><strong>Last Name:</strong> ${escapeHtml(teacher.lastName)}</div>
@@ -301,6 +326,47 @@ async function viewTeacher(id) {
     } catch (error) {
         console.error('Error loading teacher:', error);
         alert('Error loading teacher details');
+    }
+}
+
+// View CV in new tab
+async function viewCV(teacherId) {
+    try {
+        const response = await fetch(`/api/teachers/${teacherId}/cv`);
+        const result = await response.json();
+        
+        if (result.success && result.data.url) {
+            window.open(result.data.url, '_blank');
+        } else {
+            alert('Error loading CV: ' + (result.message || 'CV not found'));
+        }
+    } catch (error) {
+        console.error('Error loading CV:', error);
+        alert('Error loading CV');
+    }
+}
+
+// Download CV
+async function downloadCV(teacherId) {
+    try {
+        const response = await fetch(`/api/teachers/${teacherId}/cv`);
+        const result = await response.json();
+        
+        if (result.success && result.data.url) {
+            // Create a temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = result.data.url;
+            link.download = `CV_${teacherId}.pdf`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert('Error loading CV: ' + (result.message || 'CV not found'));
+        }
+    } catch (error) {
+        console.error('Error downloading CV:', error);
+        alert('Error downloading CV');
     }
 }
 

@@ -452,6 +452,29 @@ class SupabaseDatabase {
         return data.publicUrl;
     }
 
+    // Get signed URL for CV file (CVs are stored in private bucket)
+    async getCVUrl(cvPath) {
+        if (!cvPath) {
+            return null;
+        }
+        
+        try {
+            const { data, error } = await this.supabase.storage
+                .from(this.cvBucket)
+                .createSignedUrl(cvPath, 3600); // 1 hour expiry for security
+            
+            if (error) {
+                console.error('Error creating signed URL for CV:', error);
+                return null;
+            }
+            
+            return data.signedUrl;
+        } catch (error) {
+            console.error('Error getting CV URL:', error);
+            return null;
+        }
+    }
+
     // Helper methods to map between snake_case (Supabase) and camelCase (application)
     mapTeacherToCamelCase(teacher) {
         return {
@@ -482,6 +505,27 @@ class SupabaseDatabase {
     }
 
     mapJobToCamelCase(job) {
+        // Helper function to safely parse array fields
+        const parseArrayField = (value) => {
+            if (!value) return [];
+            if (Array.isArray(value)) return value;
+            if (typeof value === 'string') {
+                // Try parsing as JSON first
+                try {
+                    const parsed = JSON.parse(value);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    // If not JSON, try splitting by comma
+                    if (value.includes(',')) {
+                        return value.split(',').map(s => s.trim()).filter(s => s);
+                    }
+                    // Single value, return as array
+                    return value.trim() ? [value.trim()] : [];
+                }
+            }
+            return [];
+        };
+
         return {
             id: job.id,
             title: job.title,
@@ -495,11 +539,9 @@ class SupabaseDatabase {
             chineseRequired: job.chinese_required,
             qualification: job.qualification,
             contractType: job.contract_type,
-            jobFunctions: typeof job.job_functions === 'string' 
-                ? JSON.parse(job.job_functions) 
-                : job.job_functions,
-            ageGroups: job.age_groups || [],
-            subjects: job.subjects || [],
+            jobFunctions: parseArrayField(job.job_functions),
+            ageGroups: parseArrayField(job.age_groups),
+            subjects: parseArrayField(job.subjects),
             schoolId: job.school_id,
             description: job.description,
             requirements: job.requirements,
@@ -1344,6 +1386,27 @@ class SupabaseDatabase {
 
     // Helper methods for mapping
     mapSchoolToCamelCase(school) {
+        // Helper function to safely parse array fields
+        const parseArrayField = (value) => {
+            if (!value) return [];
+            if (Array.isArray(value)) return value;
+            if (typeof value === 'string') {
+                // Try parsing as JSON first
+                try {
+                    const parsed = JSON.parse(value);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    // If not JSON, try splitting by comma
+                    if (value.includes(',')) {
+                        return value.split(',').map(s => s.trim()).filter(s => s);
+                    }
+                    // Single value, return as array
+                    return value.trim() ? [value.trim()] : [];
+                }
+            }
+            return [];
+        };
+
         return {
             id: school.id,
             name: school.name,
@@ -1353,8 +1416,8 @@ class SupabaseDatabase {
             city: school.city,
             province: school.province,
             schoolType: school.school_type,
-            ageGroups: school.age_groups || [],
-            subjectsNeeded: school.subjects_needed || [],
+            ageGroups: parseArrayField(school.age_groups),
+            subjectsNeeded: parseArrayField(school.subjects_needed),
             experienceRequired: school.experience_required,
             chineseRequired: school.chinese_required,
             salaryRange: school.salary_range,
