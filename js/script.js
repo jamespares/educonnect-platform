@@ -149,14 +149,27 @@ document.addEventListener('DOMContentLoaded', () => {
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            // Skip if href is just "#" (used for JavaScript-only links)
-            if (!href || href === '#' || href === '#!') {
+            
+            // Skip if href is just "#" or empty (used for JavaScript-only links)
+            if (!href || href === '#' || href === '#!' || href.trim() === '#') {
                 return; // Don't prevent default, let the onclick handler work
             }
+            
+            // Validate that href is a valid selector (must have something after #)
+            if (href.length <= 1 || !/^#[a-zA-Z][\w-]*/.test(href)) {
+                return; // Invalid selector, skip
+            }
+            
             e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
+            
+            try {
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                // Silently handle invalid selectors
+                console.warn('Invalid selector for smooth scroll:', href);
             }
         });
     });
