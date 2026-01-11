@@ -785,6 +785,59 @@ class SupabaseDatabase {
 
     // School methods
     async addSchool(schoolData) {
+        // Check if school with same name and city already exists
+        let existingSchool = null;
+        if (schoolData.name && schoolData.city) {
+            const { data } = await this.supabase
+                .from('schools')
+                .select('id')
+                .eq('name', schoolData.name)
+                .eq('city', schoolData.city)
+                .single();
+            existingSchool = data;
+        }
+
+        if (existingSchool) {
+            // Update existing school instead of creating duplicate
+            console.log(`⚠️  School "${schoolData.name}" in ${schoolData.city} already exists. Updating existing record (ID: ${existingSchool.id})`);
+            
+            const { data, error } = await this.supabase
+                .from('schools')
+                .update({
+                    name_chinese: schoolData.nameChinese,
+                    location: schoolData.location,
+                    location_chinese: schoolData.locationChinese,
+                    province: schoolData.province,
+                    school_type: schoolData.schoolType,
+                    age_groups: schoolData.ageGroups || [],
+                    subjects_needed: schoolData.subjectsNeeded || [],
+                    experience_required: schoolData.experienceRequired,
+                    chinese_required: schoolData.chineseRequired || false,
+                    salary_range: schoolData.salaryRange,
+                    contract_type: schoolData.contractType,
+                    benefits: schoolData.benefits,
+                    description: schoolData.description,
+                    contact_name: schoolData.contactName,
+                    contact_email: schoolData.contactEmail,
+                    contact_phone: schoolData.contactPhone,
+                    hr_email: schoolData.hrEmail,
+                    recruiter_email: schoolData.recruiterEmail,
+                    recruiter_wechat_id: schoolData.recruiterWechatId,
+                    is_active: schoolData.isActive !== undefined ? schoolData.isActive : true,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', existingSchool.id)
+                .select()
+                .single();
+
+            if (error) {
+                throw new Error(`Failed to update school: ${error.message}`);
+            }
+
+            return this.mapSchoolToCamelCase(data);
+        }
+
+        // Insert new school
         const { data, error } = await this.supabase
             .from('schools')
             .insert({
@@ -806,6 +859,9 @@ class SupabaseDatabase {
                 contact_name: schoolData.contactName,
                 contact_email: schoolData.contactEmail,
                 contact_phone: schoolData.contactPhone,
+                hr_email: schoolData.hrEmail,
+                recruiter_email: schoolData.recruiterEmail,
+                recruiter_wechat_id: schoolData.recruiterWechatId,
                 is_active: schoolData.isActive !== undefined ? schoolData.isActive : true
             })
             .select()
@@ -874,6 +930,9 @@ class SupabaseDatabase {
             contact_name: schoolData.contactName,
             contact_email: schoolData.contactEmail,
             contact_phone: schoolData.contactPhone,
+            hr_email: schoolData.hrEmail,
+            recruiter_email: schoolData.recruiterEmail,
+            recruiter_wechat_id: schoolData.recruiterWechatId,
             is_active: schoolData.isActive
         };
 
@@ -1542,6 +1601,9 @@ class SupabaseDatabase {
             contactName: school.contact_name,
             contactEmail: school.contact_email,
             contactPhone: school.contact_phone,
+            hrEmail: school.hr_email,
+            recruiterEmail: school.recruiter_email,
+            recruiterWechatId: school.recruiter_wechat_id,
             isActive: school.is_active,
             createdAt: school.created_at,
             updatedAt: school.updated_at

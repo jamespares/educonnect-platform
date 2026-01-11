@@ -498,8 +498,7 @@ function renderSchoolsTable(schoolsToRender) {
             <th>Location</th>
             <th>City</th>
             <th>Type</th>
-            <th>Age Groups</th>
-            <th>Subjects</th>
+            <th>Recruiter Contact</th>
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -508,14 +507,22 @@ function renderSchoolsTable(schoolsToRender) {
     
     const tbody = document.createElement('tbody');
     schoolsToRender.forEach(school => {
+        const recruiterInfo = [];
+        if (school.recruiterEmail) recruiterInfo.push(`📧 ${escapeHtml(school.recruiterEmail)}`);
+        if (school.hrEmail) recruiterInfo.push(`📧 HR: ${escapeHtml(school.hrEmail)}`);
+        if (school.recruiterWechatId) recruiterInfo.push(`💬 WeChat: ${escapeHtml(school.recruiterWechatId)}`);
+        
+        const recruiterDisplay = recruiterInfo.length > 0 
+            ? `<div style="font-size: 0.875rem;">${recruiterInfo.join('<br>')}</div>`
+            : '<span style="color: #9ca3af; font-size: 0.875rem;">No recruiter info</span>';
+        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${escapeHtml(school.name)}</td>
             <td>${escapeHtml(school.location)}</td>
             <td>${escapeHtml(school.city || '')}</td>
             <td>${escapeHtml(school.schoolType || '')}</td>
-            <td>${(school.ageGroups || []).join(', ')}</td>
-            <td>${(school.subjectsNeeded || []).join(', ')}</td>
+            <td>${recruiterDisplay}</td>
             <td><span class="status-badge ${school.isActive ? 'status-employed' : 'status-inactive'}">${school.isActive ? 'Active' : 'Inactive'}</span></td>
             <td>
                 <div class="action-buttons">
@@ -565,6 +572,9 @@ function editSchool(id) {
     document.getElementById('schoolContactName').value = school.contactName || '';
     document.getElementById('schoolContactEmail').value = school.contactEmail || '';
     document.getElementById('schoolContactPhone').value = school.contactPhone || '';
+    document.getElementById('schoolHrEmail').value = school.hrEmail || '';
+    document.getElementById('schoolRecruiterEmail').value = school.recruiterEmail || '';
+    document.getElementById('schoolRecruiterWechatId').value = school.recruiterWechatId || '';
     document.getElementById('schoolIsActive').checked = school.isActive !== false;
     
     document.getElementById('schoolModalTitle').textContent = 'Edit School';
@@ -597,6 +607,9 @@ async function handleSchoolSubmit(e) {
         contactName: document.getElementById('schoolContactName').value.trim(),
         contactEmail: document.getElementById('schoolContactEmail').value.trim(),
         contactPhone: document.getElementById('schoolContactPhone').value.trim(),
+        hrEmail: document.getElementById('schoolHrEmail').value.trim(),
+        recruiterEmail: document.getElementById('schoolRecruiterEmail').value.trim(),
+        recruiterWechatId: document.getElementById('schoolRecruiterWechatId').value.trim(),
         isActive: document.getElementById('schoolIsActive').checked
     };
     
@@ -734,19 +747,77 @@ function renderJobsTable(jobsToRender) {
     document.getElementById('jobsTableContent').appendChild(wrapper);
 }
 
-function showAddJobModal() {
+async function showAddJobModal() {
     document.getElementById('jobId').value = '';
     document.getElementById('jobForm').reset();
     document.getElementById('jobIsActive').checked = true;
     document.getElementById('jobModalTitle').textContent = 'Add Job';
+    
+    // Load schools for the dropdown
+    await loadSchoolsForJobForm();
+    
     document.getElementById('jobModal').style.display = 'block';
 }
 
-function editJob(id) {
+let schoolsForJobForm = []; // Store schools for auto-fill
+
+async function loadSchoolsForJobForm() {
+    try {
+        const response = await fetch('/api/schools');
+        const result = await response.json();
+        
+        if (result.success) {
+            schoolsForJobForm = result.data;
+            const schoolSelect = document.getElementById('jobSchoolId');
+            schoolSelect.innerHTML = '<option value="">-- Select a school from database --</option>';
+            
+            result.data.forEach(school => {
+                const option = document.createElement('option');
+                option.value = school.id;
+                option.textContent = `${school.name}${school.city ? ' - ' + school.city : ''}`;
+                schoolSelect.appendChild(option);
+            });
+            
+            // Add event listener to auto-fill fields when school is selected
+            schoolSelect.addEventListener('change', function() {
+                const selectedSchoolId = this.value;
+                if (selectedSchoolId) {
+                    const selectedSchool = schoolsForJobForm.find(s => s.id == selectedSchoolId);
+                    if (selectedSchool) {
+                        // Auto-fill company name if empty
+                        if (!document.getElementById('jobCompany').value.trim()) {
+                            document.getElementById('jobCompany').value = selectedSchool.name;
+                        }
+                        // Auto-fill location if empty
+                        if (!document.getElementById('jobLocation').value.trim()) {
+                            document.getElementById('jobLocation').value = selectedSchool.location;
+                        }
+                        // Auto-fill city if empty
+                        if (!document.getElementById('jobCity').value.trim() && selectedSchool.city) {
+                            document.getElementById('jobCity').value = selectedSchool.city;
+                        }
+                        // Auto-fill province if empty
+                        if (!document.getElementById('jobProvince').value.trim() && selectedSchool.province) {
+                            document.getElementById('jobProvince').value = selectedSchool.province;
+                        }
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error loading schools for job form:', error);
+    }
+}
+
+async function editJob(id) {
     const job = jobs.find(j => j.id === id);
     if (!job) return;
     
+    // Load schools for the dropdown
+    await loadSchoolsForJobForm();
+    
     document.getElementById('jobId').value = job.id;
+    document.getElementById('jobSchoolId').value = job.schoolId || '';
     document.getElementById('jobTitle').value = job.title || '';
     document.getElementById('jobCompany').value = job.company || '';
     document.getElementById('jobLocation').value = job.location || '';
@@ -776,9 +847,23 @@ async function handleJobSubmit(e) {
     e.preventDefault();
     
     const jobId = document.getElementById('jobId').value;
+    const schoolId = document.getElementById('jobSchoolId').value;
+    
+    // If a school is selected, optionally auto-fill company name
+    let companyName = document.getElementById('jobCompany').value.trim();
+    if (schoolId && !companyName) {
+        // Try to get school name from dropdown
+        const schoolSelect = document.getElementById('jobSchoolId');
+        const selectedOption = schoolSelect.options[schoolSelect.selectedIndex];
+        if (selectedOption && selectedOption.textContent) {
+            // Extract school name (before the dash if present)
+            companyName = selectedOption.textContent.split(' - ')[0];
+        }
+    }
+    
     const jobData = {
         title: document.getElementById('jobTitle').value.trim(),
-        company: document.getElementById('jobCompany').value.trim(),
+        company: companyName,
         location: document.getElementById('jobLocation').value.trim(),
         city: document.getElementById('jobCity').value.trim(),
         province: document.getElementById('jobProvince').value.trim(),
@@ -793,7 +878,8 @@ async function handleJobSubmit(e) {
         requirements: document.getElementById('jobRequirements').value.trim(),
         benefits: document.getElementById('jobBenefits').value.trim(),
         isActive: document.getElementById('jobIsActive').checked,
-        jobFunctions: document.getElementById('jobSubjects').value.trim() // Use subjects as job functions for compatibility
+        jobFunctions: document.getElementById('jobSubjects').value.trim(), // Use subjects as job functions for compatibility
+        schoolId: schoolId || null // Add school_id to link job to school
     };
     
     try {

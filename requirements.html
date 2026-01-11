@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" href="images/browser_icon.png">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Poppins:wght@600;700;800&family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=Raleway:wght@600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="49630fc9-4e30-426b-8a5c-17318c95d8a1"></script>
 </head>
 <body>
     <!-- Header -->
@@ -33,7 +34,7 @@
                     <a href="jobs.html" class="nav-link" onclick="closeNav()">Jobs</a>
                     <a href="integration-guide.html" class="nav-link" onclick="closeNav()">China Guide</a>
                     <a href="language-course.html" class="nav-link" onclick="closeNav()">Chinese Course</a>
-                    <a href="signup.html" class="nav-link cta-button" onclick="closeNav()">Join Now</a>
+                    <a href="#" class="nav-link cta-button" onclick="closeNav(); openSignupModal(); return false;">Join Now</a>
                 </div>
             </div>
         </nav>
@@ -126,6 +127,100 @@
         </div>
     </footer>
 
+    <!-- Signup Modal -->
+    <div id="signupModal" class="signup-modal-overlay">
+        <div class="signup-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Join Our Teaching Community</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="signupModalForm" class="signup-modal-form">
+                    <div class="modal-form-group">
+                        <label for="modalName" class="modal-form-label">What's your name? *</label>
+                        <input type="text" id="modalName" name="name" class="modal-form-input" required placeholder="John Smith" minlength="2">
+                        <small class="modal-form-help-text">Your full name, please</small>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalEmail" class="modal-form-label">Email Address *</label>
+                        <input type="email" id="modalEmail" name="email" class="modal-form-input" required placeholder="your.email@example.com">
+                        <small class="modal-form-help-text">We'll use this to contact you about amazing opportunities</small>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalLinkedin" class="modal-form-label">LinkedIn Profile</label>
+                        <input type="url" id="modalLinkedin" name="linkedin" class="modal-form-input" placeholder="https://linkedin.com/in/yourprofile">
+                        <small class="modal-form-help-text">Optional, but it helps us get to know you better</small>
+                    </div>
+                    <div class="modal-form-group">
+                        <label class="modal-form-label">Upload Your CV/Resume *</label>
+                        <div class="modal-form-file-input" id="modalCvUploadArea">
+                            <input type="file" id="modalCvFile" name="cvFile" accept=".pdf,.doc,.docx,.txt,image/*" required>
+                            <div class="modal-file-upload-text" id="modalCvUploadText">
+                                <strong>📄 Drop your CV here or click to browse</strong>
+                                <span>We'll extract all the details automatically</span><br>
+                                <small>PDF, Word, or Image (JPG, PNG) - Max 10MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalPreferredCities" class="modal-form-label">Which cities in China interest you? *</label>
+                        <select id="modalPreferredCities" name="preferredCities" class="modal-form-select modal-cities-select" multiple required size="6">
+                            <option value="Beijing">Beijing (北京)</option>
+                            <option value="Shanghai">Shanghai (上海)</option>
+                            <option value="Guangzhou">Guangzhou (广州)</option>
+                            <option value="Shenzhen">Shenzhen (深圳)</option>
+                            <option value="Chengdu">Chengdu (成都)</option>
+                            <option value="Hangzhou">Hangzhou (杭州)</option>
+                            <option value="Nanjing">Nanjing (南京)</option>
+                            <option value="Suzhou">Suzhou (苏州)</option>
+                            <option value="Wuhan">Wuhan (武汉)</option>
+                            <option value="Xi'an">Xi'an (西安)</option>
+                            <option value="Qingdao">Qingdao (青岛)</option>
+                            <option value="Dalian">Dalian (大连)</option>
+                            <option value="Xiamen">Xiamen (厦门)</option>
+                            <option value="Tianjin">Tianjin (天津)</option>
+                            <option value="Chongqing">Chongqing (重庆)</option>
+                            <option value="Any">Any City - I'm flexible!</option>
+                        </select>
+                        <small class="modal-form-help-text">Hold Ctrl (Windows) or Cmd (Mac) to select multiple cities</small>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalPreferredAgeGroup" class="modal-form-label">What age group do you prefer to teach? *</label>
+                        <select id="modalPreferredAgeGroup" name="preferredAgeGroup" class="modal-form-select" required>
+                            <option value="">Select your preference</option>
+                            <option value="Early Years/Kindergarten">Early Years/Kindergarten (Ages 3-6)</option>
+                            <option value="Primary">Primary School (Ages 6-12)</option>
+                            <option value="Middle School">Middle School (Ages 12-15)</option>
+                            <option value="High School">High School (Ages 15-18)</option>
+                            <option value="University">University/Adult (18+)</option>
+                            <option value="Any">Any age group - I'm flexible!</option>
+                        </select>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalSubjectSpecialty" class="modal-form-label">What subject do you teach? *</label>
+                        <select id="modalSubjectSpecialty" name="subjectSpecialty" class="modal-form-select" required>
+                            <option value="">Select your subject</option>
+                            <option value="English">English Language Arts</option>
+                            <option value="ESL/TESOL">ESL/TESOL (English as a Second Language)</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Business">Business</option>
+                            <option value="Economics">Economics</option>
+                            <option value="Art">Art</option>
+                            <option value="Music">Music</option>
+                            <option value="Physical Education">Physical Education</option>
+                            <option value="Special Education">Special Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="modal-submit-button" id="modalSubmitButton">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
+    <script src="js/signup-modal.js"></script>
 </body>
 </html>

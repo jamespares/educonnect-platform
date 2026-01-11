@@ -1607,3 +1607,234 @@ textarea.form-input {
         scroll-behavior: smooth;
     }
 }
+
+/* Signup Modal Styles */
+.signup-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.signup-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.signup-modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.signup-modal-overlay.active .signup-modal {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.modal-close:hover {
+    color: #1f2937;
+    background: #f3f4f6;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+}
+
+.modal-form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.modal-form-input,
+.modal-form-select {
+    padding: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    background: #ffffff;
+    color: #1f2937;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: inherit;
+}
+
+.modal-form-input:focus,
+.modal-form-select:focus {
+    outline: none;
+    border-color: #1f2937;
+    box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
+}
+
+.modal-form-file-input {
+    padding: 1.5rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    text-align: center;
+    background: #f9fafb;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-form-file-input:hover {
+    border-color: #1f2937;
+    background: #f3f4f6;
+}
+
+.modal-form-file-input.dragover {
+    border-color: #1f2937;
+    background: #e5e7eb;
+}
+
+.modal-form-file-input input {
+    display: none;
+}
+
+.modal-file-upload-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.modal-file-upload-text strong {
+    display: block;
+    color: #1f2937;
+    font-size: 0.9375rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-file-selected {
+    color: #059669;
+    font-weight: 600;
+}
+
+.modal-cities-select {
+    min-height: 100px;
+    padding: 0.75rem;
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.modal-cities-select option {
+    padding: 0.5rem;
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.modal-submit-button {
+    width: 100%;
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.modal-submit-button:hover:not(:disabled) {
+    background: #111827;
+    transform: translateY(-2px);
+}
+
+.modal-submit-button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.modal-form-help-text {
+    color: #6b7280;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .signup-modal {
+        max-height: 95vh;
+        border-radius: 12px;
+    }
+    
+    .modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .modal-title {
+        font-size: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-form-input,
+    .modal-form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .modal-cities-select {
+        min-height: 80px;
+    }
+}
