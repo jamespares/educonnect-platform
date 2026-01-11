@@ -522,6 +522,33 @@
                             <button class="btn btn-secondary" onclick="loadSchools()">Refresh</button>
                         </div>
                     </div>
+                    <div class="search-filter">
+                        <input type="text" id="schoolSearch" class="search-input" placeholder="Search schools by name..." onkeyup="filterSchools()">
+                        <select id="schoolCityFilter" class="filter-select" onchange="filterSchools()">
+                            <option value="">All Cities</option>
+                        </select>
+                        <select id="schoolProvinceFilter" class="filter-select" onchange="filterSchools()">
+                            <option value="">All Provinces</option>
+                        </select>
+                        <select id="schoolTypeFilter" class="filter-select" onchange="filterSchools()">
+                            <option value="">All Types</option>
+                            <option value="International">International</option>
+                            <option value="Bilingual">Bilingual</option>
+                            <option value="Public">Public</option>
+                            <option value="Private">Private</option>
+                        </select>
+                        <select id="schoolStatusFilter" class="filter-select" onchange="filterSchools()">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <select id="schoolRecruiterFilter" class="filter-select" onchange="filterSchools()">
+                            <option value="">All Schools</option>
+                            <option value="with-recruiter">With Recruiter Info</option>
+                            <option value="no-recruiter">No Recruiter Info</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="clearSchoolFilters()">Clear Filters</button>
+                    </div>
                     <div id="schoolsTableContent">
                         <div class="loading">Loading schools...</div>
                     </div>

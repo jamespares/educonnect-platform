@@ -8,6 +8,7 @@ let jobMatches = [];
 let staff = [];
 let currentUser = null;
 let currentSort = { column: null, direction: 'asc' };
+let schoolSort = { column: null, direction: 'asc' };
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async function() {
@@ -470,7 +471,8 @@ async function loadSchools() {
         
         if (result.success) {
             schools = result.data;
-            renderSchoolsTable(schools);
+            populateSchoolFilters();
+            filterSchools();
         } else {
             document.getElementById('schoolsTableContent').innerHTML = 
                 '<div class="empty-state">Error loading schools: ' + result.message + '</div>';
@@ -482,27 +484,188 @@ async function loadSchools() {
     }
 }
 
+function populateSchoolFilters() {
+    // Get unique cities and provinces
+    const cities = [...new Set(schools.map(s => s.city).filter(c => c))].sort();
+    const provinces = [...new Set(schools.map(s => s.province).filter(p => p))].sort();
+    
+    // Populate city filter
+    const cityFilter = document.getElementById('schoolCityFilter');
+    if (cityFilter) {
+        const currentCity = cityFilter.value;
+        cityFilter.innerHTML = '<option value="">All Cities</option>';
+        cities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            if (city === currentCity) option.selected = true;
+            cityFilter.appendChild(option);
+        });
+    }
+    
+    // Populate province filter
+    const provinceFilter = document.getElementById('schoolProvinceFilter');
+    if (provinceFilter) {
+        const currentProvince = provinceFilter.value;
+        provinceFilter.innerHTML = '<option value="">All Provinces</option>';
+        provinces.forEach(province => {
+            const option = document.createElement('option');
+            option.value = province;
+            option.textContent = province;
+            if (province === currentProvince) option.selected = true;
+            provinceFilter.appendChild(option);
+        });
+    }
+}
+
+function filterSchools() {
+    const searchTerm = document.getElementById('schoolSearch')?.value.toLowerCase() || '';
+    const cityFilter = document.getElementById('schoolCityFilter')?.value || '';
+    const provinceFilter = document.getElementById('schoolProvinceFilter')?.value || '';
+    const typeFilter = document.getElementById('schoolTypeFilter')?.value || '';
+    const statusFilter = document.getElementById('schoolStatusFilter')?.value || '';
+    const recruiterFilter = document.getElementById('schoolRecruiterFilter')?.value || '';
+    
+    let filtered = schools.filter(school => {
+        // Search filter
+        const matchesSearch = !searchTerm || 
+            `${school.name} ${school.nameChinese || ''} ${school.location} ${school.city || ''}`.toLowerCase().includes(searchTerm);
+        
+        // City filter
+        const matchesCity = !cityFilter || school.city === cityFilter;
+        
+        // Province filter
+        const matchesProvince = !provinceFilter || school.province === provinceFilter;
+        
+        // Type filter
+        const matchesType = !typeFilter || school.schoolType === typeFilter;
+        
+        // Status filter
+        const matchesStatus = !statusFilter || 
+            (statusFilter === 'active' && school.isActive) ||
+            (statusFilter === 'inactive' && !school.isActive);
+        
+        // Recruiter filter
+        const hasRecruiter = school.recruiterEmail || school.hrEmail || school.recruiterWechatId;
+        const matchesRecruiter = !recruiterFilter ||
+            (recruiterFilter === 'with-recruiter' && hasRecruiter) ||
+            (recruiterFilter === 'no-recruiter' && !hasRecruiter);
+        
+        return matchesSearch && matchesCity && matchesProvince && matchesType && matchesStatus && matchesRecruiter;
+    });
+    
+    // Apply sorting
+    if (schoolSort.column) {
+        filtered.sort((a, b) => {
+            let aVal = a[schoolSort.column];
+            let bVal = b[schoolSort.column];
+            
+            // Handle special cases
+            if (schoolSort.column === 'city') {
+                aVal = a.city || '';
+                bVal = b.city || '';
+            } else if (schoolSort.column === 'name') {
+                aVal = a.name || '';
+                bVal = b.name || '';
+            } else if (schoolSort.column === 'isActive') {
+                // Boolean sorting: true comes before false in ascending order
+                aVal = a.isActive ? 1 : 0;
+                bVal = b.isActive ? 1 : 0;
+            }
+            
+            // Handle null/undefined
+            if (aVal === null || aVal === undefined) aVal = '';
+            if (bVal === null || bVal === undefined) bVal = '';
+            
+            if (typeof aVal === 'string') {
+                aVal = aVal.toLowerCase();
+                bVal = bVal.toLowerCase();
+            }
+            
+            if (schoolSort.direction === 'asc') {
+                return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+            } else {
+                return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+            }
+        });
+    }
+    
+    renderSchoolsTable(filtered);
+}
+
+function clearSchoolFilters() {
+    document.getElementById('schoolSearch').value = '';
+    document.getElementById('schoolCityFilter').value = '';
+    document.getElementById('schoolProvinceFilter').value = '';
+    document.getElementById('schoolTypeFilter').value = '';
+    document.getElementById('schoolStatusFilter').value = '';
+    document.getElementById('schoolRecruiterFilter').value = '';
+    schoolSort = { column: null, direction: 'asc' };
+    filterSchools();
+}
+
+function sortSchools(column) {
+    if (schoolSort.column === column) {
+        schoolSort.direction = schoolSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        schoolSort.column = column;
+        schoolSort.direction = 'asc';
+    }
+    filterSchools();
+}
+
 function renderSchoolsTable(schoolsToRender) {
+    const container = document.getElementById('schoolsTableContent');
+    
+    // Show count
+    const totalCount = schools.length;
+    const filteredCount = schoolsToRender.length;
+    const countText = filteredCount === totalCount 
+        ? `Showing ${totalCount} schools`
+        : `Showing ${filteredCount} of ${totalCount} schools`;
+    
     if (schoolsToRender.length === 0) {
-        document.getElementById('schoolsTableContent').innerHTML = 
-            '<div class="empty-state"><h3>No schools found</h3><p>Click "Add School" to add a new school.</p></div>';
+        container.innerHTML = 
+            '<div class="empty-state"><h3>No schools found</h3><p>Try adjusting your filters or click "Add School" to add a new school.</p></div>';
         return;
     }
     
     const table = document.createElement('table');
     
     const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>City</th>
-            <th>Type</th>
-            <th>Recruiter Contact</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    `;
+    const headerRow = document.createElement('tr');
+    
+    // Helper to create sortable header
+    const createSortableHeader = (text, column, currentColumn, currentDirection) => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        th.style.cursor = 'pointer';
+        th.style.userSelect = 'none';
+        
+        if (currentColumn === column) {
+            th.classList.add(currentDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+        }
+        
+        th.onclick = () => sortSchools(column);
+        return th;
+    };
+    
+    // Helper to create non-sortable header
+    const createHeader = (text) => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        return th;
+    };
+    
+    headerRow.appendChild(createSortableHeader('Name', 'name', schoolSort.column, schoolSort.direction));
+    headerRow.appendChild(createSortableHeader('Location', 'location', schoolSort.column, schoolSort.direction));
+    headerRow.appendChild(createSortableHeader('City', 'city', schoolSort.column, schoolSort.direction));
+    headerRow.appendChild(createSortableHeader('Type', 'schoolType', schoolSort.column, schoolSort.direction));
+    headerRow.appendChild(createHeader('Recruiter Contact'));
+    headerRow.appendChild(createSortableHeader('Status', 'isActive', schoolSort.column, schoolSort.direction));
+    headerRow.appendChild(createHeader('Actions'));
+    
+    thead.appendChild(headerRow);
     table.appendChild(thead);
     
     const tbody = document.createElement('tbody');
@@ -539,8 +702,18 @@ function renderSchoolsTable(schoolsToRender) {
     wrapper.className = 'table-wrapper';
     wrapper.appendChild(table);
     
-    document.getElementById('schoolsTableContent').innerHTML = '';
-    document.getElementById('schoolsTableContent').appendChild(wrapper);
+    // Add count display
+    const countDiv = document.createElement('div');
+    countDiv.style.padding = '0.75rem 1rem';
+    countDiv.style.backgroundColor = '#f9fafb';
+    countDiv.style.borderTop = '1px solid #e5e7eb';
+    countDiv.style.fontSize = '0.875rem';
+    countDiv.style.color = '#6b7280';
+    countDiv.textContent = countText;
+    
+    container.innerHTML = '';
+    container.appendChild(wrapper);
+    container.appendChild(countDiv);
 }
 
 function showAddSchoolModal() {
