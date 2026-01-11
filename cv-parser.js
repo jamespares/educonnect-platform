@@ -1,6 +1,9 @@
 const OpenAI = require('openai');
-const pdfParse = require('pdf-parse');
+const pdfParseLib = require('pdf-parse');
 const fs = require('fs');
+
+// Handle pdf-parse export - it may export as default or directly
+const pdfParse = pdfParseLib.default || pdfParseLib;
 
 /**
  * CV Parser using DeepSeek AI

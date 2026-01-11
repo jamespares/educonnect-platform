@@ -21,6 +21,52 @@ class SupabaseDatabase {
 
     // Teacher methods
     async addTeacher(teacherData) {
+        // Check if teacher with this email already exists
+        const { data: existingTeacher } = await this.supabase
+            .from('teachers')
+            .select('id')
+            .eq('email', teacherData.email)
+            .single();
+
+        if (existingTeacher) {
+            // Update existing teacher instead of creating duplicate
+            console.log(`⚠️  Teacher with email ${teacherData.email} already exists. Updating existing record (ID: ${existingTeacher.id})`);
+            
+            const { data, error } = await this.supabase
+                .from('teachers')
+                .update({
+                    first_name: teacherData.firstName,
+                    last_name: teacherData.lastName,
+                    phone: teacherData.phone,
+                    nationality: teacherData.nationality,
+                    years_experience: teacherData.yearsExperience,
+                    education: teacherData.education,
+                    teaching_experience: teacherData.teachingExperience,
+                    subject_specialty: teacherData.subjectSpecialty,
+                    preferred_location: teacherData.preferredLocation,
+                    preferred_age_group: teacherData.preferred_age_group,
+                    intro_video_path: teacherData.introVideoPath,
+                    headshot_photo_path: teacherData.headshotPhotoPath,
+                    linkedin: teacherData.linkedin,
+                    instagram: teacherData.instagram,
+                    wechat_id: teacherData.wechatId,
+                    professional_experience: teacherData.professionalExperience,
+                    additional_info: teacherData.additionalInfo,
+                    cv_path: teacherData.cvPath || null,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', existingTeacher.id)
+                .select()
+                .single();
+
+            if (error) {
+                throw new Error(`Failed to update teacher: ${error.message}`);
+            }
+
+            return this.mapTeacherToCamelCase(data);
+        }
+
+        // Insert new teacher
         const { data, error } = await this.supabase
             .from('teachers')
             .insert({
@@ -48,6 +94,51 @@ class SupabaseDatabase {
             .single();
 
         if (error) {
+            // If it's still a duplicate key error (race condition), try to update
+            if (error.code === '23505' && error.message.includes('email')) {
+                console.log(`⚠️  Race condition: Teacher with email ${teacherData.email} was created. Fetching and updating...`);
+                const { data: existing } = await this.supabase
+                    .from('teachers')
+                    .select('id')
+                    .eq('email', teacherData.email)
+                    .single();
+                
+                if (existing) {
+                    // Update the existing teacher
+                    const { data: updatedData, error: updateError } = await this.supabase
+                        .from('teachers')
+                        .update({
+                            first_name: teacherData.firstName,
+                            last_name: teacherData.lastName,
+                            phone: teacherData.phone,
+                            nationality: teacherData.nationality,
+                            years_experience: teacherData.yearsExperience,
+                            education: teacherData.education,
+                            teaching_experience: teacherData.teachingExperience,
+                            subject_specialty: teacherData.subjectSpecialty,
+                            preferred_location: teacherData.preferredLocation,
+                            preferred_age_group: teacherData.preferred_age_group,
+                            intro_video_path: teacherData.introVideoPath,
+                            headshot_photo_path: teacherData.headshotPhotoPath,
+                            linkedin: teacherData.linkedin,
+                            instagram: teacherData.instagram,
+                            wechat_id: teacherData.wechatId,
+                            professional_experience: teacherData.professionalExperience,
+                            additional_info: teacherData.additionalInfo,
+                            cv_path: teacherData.cvPath || null,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', existing.id)
+                        .select()
+                        .single();
+                    
+                    if (updateError) {
+                        throw new Error(`Failed to update teacher after duplicate detection: ${updateError.message}`);
+                    }
+                    
+                    return this.mapTeacherToCamelCase(updatedData);
+                }
+            }
             throw new Error(`Failed to add teacher: ${error.message}`);
         }
 
