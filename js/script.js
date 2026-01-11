@@ -145,31 +145,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Smooth scrolling for anchor links
-    const links = document.querySelectorAll('a[href^="#"]');
+    // Filter out links with href="#" or invalid selectors before attaching listeners
+    const links = Array.from(document.querySelectorAll('a[href^="#"]')).filter(link => {
+        const href = link.getAttribute('href');
+        if (!href) return false;
+        
+        const trimmedHref = href.trim();
+        // Only attach listener to links with valid selectors (not just "#")
+        return trimmedHref.length > 1 && 
+               trimmedHref !== '#!' && 
+               /^#[a-zA-Z_][\w-:]*/.test(trimmedHref);
+    });
+    
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
             
-            // Skip if href is just "#" or empty (used for JavaScript-only links)
-            if (!href || href === '#' || href === '#!' || href.trim() === '#') {
-                return; // Don't prevent default, let the onclick handler work
+            // Additional safety check
+            if (!href) {
+                return;
             }
             
-            // Validate that href is a valid selector (must have something after #)
-            if (href.length <= 1 || !/^#[a-zA-Z][\w-]*/.test(href)) {
-                return; // Invalid selector, skip
+            const trimmedHref = href.trim();
+            
+            // Final validation before proceeding
+            if (trimmedHref === '#' || trimmedHref === '#!' || trimmedHref.length <= 1) {
+                return;
+            }
+            
+            // Validate selector format
+            if (!/^#[a-zA-Z_][\w-:]*/.test(trimmedHref)) {
+                return;
             }
             
             e.preventDefault();
             
             try {
-                const target = document.querySelector(href);
+                const target = document.querySelector(trimmedHref);
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth' });
                 }
             } catch (error) {
                 // Silently handle invalid selectors
-                console.warn('Invalid selector for smooth scroll:', href);
+                console.warn('Invalid selector for smooth scroll:', trimmedHref);
             }
         });
     });
