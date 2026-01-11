@@ -1610,25 +1610,27 @@ textarea.form-input {
 
 /* Signup Modal Styles */
 .signup-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 10000;
+    z-index: 10000 !important;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     opacity: 0;
     transition: opacity 0.3s ease;
+    visibility: hidden;
 }
 
 .signup-modal-overlay.active {
-    display: flex;
+    display: flex !important;
     opacity: 1;
+    visibility: visible;
 }
 
 .signup-modal {

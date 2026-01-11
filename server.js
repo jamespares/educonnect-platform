@@ -7,6 +7,7 @@ const path = require('path');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const { Resend } = require('resend');
 const SupabaseDatabase = require('./supabase-database');
 const CVParser = require('./cv-parser');
@@ -80,9 +81,20 @@ function containsUrl(text) {
     return urlPattern.test(text);
 }
 
-// Helper function for rate limiter IP detection
+// Helper function for rate limiter IP detection with IPv6 support
 function getClientIP(req) {
-    return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    // Get the IP address from request
+    let ip = req.ip;
+    
+    // Check for forwarded IP in case behind proxy
+    const forwarded = req.headers['x-forwarded-for']?.split(',')[0]?.trim();
+    if (forwarded) {
+        ip = forwarded;
+    }
+    
+    // Use ipKeyGenerator helper to properly handle IPv6 addresses
+    // Apply /56 subnet mask to IPv6 addresses to prevent bypassing limits
+    return ipKeyGenerator(ip, 56);
 }
 
 // Rate limiting for contact form - 5 requests per 15 minutes per IP

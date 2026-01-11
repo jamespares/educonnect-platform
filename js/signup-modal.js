@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!signupModal || !signupForm) return;
     
+    // Ensure modal is hidden on page load
+    signupModal.classList.remove('active');
+    signupModal.style.display = 'none';
+    signupModal.style.visibility = 'hidden';
+    
     // Close modal handlers
     const closeBtn = signupModal.querySelector('.modal-close');
     if (closeBtn) {
@@ -88,6 +93,8 @@ function openSignupModal() {
     }
     if (signupModal) {
         signupModal.classList.add('active');
+        signupModal.style.display = 'flex';
+        signupModal.style.visibility = 'visible';
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
         // Focus first input
         const firstInput = signupModal.querySelector('input[type="text"], input[type="email"]');
@@ -104,6 +111,8 @@ function closeSignupModal() {
     }
     if (signupModal) {
         signupModal.classList.remove('active');
+        signupModal.style.display = 'none';
+        signupModal.style.visibility = 'hidden';
         document.body.style.overflow = ''; // Restore scrolling
     }
 }
