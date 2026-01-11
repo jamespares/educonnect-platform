@@ -3,6 +3,8 @@
 
 let signupModal = null;
 let signupForm = null;
+let successModal = null;
+let errorModal = null;
 
 // Define functions immediately so they're available even before DOMContentLoaded
 window.openSignupModal = function() {
@@ -55,12 +57,106 @@ window.closeSignupModal = function() {
     }
 };
 
+// Success Modal Functions
+window.showSuccessModal = function(title, message) {
+    if (!successModal) {
+        successModal = document.getElementById('successModal');
+    }
+    if (!successModal) return;
+    
+    const titleEl = document.getElementById('successModalTitle');
+    const messageEl = document.getElementById('successModalMessage');
+    
+    if (titleEl) titleEl.textContent = title || 'Success!';
+    if (messageEl) messageEl.textContent = message || '';
+    
+    // Remove inline style and show modal
+    successModal.removeAttribute('style');
+    successModal.classList.add('active');
+    successModal.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 10001 !important;';
+    
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeSuccessModal = function() {
+    if (!successModal) {
+        successModal = document.getElementById('successModal');
+    }
+    if (successModal) {
+        successModal.classList.remove('active');
+        successModal.style.cssText = 'display: none !important; visibility: hidden !important;';
+        document.body.style.overflow = '';
+    }
+};
+
+// Error Modal Functions
+window.showErrorModal = function(message) {
+    if (!errorModal) {
+        errorModal = document.getElementById('errorModal');
+    }
+    if (!errorModal) return;
+    
+    const messageEl = document.getElementById('errorModalMessage');
+    if (messageEl) messageEl.textContent = message || 'An unexpected error occurred. Please try again.';
+    
+    // Remove inline style and show modal
+    errorModal.removeAttribute('style');
+    errorModal.classList.add('active');
+    errorModal.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 10001 !important;';
+    
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeErrorModal = function() {
+    if (!errorModal) {
+        errorModal = document.getElementById('errorModal');
+    }
+    if (errorModal) {
+        errorModal.classList.remove('active');
+        errorModal.style.cssText = 'display: none !important; visibility: hidden !important;';
+        document.body.style.overflow = '';
+    }
+};
+
 // Initialize modal when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     signupModal = document.getElementById('signupModal');
     signupForm = document.getElementById('signupModalForm');
+    successModal = document.getElementById('successModal');
+    errorModal = document.getElementById('errorModal');
     
     if (!signupModal || !signupForm) return;
+    
+    // Close success/error modals on overlay click
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+    }
+    
+    if (errorModal) {
+        errorModal.addEventListener('click', function(e) {
+            if (e.target === errorModal) {
+                closeErrorModal();
+            }
+        });
+    }
+    
+    // Close modals on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (successModal && successModal.classList.contains('active')) {
+                closeSuccessModal();
+            }
+            if (errorModal && errorModal.classList.contains('active')) {
+                closeErrorModal();
+            }
+        }
+    });
     
     // Ensure modal is hidden on page load
     signupModal.classList.remove('active');
@@ -265,10 +361,11 @@ async function handleModalFormSubmit(e) {
                 });
             }
             
-            // Show success message
-            alert(`Thank you ${name}! We've received your application and will review it soon. We'll contact you at ${email} with exciting opportunities!`);
+            // Show success message in styled modal
+            const successMessage = `Thank you ${name}! We've received your application and will review it soon. We'll contact you at ${email} with exciting opportunities!`;
+            showSuccessModal('Application Submitted!', successMessage);
             
-            // Reset form and close modal
+            // Reset form and close signup modal
             signupForm.reset();
             const cvUploadText = signupForm.querySelector('#modalCvUploadText');
             if (cvUploadText) {
@@ -285,7 +382,8 @@ async function handleModalFormSubmit(e) {
         }
     } catch (error) {
         console.error('Error submitting form:', error);
-        alert('Oops! Something went wrong: ' + error.message + '\n\nPlease try again or contact us if the problem persists.');
+        const errorMessage = `Oops! Something went wrong: ${error.message}\n\nPlease try again or contact us if the problem persists.`;
+        showErrorModal(errorMessage);
     } finally {
         if (submitButton) {
             submitButton.disabled = false;
