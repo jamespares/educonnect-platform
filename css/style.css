@@ -1629,8 +1629,9 @@ textarea.form-input {
 
 .signup-modal-overlay.active {
     display: flex !important;
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10000 !important;
 }
 
 .signup-modal {
@@ -1648,6 +1649,9 @@ textarea.form-input {
 
 .signup-modal-overlay.active .signup-modal {
     transform: scale(1);
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 .modal-header {

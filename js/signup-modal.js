@@ -4,6 +4,57 @@
 let signupModal = null;
 let signupForm = null;
 
+// Define functions immediately so they're available even before DOMContentLoaded
+window.openSignupModal = function() {
+    // Try to get modal if not already cached
+    if (!signupModal) {
+        signupModal = document.getElementById('signupModal');
+    }
+    
+    if (!signupModal) {
+        console.error('Signup modal element not found');
+        return;
+    }
+    
+    // Remove the inline style attribute completely to override !important
+    signupModal.removeAttribute('style');
+    
+    // Add active class which will show the modal via CSS
+    signupModal.classList.add('active');
+    
+    // Force display via inline style with !important
+    signupModal.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 10000 !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;';
+    
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+    
+    // Ensure modal content is visible
+    const modalContent = signupModal.querySelector('.signup-modal');
+    if (modalContent) {
+        modalContent.style.display = 'block';
+        modalContent.style.visibility = 'visible';
+        modalContent.style.opacity = '1';
+    }
+    
+    // Focus first input
+    const firstInput = signupModal.querySelector('input[type="text"], input[type="email"]');
+    if (firstInput) {
+        setTimeout(() => firstInput.focus(), 100);
+    }
+};
+
+window.closeSignupModal = function() {
+    if (!signupModal) {
+        signupModal = document.getElementById('signupModal');
+    }
+    if (signupModal) {
+        signupModal.classList.remove('active');
+        // Restore the inline style to hide it
+        signupModal.style.cssText = 'display: none !important; visibility: hidden !important;';
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+};
+
 // Initialize modal when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     signupModal = document.getElementById('signupModal');
@@ -13,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ensure modal is hidden on page load
     signupModal.classList.remove('active');
-    signupModal.style.display = 'none';
-    signupModal.style.visibility = 'hidden';
+    // The inline style in HTML already hides it, so we don't need to set it again
     
     // Close modal handlers
     const closeBtn = signupModal.querySelector('.modal-close');
@@ -86,35 +136,14 @@ document.addEventListener('DOMContentLoaded', function() {
     validateModalForm();
 });
 
-// Open signup modal
+// Also assign to global scope for compatibility (functions already defined above)
 function openSignupModal() {
-    if (!signupModal) {
-        signupModal = document.getElementById('signupModal');
-    }
-    if (signupModal) {
-        signupModal.classList.add('active');
-        signupModal.style.display = 'flex';
-        signupModal.style.visibility = 'visible';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        // Focus first input
-        const firstInput = signupModal.querySelector('input[type="text"], input[type="email"]');
-        if (firstInput) {
-            setTimeout(() => firstInput.focus(), 100);
-        }
-    }
+    window.openSignupModal();
 }
 
-// Close signup modal
+// Also assign to global scope for compatibility (function already defined above)
 function closeSignupModal() {
-    if (!signupModal) {
-        signupModal = document.getElementById('signupModal');
-    }
-    if (signupModal) {
-        signupModal.classList.remove('active');
-        signupModal.style.display = 'none';
-        signupModal.style.visibility = 'hidden';
-        document.body.style.overflow = ''; // Restore scrolling
-    }
+    window.closeSignupModal();
 }
 
 // Handle file selection
