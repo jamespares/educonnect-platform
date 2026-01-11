@@ -148,8 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            // Skip if href is just "#" (used for JavaScript-only links)
+            if (!href || href === '#' || href === '#!') {
+                return; // Don't prevent default, let the onclick handler work
+            }
             e.preventDefault();
-            const target = document.querySelector(link.getAttribute('href'));
+            const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
             }
